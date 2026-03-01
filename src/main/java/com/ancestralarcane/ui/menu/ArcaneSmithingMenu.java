@@ -2,7 +2,6 @@ package com.ancestralarcane.ui.menu;
 
 import com.ancestralarcane.block.ArcaneSmithingTableBlockEntity;
 import com.ancestralarcane.data.CustomDataUtil;
-import com.ancestralarcane.magic.spells.SpellType;
 import com.ancestralarcane.registry.AncestralArcaneItems;
 import com.ancestralarcane.registry.AncestralArcaneMenus;
 import net.minecraft.core.BlockPos;
@@ -129,7 +128,8 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
     private void tryBind() {
         ItemStack spear = blockEntity.inventory.getStackInSlot(5);
         ItemStack rune = blockEntity.inventory.getStackInSlot(0);
-        if (spear.is(AncestralArcaneItems.ARCANE_SPEAR_FOCUS.get()) && rune.is(AncestralArcaneItems.RUNE.get())) {
+        if (spear.getItem() instanceof com.ancestralarcane.item.ArcaneSpearFocusItem
+                && rune.is(AncestralArcaneItems.RUNE.get())) {
             CompoundTag spearData = CustomDataUtil.getAncestralArcaneData(spear);
             if (!spearData.contains("rune")) {
                 CompoundTag runeData = CustomDataUtil.getAncestralArcaneData(rune);
@@ -148,7 +148,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
 
     private void tryUnbind() {
         ItemStack spear = blockEntity.inventory.getStackInSlot(5);
-        if (spear.is(AncestralArcaneItems.ARCANE_SPEAR_FOCUS.get())) {
+        if (spear.getItem() instanceof com.ancestralarcane.item.ArcaneSpearFocusItem) {
             CompoundTag spearData = CustomDataUtil.getAncestralArcaneData(spear);
             if (spearData.contains("rune")) {
                 CompoundTag runeDataBody = spearData.getCompound("rune").copy();

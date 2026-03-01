@@ -1,7 +1,6 @@
 package com.ancestralarcane.ui.hud;
 
 import com.ancestralarcane.data.CustomDataUtil;
-import com.ancestralarcane.registry.AncestralArcaneItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
@@ -18,10 +17,10 @@ public class ChargeBarOverlay implements LayeredDraw.Layer {
             return;
 
         ItemStack stack = player.getMainHandItem();
-        if (!stack.is(AncestralArcaneItems.ARCANE_SPEAR_FOCUS.get())) {
+        if (!(stack.getItem() instanceof com.ancestralarcane.item.ArcaneSpearFocusItem)) {
             stack = player.getOffhandItem();
         }
-        if (!stack.is(AncestralArcaneItems.ARCANE_SPEAR_FOCUS.get()))
+        if (!(stack.getItem() instanceof com.ancestralarcane.item.ArcaneSpearFocusItem))
             return;
 
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);

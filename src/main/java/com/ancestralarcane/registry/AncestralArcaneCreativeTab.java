@@ -35,7 +35,13 @@ public class AncestralArcaneCreativeTab {
                         output.accept(AncestralArcaneItems.GRIMOIRE_T4.get());
                         output.accept(AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get());
                         output.accept(AncestralArcaneItems.END_SIGIL.get());
-                        output.accept(AncestralArcaneItems.ARCANE_SPEAR_FOCUS.get());
+                        output.accept(AncestralArcaneItems.FLINT_WAND.get());
+                        output.accept(AncestralArcaneItems.COPPER_WAND.get());
+                        output.accept(AncestralArcaneItems.IRON_WAND.get());
+                        output.accept(AncestralArcaneItems.GOLDEN_WAND.get());
+                        output.accept(AncestralArcaneItems.DIAMOND_WAND.get());
+                        output.accept(AncestralArcaneItems.EMERALD_WAND.get());
+                        output.accept(AncestralArcaneItems.NETHERITE_WAND.get());
                         output.accept(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get());
                         output.accept(AncestralArcaneItems.HOME_ANCHOR.get());
                     }).build());

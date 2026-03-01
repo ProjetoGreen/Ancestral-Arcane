@@ -49,7 +49,19 @@ public class AncestralArcaneItems {
         public static final DeferredItem<Item> END_SIGIL = ITEMS.register("end_sigil",
                         () -> new Item(new Item.Properties().stacksTo(1)));
 
-        public static final DeferredItem<ArcaneSpearFocusItem> ARCANE_SPEAR_FOCUS = ITEMS.register("arcane_spear_focus",
+        public static final DeferredItem<ArcaneSpearFocusItem> COPPER_WAND = ITEMS.register("copper_wand",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> DIAMOND_WAND = ITEMS.register("diamond_wand",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> EMERALD_WAND = ITEMS.register("emerald_wand",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> FLINT_WAND = ITEMS.register("flint_wand",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> GOLDEN_WAND = ITEMS.register("golden_wand",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> IRON_WAND = ITEMS.register("iron_wand",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> NETHERITE_WAND = ITEMS.register("netherite_wand",
                         () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
 
         // BlockItems

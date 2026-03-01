@@ -37,6 +37,54 @@ public class AncestralArcaneMod {
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            net.minecraft.world.item.Item[] wands = new net.minecraft.world.item.Item[] {
+                    AncestralArcaneItems.FLINT_WAND.get(),
+                    AncestralArcaneItems.COPPER_WAND.get(),
+                    AncestralArcaneItems.IRON_WAND.get(),
+                    AncestralArcaneItems.GOLDEN_WAND.get(),
+                    AncestralArcaneItems.DIAMOND_WAND.get(),
+                    AncestralArcaneItems.EMERALD_WAND.get(),
+                    AncestralArcaneItems.NETHERITE_WAND.get()
+            };
+            for (net.minecraft.world.item.Item wand : wands) {
+                net.minecraft.client.renderer.item.ItemProperties.register(wand,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "casting"),
+                        (stack, level, entity,
+                                seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F
+                                        : 0.0F);
+                net.minecraft.client.renderer.item.ItemProperties.register(wand,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "has_leather"),
+                        (stack, level, entity, seed) -> {
+                            net.minecraft.nbt.CompoundTag data = com.ancestralarcane.data.CustomDataUtil
+                                    .getAncestralArcaneData(stack);
+                            return data.getString("grip").equals("leather") ? 1.0F : 0.0F;
+                        });
+            }
+
+            net.minecraft.client.renderer.item.ItemProperties.register(AncestralArcaneItems.RUNE.get(),
+                    ResourceLocation.fromNamespaceAndPath(MODID, "rune_state"),
+                    (stack, level, entity, seed) -> {
+                        net.minecraft.nbt.CompoundTag data = com.ancestralarcane.data.CustomDataUtil
+                                .getAncestralArcaneData(stack);
+                        if (!data.contains("rune"))
+                            return 0.0F;
+                        net.minecraft.nbt.CompoundTag rune = data.getCompound("rune");
+                        if (rune.getInt("crude") == 1)
+                            return 0.1F;
+
+                        boolean upgraded = rune.contains("upgrade");
+                        boolean inscribed = rune.getInt("lvl") > 0;
+
+                        if (upgraded && inscribed)
+                            return 0.4F;
+                        if (upgraded)
+                            return 0.3F;
+                        if (inscribed)
+                            return 0.2F;
+                        return 0.0F;
+                    });
+        });
     }
 
     private void registerMenus(RegisterMenuScreensEvent event) {

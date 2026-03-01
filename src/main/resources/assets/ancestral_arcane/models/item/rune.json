@@ -2,5 +2,31 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "ancestral_arcane:item/rune"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ancestral_arcane:rune_state": 0.1
+      },
+      "model": "ancestral_arcane:item/rune_crude"
+    },
+    {
+      "predicate": {
+        "ancestral_arcane:rune_state": 0.2
+      },
+      "model": "ancestral_arcane:item/rune_generic_inscribed"
+    },
+    {
+      "predicate": {
+        "ancestral_arcane:rune_state": 0.3
+      },
+      "model": "ancestral_arcane:item/rune_upgraded"
+    },
+    {
+      "predicate": {
+        "ancestral_arcane:rune_state": 0.4
+      },
+      "model": "ancestral_arcane:item/rune_upgraded_generic_inscribed"
+    }
+  ]
 }

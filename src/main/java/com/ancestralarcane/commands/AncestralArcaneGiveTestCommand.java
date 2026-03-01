@@ -51,7 +51,7 @@ public class AncestralArcaneGiveTestCommand {
                     player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_MENDING.get(), 10));
                     player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_RESPIRATION.get(), 10));
 
-                    ItemStack spear = new ItemStack(AncestralArcaneItems.ARCANE_SPEAR_FOCUS.get());
+                    ItemStack spear = new ItemStack(AncestralArcaneItems.FLINT_WAND.get());
                     CompoundTag sd = new CompoundTag();
                     sd.putString("kind", "focus_spear");
                     sd.putString("catalyst", "iron");
