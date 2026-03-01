@@ -67,7 +67,7 @@ public class ChestLootModifier extends LootModifier {
             rd.putInt("crude", 0);
             rd.putInt("empty", 0);
             rd.putInt("crafted", 0);
-            rd.putString("spell", "fire");
+            rd.putString("spell", "flame");
             rd.putInt("lvl", 1);
             rd.putInt("charges", 10);
             rd.putInt("dirty", 0);
@@ -121,7 +121,8 @@ public class ChestLootModifier extends LootModifier {
         ItemStack grim = new ItemStack(
                 t == 1 ? AncestralArcaneItems.GRIMOIRE_T1.get()
                         : t == 2 ? AncestralArcaneItems.GRIMOIRE_T2.get()
-                                : t == 3 ? AncestralArcaneItems.GRIMOIRE_T3.get() : AncestralArcaneItems.GRIMOIRE_T4.get());
+                                : t == 3 ? AncestralArcaneItems.GRIMOIRE_T3.get()
+                                        : AncestralArcaneItems.GRIMOIRE_T4.get());
         CompoundTag gd = new CompoundTag();
         gd.putString("kind", "grimoire");
         gd.putInt("tier", t);

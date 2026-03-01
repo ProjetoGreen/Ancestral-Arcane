@@ -260,8 +260,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
     }
 
     private void tryInscribeGrimoire() {
-        inscribe(2); // simplification: uses the tool to dictate max possible, we'll just use the ink
-                     // to determine spell
+        inscribe(2);
     }
 
     private void tryInscribeLvl5() {
@@ -360,22 +359,47 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
     }
 
     private String determineSpellFromInk(ItemStack ink) {
-        if (ink.is(AncestralArcaneItems.INTENT_INK_FIRE.get()))
-            return "fire";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_STORM.get()))
-            return "storm";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_HEAL.get()))
-            return "heal";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_BREATHE.get()))
-            return "breathe";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_HEARTSTONE.get()))
-            return "heartstone";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_BREAKER.get()))
-            return "breaker";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_FERTILIZE.get()))
-            return "fertilize";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_WOLVES.get()))
-            return "wolves";
+        if (ink.is(AncestralArcaneItems.INTENT_INK_FLAME.get()))
+            return "flame";
+        if (ink.is(AncestralArcaneItems.INTENT_INK_CHANNELING.get()))
+            return "channeling";
+        if (ink.is(AncestralArcaneItems.INTENT_INK_MENDING.get()))
+            return "mending";
+        if (ink.is(AncestralArcaneItems.INTENT_INK_RESPIRATION.get()))
+            return "respiration";
+        if (ink.is(AncestralArcaneItems.INTENT_INK_SILK_TOUCH.get()))
+            return "silk_touch";
+        if (ink.is(AncestralArcaneItems.INTENT_INK_EFFICIENCY.get()))
+            return "efficiency";
+        if (ink.is(AncestralArcaneItems.INTENT_INK_FORTUNE.get()))
+            return "fortune";
+        if (ink.is(AncestralArcaneItems.INTENT_INK_LOYALTY.get()))
+            return "loyalty";
+
+        if (ink.is(Items.ENCHANTED_BOOK)) {
+            net.minecraft.world.item.enchantment.ItemEnchantments enchantments = net.minecraft.world.item.enchantment.EnchantmentHelper
+                    .getEnchantmentsForCrafting(ink);
+            for (net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> e : enchantments
+                    .keySet()) {
+                String eName = e.unwrapKey().map(k -> k.location().getPath()).orElse("");
+                if (eName.equals("flame"))
+                    return "flame";
+                if (eName.equals("channeling"))
+                    return "channeling";
+                if (eName.equals("mending"))
+                    return "mending";
+                if (eName.equals("respiration"))
+                    return "respiration";
+                if (eName.equals("silk_touch"))
+                    return "silk_touch";
+                if (eName.equals("efficiency"))
+                    return "efficiency";
+                if (eName.equals("fortune"))
+                    return "fortune";
+                if (eName.equals("loyalty"))
+                    return "loyalty";
+            }
+        }
         return null;
     }
 }

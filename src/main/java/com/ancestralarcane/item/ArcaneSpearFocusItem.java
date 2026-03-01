@@ -142,7 +142,9 @@ public class ArcaneSpearFocusItem extends Item {
             if (lvl <= 0) {
                 int crafted = rune.getInt("crafted");
                 int residues = (crafted == 1) ? 1 : 2;
-                player.drop(new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.ARCANE_RESIDUE.get(), residues), false);
+                player.drop(
+                        new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.ARCANE_RESIDUE.get(), residues),
+                        false);
 
                 if (crafted == 1) {
                     ItemStack emptyRune = new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.RUNE.get());
@@ -164,14 +166,14 @@ public class ArcaneSpearFocusItem extends Item {
 
     private int getSpellCooldown(SpellType spell) {
         return switch (spell) {
-            case FIRE -> 20;
-            case STORM -> 100;
-            case HEAL -> 60;
-            case BREATHE -> 40;
-            case HEARTSTONE -> 2400;
-            case BREAKER -> 80;
-            case FERTILIZE -> 100;
-            case WOLVES -> 600;
+            case FLAME -> 20;
+            case CHANNELING -> 100;
+            case MENDING -> 60;
+            case RESPIRATION -> 40;
+            case SILK_TOUCH -> 2400;
+            case EFFICIENCY -> 80;
+            case FORTUNE -> 100;
+            case LOYALTY -> 600;
         };
     }
 

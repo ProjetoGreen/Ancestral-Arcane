@@ -34,18 +34,18 @@ public class SpellExecutor {
             return false;
 
         return switch (spell) {
-            case FIRE -> executeFire(player, serverLevel, spellLevel, powerMultiplier);
-            case STORM -> executeStorm(player, serverLevel, spellLevel, powerMultiplier);
-            case HEAL -> executeHeal(player, serverLevel, spellLevel, powerMultiplier);
-            case BREATHE -> executeBreathe(player, serverLevel, spellLevel, powerMultiplier);
-            case HEARTSTONE -> executeHeartstone(player, serverLevel, spellLevel, powerMultiplier);
-            case BREAKER -> executeBreaker(player, serverLevel, spellLevel, powerMultiplier);
-            case FERTILIZE -> executeFertilize(player, serverLevel, spellLevel, powerMultiplier);
-            case WOLVES -> executeWolves(player, serverLevel, spellLevel, powerMultiplier);
+            case FLAME -> executeFlame(player, serverLevel, spellLevel, powerMultiplier);
+            case CHANNELING -> executeChanneling(player, serverLevel, spellLevel, powerMultiplier);
+            case MENDING -> executeMending(player, serverLevel, spellLevel, powerMultiplier);
+            case RESPIRATION -> executeRespiration(player, serverLevel, spellLevel, powerMultiplier);
+            case SILK_TOUCH -> executeSilkTouch(player, serverLevel, spellLevel, powerMultiplier);
+            case EFFICIENCY -> executeEfficiency(player, serverLevel, spellLevel, powerMultiplier);
+            case FORTUNE -> executeFortune(player, serverLevel, spellLevel, powerMultiplier);
+            case LOYALTY -> executeLoyalty(player, serverLevel, spellLevel, powerMultiplier);
         };
     }
 
-    private static boolean executeFire(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+    private static boolean executeFlame(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
         HitResult hit = player.pick(12.0, 0.0f, false);
         int[] baseDamage = { 2, 3, 4, 5, 6 };
         int[] baseFireTicks = { 40, 60, 80, 100, 120 };
@@ -77,7 +77,8 @@ public class SpellExecutor {
         return false;
     }
 
-    private static boolean executeStorm(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+    private static boolean executeChanneling(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
         HitResult hit = player.pick(12.0, 0.0f, false);
         if (hit.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hit).getEntity();
@@ -99,18 +100,11 @@ public class SpellExecutor {
                     idx = 0;
                 int dmg = Math.round(lightningBase[idx] * powerMultiplier);
                 target.hurt(target.damageSources().lightningBolt(), dmg);
-                // Lightning visual
                 net.minecraft.world.entity.LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
                 if (bolt != null) {
                     bolt.moveTo(target.position());
                     bolt.setVisualOnly(true);
                     level.addFreshEntity(bolt);
-                }
-                if (spellLevel == 5) {
-                    // We need a delayed second hit. For simplicity, just hit for double now or
-                    // schedule.
-                    // A proper implementation would schedule a tick event.
-                    target.hurt(target.damageSources().lightningBolt(), dmg);
                 }
             }
             return true;
@@ -118,21 +112,33 @@ public class SpellExecutor {
         return false;
     }
 
-    private static boolean executeHeal(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
-        int[] baseHeal = { 2, 4, 6, 8, 10 };
+    private static boolean executeMending(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
+        int[] repairs = { 50, 100, 200, 300, 500 };
         int idx = Math.min(spellLevel - 1, 4);
         if (idx < 0)
             idx = 0;
-        float healAmount = Math.round(baseHeal[idx] * powerMultiplier);
-        player.heal(healAmount);
-        int weakTicks = (spellLevel >= 4) ? 60 : 40;
-        player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, weakTicks, 0));
-        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1.0, player.getZ(), 10, 0.4,
-                0.4, 0.4, 0.1);
-        return true;
+
+        int repairAmount = Math.round(repairs[idx] * powerMultiplier);
+        boolean repairedAny = false;
+
+        for (ItemStack armor : player.getArmorSlots()) {
+            if (armor.isDamaged()) {
+                armor.setDamageValue(Math.max(0, armor.getDamageValue() - repairAmount));
+                repairedAny = true;
+                break; // only rep one per cast
+            }
+        }
+
+        if (repairedAny) {
+            level.sendParticles(ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1.0, player.getZ(), 10,
+                    0.4, 0.4, 0.4, 0.1);
+            return true;
+        }
+        return false;
     }
 
-    private static boolean executeBreathe(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeRespiration(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
         int[] baseDur = { 300, 600, 1200, 1800, 2400 };
         int idx = Math.min(spellLevel - 1, 4);
@@ -144,69 +150,57 @@ public class SpellExecutor {
         return true;
     }
 
-    private static boolean executeHeartstone(ServerPlayer player, ServerLevel level, int spellLevel,
-            float powerMultiplier) {
-        // Needs persistent data anchor reading.
-        // We will implement teleports if data is found.
-        return false;
-    }
-
-    private static boolean executeBreaker(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeSilkTouch(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
         HitResult hit = player.pick(6.0, 0.0f, false);
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos targetPos = ((BlockHitResult) hit).getBlockPos();
             BlockState state = level.getBlockState(targetPos);
-            // Verify items
-            if (consumeItem(player, new ItemStack(Items.IRON_INGOT))) {
-                level.destroyBlock(targetPos, true);
-                return true;
+            if (state.getDestroySpeed(level, targetPos) >= 0) { // Not bedrock
+                if (consumeItem(player, new ItemStack(Items.EMERALD))) { // Needs an emerald
+                    Block.popResource(level, targetPos, new ItemStack(state.getBlock()));
+                    level.destroyBlock(targetPos, false);
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    private static boolean executeFertilize(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeEfficiency(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
-        int size = (spellLevel >= 3) ? 2 : 1;
-        int cost = spellLevel;
-        if (countItem(player, Items.BONE_MEAL) < cost)
-            return false;
-
-        consumeItem(player, new ItemStack(Items.BONE_MEAL), cost);
-        BlockPos center = player.blockPosition();
-        for (int x = -size; x <= size; x++) {
-            for (int z = -size; z <= size; z++) {
-                BlockPos pos = center.offset(x, -1, z);
-                BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level, pos);
-                BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level, pos.above()); // try above as well
+        HitResult hit = player.pick(6.0, 0.0f, false);
+        if (hit.getType() == HitResult.Type.BLOCK) {
+            BlockPos targetPos = ((BlockHitResult) hit).getBlockPos();
+            BlockState state = level.getBlockState(targetPos);
+            if (state.getDestroySpeed(level, targetPos) >= 0) {
+                if (consumeItem(player, new ItemStack(Items.IRON_INGOT))) {
+                    level.destroyBlock(targetPos, true);
+                    return true;
+                }
             }
         }
+        return false;
+    }
+
+    private static boolean executeFortune(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
+        player.addEffect(new MobEffectInstance(MobEffects.LUCK, spellLevel * 600, spellLevel - 1));
         return true;
     }
 
-    private static boolean executeWolves(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeLoyalty(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
-        if (countItem(player, Items.BONE) < 3)
-            return false;
-        consumeItem(player, new ItemStack(Items.BONE), 3);
-        int[] durations = { 600, 800, 1000, 1200, 1600 };
-        int idx = Math.min(spellLevel - 1, 4);
-        if (idx < 0)
-            idx = 0;
-        int duration = durations[idx];
-
-        for (int i = 0; i < 3; i++) {
-            Wolf wolf = EntityType.WOLF.create(level);
-            if (wolf != null) {
-                wolf.setPos(player.getX(), player.getY(), player.getZ());
-                wolf.tame(player);
-                wolf.getTags().add("ancestral_arcane_summon_wolf");
-                wolf.getTags().add("ancestral_arcane_wolf_expire_" + (level.getGameTime() + duration));
-                level.addFreshEntity(wolf);
+        int count = 0;
+        for (Entity e : level.getAllEntities()) {
+            if (e instanceof net.minecraft.world.entity.TamableAnimal pet) {
+                if (pet.isOwnedBy(player)) {
+                    pet.teleportTo(player.getX(), player.getY(), player.getZ());
+                    count++;
+                }
             }
         }
-        return true;
+        return count > 0;
     }
 
     private static boolean consumeItem(ServerPlayer player, ItemStack stack) {

@@ -20,14 +20,14 @@ public class AncestralArcaneCreativeTab {
                     .displayItems((parameters, output) -> {
                         output.accept(AncestralArcaneItems.RUNE.get());
                         output.accept(AncestralArcaneItems.ARCANE_RESIDUE.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_FIRE.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_STORM.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_HEAL.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_BREATHE.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_HEARTSTONE.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_BREAKER.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_FERTILIZE.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_WOLVES.get());
+                        output.accept(AncestralArcaneItems.INTENT_INK_FLAME.get());
+                        output.accept(AncestralArcaneItems.INTENT_INK_CHANNELING.get());
+                        output.accept(AncestralArcaneItems.INTENT_INK_MENDING.get());
+                        output.accept(AncestralArcaneItems.INTENT_INK_RESPIRATION.get());
+                        output.accept(AncestralArcaneItems.INTENT_INK_SILK_TOUCH.get());
+                        output.accept(AncestralArcaneItems.INTENT_INK_EFFICIENCY.get());
+                        output.accept(AncestralArcaneItems.INTENT_INK_FORTUNE.get());
+                        output.accept(AncestralArcaneItems.INTENT_INK_LOYALTY.get());
                         output.accept(AncestralArcaneItems.SCROLL.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T1.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T2.get());

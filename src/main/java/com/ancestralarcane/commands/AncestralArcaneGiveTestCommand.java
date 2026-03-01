@@ -46,10 +46,10 @@ public class AncestralArcaneGiveTestCommand {
                     CustomDataUtil.setAncestralArcaneData(grim, gd);
                     player.getInventory().add(grim);
 
-                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_FIRE.get(), 10));
-                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_STORM.get(), 10));
-                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_HEAL.get(), 10));
-                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_BREATHE.get(), 10));
+                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_FLAME.get(), 10));
+                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_CHANNELING.get(), 10));
+                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_MENDING.get(), 10));
+                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_RESPIRATION.get(), 10));
 
                     ItemStack spear = new ItemStack(AncestralArcaneItems.ARCANE_SPEAR_FOCUS.get());
                     CompoundTag sd = new CompoundTag();
@@ -63,7 +63,7 @@ public class AncestralArcaneGiveTestCommand {
                     actRune.putInt("crude", 0);
                     actRune.putInt("empty", 0);
                     actRune.putInt("crafted", 1);
-                    actRune.putString("spell", "fire");
+                    actRune.putString("spell", "flame");
                     actRune.putInt("lvl", 3);
                     actRune.putInt("charges", 30);
                     actRune.putInt("dirty", 0);

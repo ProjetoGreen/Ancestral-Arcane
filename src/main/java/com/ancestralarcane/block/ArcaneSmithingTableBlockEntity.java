@@ -58,7 +58,7 @@ public class ArcaneSmithingTableBlockEntity extends BlockEntity implements MenuP
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("container.dntr.arcane_smithing");
+        return Component.translatable("container.ancestral_arcane.arcane_smithing");
     }
 
     @Override

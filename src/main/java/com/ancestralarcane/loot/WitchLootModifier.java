@@ -39,7 +39,8 @@ public class WitchLootModifier extends LootModifier {
             ItemStack grim = new ItemStack(
                     t == 1 ? AncestralArcaneItems.GRIMOIRE_T1.get()
                             : t == 2 ? AncestralArcaneItems.GRIMOIRE_T2.get()
-                                    : t == 3 ? AncestralArcaneItems.GRIMOIRE_T3.get() : AncestralArcaneItems.GRIMOIRE_T4.get());
+                                    : t == 3 ? AncestralArcaneItems.GRIMOIRE_T3.get()
+                                            : AncestralArcaneItems.GRIMOIRE_T4.get());
             CompoundTag gd = new CompoundTag();
             gd.putString("kind", "grimoire");
             gd.putInt("tier", t);
@@ -58,14 +59,14 @@ public class WitchLootModifier extends LootModifier {
 
             int tier = (lvl == 1) ? 2 : (lvl == 2) ? 2 : 3;
 
-            float sf = context.getRandom().nextFloat(); // fire 35, storm 25, heal 25, breathe 15
-            String spell = "fire";
+            float sf = context.getRandom().nextFloat(); // flame 35, channeling 25, mending 25, respiration 15
+            String spell = "flame";
             if (sf > 0.35f)
-                spell = "storm";
+                spell = "channeling";
             if (sf > 0.60f)
-                spell = "heal";
+                spell = "mending";
             if (sf > 0.85f)
-                spell = "breathe";
+                spell = "respiration";
 
             ItemStack rune = new ItemStack(AncestralArcaneItems.RUNE.get());
             CompoundTag rd = new CompoundTag();
