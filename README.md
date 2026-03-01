@@ -4,6 +4,14 @@
 
 O mod foi pensado para ter uma progressão natural (sobrevivência → conhecimento natural → magia), sendo totalmente focado em limitações, runas, pergaminhos e a canalização de feitiços através de uma Lança Arcana, sem depender de tecnologia avançada ou mecânicas overpower.
 
+## 📜 Lore (A Tradição Perdida)
+
+*Eras atrás, antes dos aldeões erguerem suas bibliotecas e dos monstros corromperem as noites, a magia não era uma ferramenta matemática, mas sim uma linguagem. Os Ancestrais não dependiam de máquinas complexas; eles dominavam a pura **Intenção** do mundo, expressa através de corantes vitais, e canalizavam a **Luz Estelar**, que hoje cristalizou nas profundezas abissais como a poeira de Glowstone.*
+
+*Por muito tempo, a sabedoria de como sussurrar desejos em minerais inertes foi esquecida. Tudo o que resta está fragmentado em páginas de grimórios rasgados — espólios muitas vezes guardados a sete chaves por criaturas obcecadas ou confinados nos baús isolados das Cidades do Fim.*
+
+*Como um sobrevivente desta nova era, sua missão não é inventar a mágica, mas sim redescobri-la. Ao moldar poeira brilhante, entalhar pedras cruas com intenção e fabricar ferramentas rústicas baseadas em ecos do passado, você reacende a faísca do **Arcano Ancestral**.*
+
 ## ✨ Características Principais
 
 - **Runas e Grimoires:** Descubra, construa e encante runas com feitiços.
