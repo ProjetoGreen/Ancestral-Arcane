@@ -1,6 +1,6 @@
-# Dntr Magic (Arcane Arts)
+# Ancestral Arcane
 
-**Dntr Magic** é um mod *standalone* de magia medieval e ritualística para Minecraft Java 1.21.x, construído na plataforma NeoForge. 
+**Ancestral Arcane** é um mod *standalone* de magia medieval e ritualística para Minecraft Java 1.21.x, construído na plataforma NeoForge. 
 
 O mod foi pensado para ter uma progressão natural (sobrevivência → conhecimento natural → magia), sendo totalmente focado em limitações, runas, pergaminhos e a canalização de feitiços através de uma Lança Arcana, sem depender de tecnologia avançada ou mecânicas overpower.
 
