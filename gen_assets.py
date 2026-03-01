@@ -33,7 +33,7 @@ for item in items:
     with open(f"{ASSETS_DIR}/models/item/{item}.json", "w") as f:
         json.dump({
             "parent": "item/generated",
-            "textures": {"layer0": f"dntr:item/{item}"}
+            "textures": {"layer0": f"ancestral_arcane:item/{item}"}
         }, f, indent=2)
 
 for block in blocks:
@@ -42,15 +42,15 @@ for block in blocks:
     with open(f"{ASSETS_DIR}/models/block/{block}.json", "w") as f:
         json.dump({
             "parent": "block/cube_all",
-            "textures": {"all": f"dntr:block/{block}"}
+            "textures": {"all": f"ancestral_arcane:block/{block}"}
         }, f, indent=2)
     with open(f"{ASSETS_DIR}/models/item/{block}.json", "w") as f:
         json.dump({
-            "parent": f"dntr:block/{block}"
+            "parent": f"ancestral_arcane:block/{block}"
         }, f, indent=2)
     with open(f"{ASSETS_DIR}/blockstates/{block}.json", "w") as f:
         json.dump({
-            "variants": {"": {"model": f"dntr:block/{block}"}}
+            "variants": {"": {"model": f"ancestral_arcane:block/{block}"}}
         }, f, indent=2)
 
 lang = {}
@@ -59,7 +59,7 @@ for item in items:
 for block in blocks:
     lang[f"block.dntr.{block}"] = block.replace("_", " ").title()
 
-lang["itemGroup.dntr"] = "Dntr Magic"
+lang["itemGroup.dntr"] = "AncestralArcane Magic"
 lang["container.dntr.arcane_smithing"] = "Arcane Smithing Table"
 
 with open(f"{ASSETS_DIR}/lang/en_us.json", "w") as f:

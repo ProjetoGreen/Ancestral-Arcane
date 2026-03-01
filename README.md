@@ -28,7 +28,7 @@ O ambiente utiliza o **NeoForge 1.21.1** (ModDev Gradle Plugin 2.0.74).
 ```
 
 ### Comandos de Debug (Apenas para Ops/Testes)
-- `/dntr_give_test`: Entrega a mesa arcana no nível máximo (5), runas ativadas, grimoires, lança focada e materiais necessários para explorar os feitiços sem precisar passar pela progressão do jogo durante testes de desenvolvimento.
+- `/ancestral_arcane_give_test`: Entrega a mesa arcana no nível máximo (5), runas ativadas, grimoires, lança focada e materiais necessários para explorar os feitiços sem precisar passar pela progressão do jogo durante testes de desenvolvimento.
 
 ## 📜 Licença
 Distribuído sob a licença MIT.

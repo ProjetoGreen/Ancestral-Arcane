@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "dntr:item/intent_ink_breathe"
-  }
-}

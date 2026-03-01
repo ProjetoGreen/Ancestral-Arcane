@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ancestral_arcane:item/grimoire_t3"
+  }
+}

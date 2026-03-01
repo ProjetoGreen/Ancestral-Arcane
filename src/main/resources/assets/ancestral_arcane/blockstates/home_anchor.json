@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ancestral_arcane:block/home_anchor"
+    }
+  }
+}

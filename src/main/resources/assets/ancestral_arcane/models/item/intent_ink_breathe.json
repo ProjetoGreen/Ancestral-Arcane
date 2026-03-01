@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "ancestral_arcane:item/intent_ink_breathe"
+  }
+}
