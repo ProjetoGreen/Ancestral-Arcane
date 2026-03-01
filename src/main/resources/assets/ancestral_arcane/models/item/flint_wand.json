@@ -1,20 +1,20 @@
 {
-  "parent": "item/generated",
+  "parent": "item/handheld",
   "textures": {
     "layer0": "ancestral_arcane:item/flint_wand"
   },
   "overrides": [
     {
       "predicate": {
-        "ancestral_arcane:has_leather": 1.0
-      },
-      "model": "ancestral_arcane:item/flint_wand_leather_grip"
-    },
-    {
-      "predicate": {
         "ancestral_arcane:casting": 1.0
       },
       "model": "ancestral_arcane:item/flint_wand_in_hand"
+    },
+    {
+      "predicate": {
+        "ancestral_arcane:has_leather": 1.0
+      },
+      "model": "ancestral_arcane:item/flint_wand_leather_grip"
     },
     {
       "predicate": {
