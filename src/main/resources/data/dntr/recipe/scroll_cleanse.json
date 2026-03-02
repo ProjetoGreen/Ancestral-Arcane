@@ -1,0 +1,36 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "pattern": [
+        "PIF",
+        "LDE",
+        " X "
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "I": {
+            "item": "minecraft:glow_ink_sac"
+        },
+        "F": {
+            "item": "minecraft:feather"
+        },
+        "L": {
+            "item": "minecraft:lapis_lazuli"
+        },
+        "D": {
+            "item": "minecraft:glowstone_dust"
+        },
+        "E": {
+            "item": "minecraft:milk_bucket"
+        },
+        "X": {
+            "item": "minecraft:white_dye"
+        }
+    },
+    "result": {
+        "id": "dntr:scroll_cleanse",
+        "count": 1
+    }
+}

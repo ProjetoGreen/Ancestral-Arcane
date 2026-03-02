@@ -1,14 +1,25 @@
 package com.ancestralarcane.magic.spells;
 
 public enum SpellType {
-    FLAME("flame"),
-    CHANNELING("channeling"),
-    MENDING("mending"),
-    RESPIRATION("respiration"),
-    SILK_TOUCH("silk_touch"),
-    EFFICIENCY("efficiency"),
-    FORTUNE("fortune"),
-    LOYALTY("loyalty");
+    FIRE("fire"),
+    FIRE_FRIEND("fire_friend"),
+    STORM("storm"),
+    FROST("frost"),
+    FROST_WALKER("frost_walker"),
+    HEAL("heal"),
+    MEND("mend"),
+    STABILIZE("stabilize"),
+    CLEANSE("cleanse"),
+    BREATHE("breathe"),
+    FERTILIZE("fertilize"),
+    LIGHT("light"),
+    BREAKER("breaker"),
+    WARD("ward"),
+    STONEBIND("stonebind"),
+    REACH("reach"),
+    SILENCE("silence"),
+    HEARTSTONE("heartstone"),
+    WOLVES("wolves");
 
     private final String id;
 

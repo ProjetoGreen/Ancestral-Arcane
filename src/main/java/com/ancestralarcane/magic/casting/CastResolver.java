@@ -40,15 +40,15 @@ public class CastResolver {
     public static boolean hasAffinity(String catalyst, SpellType spell) {
         if (catalyst == null || spell == null)
             return false;
-        if (catalyst.equals("flint") && spell == SpellType.FLAME)
+        if (catalyst.equals("flint") && spell == SpellType.FIRE)
             return true;
-        if (catalyst.equals("copper") && spell == SpellType.CHANNELING)
+        if (catalyst.equals("copper") && spell == SpellType.STORM)
             return true;
-        if (catalyst.equals("diamond") && spell == SpellType.EFFICIENCY)
+        if (catalyst.equals("diamond") && spell == SpellType.BREAKER)
             return true;
-        if (catalyst.equals("emerald") && spell == SpellType.MENDING)
+        if (catalyst.equals("emerald") && spell == SpellType.MEND)
             return true;
-        if (catalyst.equals("netherite") && spell == SpellType.CHANNELING)
+        if (catalyst.equals("netherite") && spell == SpellType.STORM)
             return true;
         return false;
     }
@@ -81,11 +81,11 @@ public class CastResolver {
         float reduction = 0f;
         if (upgradeType != null && spell != null) {
             boolean matches = false;
-            if (upgradeType.equals("blaze") && spell == SpellType.FLAME)
+            if (upgradeType.equals("blaze") && spell == SpellType.FIRE)
                 matches = true;
-            if (upgradeType.equals("quartz") && spell == SpellType.CHANNELING)
+            if (upgradeType.equals("quartz") && spell == SpellType.STORM)
                 matches = true;
-            if (upgradeType.equals("tear") && spell == SpellType.MENDING)
+            if (upgradeType.equals("tear") && spell == SpellType.MEND)
                 matches = true;
 
             if (matches) {

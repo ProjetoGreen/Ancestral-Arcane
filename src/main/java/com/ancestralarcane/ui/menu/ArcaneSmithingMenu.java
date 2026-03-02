@@ -256,72 +256,85 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
     }
 
     private void tryInscribeScroll() {
-        inscribe(1);
+        inscribe();
     }
 
     private void tryInscribeGrimoire() {
-        inscribe(2);
+        inscribe();
     }
 
     private void tryInscribeLvl5() {
-        if (blockEntity.getTableLevel() >= 5)
-            inscribe(5);
+        inscribe();
     }
 
-    private void inscribe(int targetLvl) {
-        ItemStack runeStack = blockEntity.inventory.getStackInSlot(0);
-        ItemStack tool = blockEntity.inventory.getStackInSlot(1);
-        ItemStack ink = blockEntity.inventory.getStackInSlot(2);
+    private void tryCloneGrimoire() {
+        // Implementation for clone
+    }
 
-        if (runeStack.is(AncestralArcaneItems.RUNE.get()) && !ink.isEmpty() && !tool.isEmpty()) {
-            CompoundTag dt = CustomDataUtil.getAncestralArcaneData(runeStack);
-            if (!dt.contains("rune"))
+    private void inscribe() {
+        ItemStack target = blockEntity.inventory.getStackInSlot(0); // Can be Grimoire or Rune
+        ItemStack tool = blockEntity.inventory.getStackInSlot(1); // Can be Scroll or Grimoire
+
+        if (target.isEmpty() || tool.isEmpty())
+            return;
+
+        // SCROLL -> GRIMOIRE
+        if (isGrimoire(target) && isScroll(tool)) {
+            CompoundTag dt = CustomDataUtil.getAncestralArcaneData(target);
+            if (!dt.contains("grimoire")) {
+                dt.put("grimoire", new CompoundTag());
+            }
+            CompoundTag grimoireData = dt.getCompound("grimoire");
+            // If the grimoire doesn't already have a spell, or we allow overwriting
+            if (!grimoireData.contains("spell") || grimoireData.getString("spell").isEmpty()) {
+                String spell = determineSpellFromScroll(tool);
+                if (spell != null) {
+                    grimoireData.putString("spell", spell);
+                    dt.put("grimoire", grimoireData);
+                    CustomDataUtil.setAncestralArcaneData(target, dt);
+                    tool.shrink(1);
+                }
+            }
+        }
+        // GRIMOIRE -> RUNE
+        else if (target.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(tool)) {
+            CompoundTag runeDt = CustomDataUtil.getAncestralArcaneData(target);
+            if (!runeDt.contains("rune"))
                 return;
-            CompoundTag rune = dt.getCompound("rune");
+            CompoundTag rune = runeDt.getCompound("rune");
+
+            CompoundTag grimDt = CustomDataUtil.getAncestralArcaneData(tool);
+            if (!grimDt.contains("grimoire"))
+                return;
+            CompoundTag grimoire = grimDt.getCompound("grimoire");
 
             if (rune.getInt("crude") == 0 && rune.getInt("empty") == 1) {
-                int tier = rune.getInt("tier");
-
-                String spell = determineSpellFromInk(ink);
-                if (spell == null)
+                String spell = grimoire.getString("spell");
+                if (spell == null || spell.isEmpty())
                     return;
 
-                if (targetLvl == 1 && tool.is(AncestralArcaneItems.SCROLL.get())) {
-                    if (tier >= 1 && blockEntity.getTableLevel() >= 1) {
-                        applyInscribe(rune, dt, runeStack, 1, spell);
-                        tool.shrink(1);
-                        ink.shrink(1);
-                    }
-                } else if (targetLvl == 2 && tool.getItem() == AncestralArcaneItems.GRIMOIRE_T2.get()
-                        || tool.getItem() == AncestralArcaneItems.GRIMOIRE_T3.get()
-                        || tool.getItem() == AncestralArcaneItems.GRIMOIRE_T4.get()) {
-                    // check tool tier
-                    int toolTier = getGrimoireTier(tool);
-                    if (tier >= toolTier && blockEntity.getTableLevel() >= toolTier) {
-                        applyInscribe(rune, dt, runeStack, toolTier, spell);
-                        decreaseGrimoire(tool);
-                        ink.shrink(1);
-                    }
-                } else if (targetLvl == 5 && tool.is(AncestralArcaneItems.END_SIGIL.get())) {
-                    if (tier >= 5 && blockEntity.getTableLevel() >= 5) {
-                        applyInscribe(rune, dt, runeStack, 5, spell);
-                        CompoundTag st = CustomDataUtil.getAncestralArcaneData(tool);
-                        int uses = st.getInt("uses") - 1;
-                        if (uses <= 0)
-                            tool.shrink(1);
-                        else {
-                            st.putInt("uses", uses);
-                            CustomDataUtil.setAncestralArcaneData(tool, st);
-                        }
-                        ink.shrink(1);
-                    }
+                int toolTier = getGrimoireTier(tool);
+                int tableLvl = blockEntity.getTableLevel();
+                int runeTier = rune.getInt("tier");
+
+                if (runeTier >= toolTier && tableLvl >= toolTier) {
+                    applyInscribe(rune, runeDt, target, toolTier, spell);
+                    decreaseGrimoire(tool);
                 }
             }
         }
     }
 
-    private void tryCloneGrimoire() {
-        // Implementation for clone
+    private boolean isGrimoire(ItemStack stack) {
+        return stack.is(AncestralArcaneItems.GRIMOIRE_T1.get()) ||
+                stack.is(AncestralArcaneItems.GRIMOIRE_T2.get()) ||
+                stack.is(AncestralArcaneItems.GRIMOIRE_T3.get()) ||
+                stack.is(AncestralArcaneItems.GRIMOIRE_T4.get()) ||
+                stack.is(AncestralArcaneItems.GRIMOIRE_T5.get());
+    }
+
+    private boolean isScroll(ItemStack stack) {
+        return determineSpellFromScroll(stack) != null;
     }
 
     private void applyInscribe(CompoundTag rune, CompoundTag dt, ItemStack runeStack, int lvl, String spell) {
@@ -339,7 +352,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
         int uses = gd.getInt("uses") - 1;
         if (uses <= 0) {
             tool.shrink(1);
-            // In a better implementation we'd leave a forgotten magicbook if not shrinked.
+            // Could replace with forgotten magicbook here
         } else {
             gd.putInt("uses", uses);
             CustomDataUtil.setAncestralArcaneData(tool, gd);
@@ -355,51 +368,46 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
             return 3;
         if (stack.is(AncestralArcaneItems.GRIMOIRE_T4.get()))
             return 4;
+        if (stack.is(AncestralArcaneItems.GRIMOIRE_T5.get()))
+            return 5;
         return 0;
     }
 
-    private String determineSpellFromInk(ItemStack ink) {
-        if (ink.is(AncestralArcaneItems.INTENT_INK_FLAME.get()))
-            return "flame";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_CHANNELING.get()))
-            return "channeling";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_MENDING.get()))
-            return "mending";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_RESPIRATION.get()))
-            return "respiration";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_SILK_TOUCH.get()))
-            return "silk_touch";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_EFFICIENCY.get()))
-            return "efficiency";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_FORTUNE.get()))
-            return "fortune";
-        if (ink.is(AncestralArcaneItems.INTENT_INK_LOYALTY.get()))
-            return "loyalty";
-
-        if (ink.is(Items.ENCHANTED_BOOK)) {
-            net.minecraft.world.item.enchantment.ItemEnchantments enchantments = net.minecraft.world.item.enchantment.EnchantmentHelper
-                    .getEnchantmentsForCrafting(ink);
-            for (net.minecraft.core.Holder<net.minecraft.world.item.enchantment.Enchantment> e : enchantments
-                    .keySet()) {
-                String eName = e.unwrapKey().map(k -> k.location().getPath()).orElse("");
-                if (eName.equals("flame"))
-                    return "flame";
-                if (eName.equals("channeling"))
-                    return "channeling";
-                if (eName.equals("mending"))
-                    return "mending";
-                if (eName.equals("respiration"))
-                    return "respiration";
-                if (eName.equals("silk_touch"))
-                    return "silk_touch";
-                if (eName.equals("efficiency"))
-                    return "efficiency";
-                if (eName.equals("fortune"))
-                    return "fortune";
-                if (eName.equals("loyalty"))
-                    return "loyalty";
-            }
-        }
+    private String determineSpellFromScroll(ItemStack scroll) {
+        if (scroll.is(AncestralArcaneItems.SCROLL_FIRE.get()))
+            return "fire";
+        if (scroll.is(AncestralArcaneItems.SCROLL_FIRE_FRIEND.get()))
+            return "fire_friend";
+        if (scroll.is(AncestralArcaneItems.SCROLL_STORM.get()))
+            return "storm";
+        if (scroll.is(AncestralArcaneItems.SCROLL_FROST.get()))
+            return "frost";
+        if (scroll.is(AncestralArcaneItems.SCROLL_FROST_WALKER.get()))
+            return "frost_walker";
+        if (scroll.is(AncestralArcaneItems.SCROLL_HEAL.get()))
+            return "heal";
+        if (scroll.is(AncestralArcaneItems.SCROLL_MEND.get()))
+            return "mend";
+        if (scroll.is(AncestralArcaneItems.SCROLL_STABILIZE.get()))
+            return "stabilize";
+        if (scroll.is(AncestralArcaneItems.SCROLL_CLEANSE.get()))
+            return "cleanse";
+        if (scroll.is(AncestralArcaneItems.SCROLL_BREATHE.get()))
+            return "breathe";
+        if (scroll.is(AncestralArcaneItems.SCROLL_FERTILIZE.get()))
+            return "fertilize";
+        if (scroll.is(AncestralArcaneItems.SCROLL_LIGHT.get()))
+            return "light";
+        if (scroll.is(AncestralArcaneItems.SCROLL_BREAKER.get()))
+            return "breaker";
+        if (scroll.is(AncestralArcaneItems.SCROLL_WARD.get()))
+            return "ward";
+        if (scroll.is(AncestralArcaneItems.SCROLL_STONEBIND.get()))
+            return "stonebind";
+        if (scroll.is(AncestralArcaneItems.SCROLL_REACH.get()))
+            return "reach";
+        if (scroll.is(AncestralArcaneItems.SCROLL_SILENCE.get()))
+            return "silence";
         return null;
     }
 }

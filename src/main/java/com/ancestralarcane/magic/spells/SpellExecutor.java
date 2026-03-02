@@ -34,76 +34,63 @@ public class SpellExecutor {
             return false;
 
         return switch (spell) {
-            case FLAME -> executeFlame(player, serverLevel, spellLevel, powerMultiplier);
-            case CHANNELING -> executeChanneling(player, serverLevel, spellLevel, powerMultiplier);
-            case MENDING -> executeMending(player, serverLevel, spellLevel, powerMultiplier);
-            case RESPIRATION -> executeRespiration(player, serverLevel, spellLevel, powerMultiplier);
-            case SILK_TOUCH -> executeSilkTouch(player, serverLevel, spellLevel, powerMultiplier);
-            case EFFICIENCY -> executeEfficiency(player, serverLevel, spellLevel, powerMultiplier);
-            case FORTUNE -> executeFortune(player, serverLevel, spellLevel, powerMultiplier);
-            case LOYALTY -> executeLoyalty(player, serverLevel, spellLevel, powerMultiplier);
+            case FIRE -> executeFire(player, serverLevel, spellLevel, powerMultiplier);
+            case FIRE_FRIEND -> executeFireFriend(player, serverLevel, spellLevel, powerMultiplier);
+            case STORM -> executeStorm(player, serverLevel, spellLevel, powerMultiplier);
+            case FROST -> executeFrost(player, serverLevel, spellLevel, powerMultiplier);
+            case FROST_WALKER -> executeFrostWalker(player, serverLevel, spellLevel, powerMultiplier);
+            case HEAL -> executeHeal(player, serverLevel, spellLevel, powerMultiplier);
+            case MEND -> executeMend(player, serverLevel, spellLevel, powerMultiplier);
+            case STABILIZE -> executeStabilize(player, serverLevel, spellLevel, powerMultiplier);
+            case CLEANSE -> executeCleanse(player, serverLevel, spellLevel, powerMultiplier);
+            case BREATHE -> executeBreathe(player, serverLevel, spellLevel, powerMultiplier);
+            case FERTILIZE -> executeFertilize(player, serverLevel, spellLevel, powerMultiplier);
+            case LIGHT -> executeLight(player, serverLevel, spellLevel, powerMultiplier);
+            case BREAKER -> executeBreaker(player, serverLevel, spellLevel, powerMultiplier);
+            case WARD -> executeWard(player, serverLevel, spellLevel, powerMultiplier);
+            case STONEBIND -> executeStonebind(player, serverLevel, spellLevel, powerMultiplier);
+            case REACH -> executeReach(player, serverLevel, spellLevel, powerMultiplier);
+            case SILENCE -> executeSilence(player, serverLevel, spellLevel, powerMultiplier);
+            case HEARTSTONE -> executeHeartstone(player, serverLevel, spellLevel, powerMultiplier);
+            case WOLVES -> executeWolves(player, serverLevel, spellLevel, powerMultiplier);
         };
     }
 
-    private static boolean executeFlame(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+    private static boolean executeFire(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
         HitResult hit = player.pick(12.0, 0.0f, false);
-        int[] baseDamage = { 2, 3, 4, 5, 6 };
-        int[] baseFireTicks = { 40, 60, 80, 100, 120 };
-        int idx = Math.min(spellLevel - 1, 4);
-        if (idx < 0)
-            idx = 0;
-
-        int finalDamage = Math.round(baseDamage[idx] * powerMultiplier);
-        int finalFireTicks = Math.round(baseFireTicks[idx] * powerMultiplier);
-
+        int damage = Math.round((spellLevel * 2) * powerMultiplier);
         if (hit.getType() == HitResult.Type.ENTITY) {
-            EntityHitResult ehr = (EntityHitResult) hit;
-            Entity target = ehr.getEntity();
-            target.hurt(target.damageSources().inFire(), finalDamage);
-            target.setRemainingFireTicks(target.getRemainingFireTicks() + finalFireTicks);
+            Entity target = ((EntityHitResult) hit).getEntity();
+            target.hurt(target.damageSources().inFire(), damage);
+            target.setRemainingFireTicks(target.getRemainingFireTicks() + (spellLevel * 40));
             level.sendParticles(ParticleTypes.FLAME, target.getX(), target.getY() + 1, target.getZ(), 10, 0.2, 0.2, 0.2,
                     0.05);
             return true;
         } else if (hit.getType() == HitResult.Type.BLOCK) {
-            BlockHitResult bhr = (BlockHitResult) hit;
-            BlockPos pos = bhr.getBlockPos().relative(bhr.getDirection());
-            if (level.isEmptyBlock(pos)) {
+            BlockPos pos = ((BlockHitResult) hit).getBlockPos().relative(((BlockHitResult) hit).getDirection());
+            if (level.isEmptyBlock(pos))
                 level.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
-            }
-            level.sendParticles(ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 5, 0.2, 0.2,
-                    0.2, 0.05);
             return true;
         }
         return false;
     }
 
-    private static boolean executeChanneling(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeFireFriend(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
+        player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, spellLevel * 600, 0));
+        return true;
+    }
+
+    private static boolean executeStorm(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
         HitResult hit = player.pick(12.0, 0.0f, false);
         if (hit.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hit).getEntity();
-            boolean openSky = level.canSeeSky(target.blockPosition());
-            if (spellLevel < 3 || !openSky) {
-                int[] shockBase = { 1, 2, 3, 4, 5 };
-                int idx = Math.min(spellLevel - 1, 4);
-                if (idx < 0)
-                    idx = 0;
-                int dmg = Math.round(shockBase[idx] * powerMultiplier);
-                target.hurt(target.damageSources().magic(), dmg);
-                if (target instanceof LivingEntity le) {
-                    le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0));
-                }
-            } else {
-                int[] lightningBase = { 0, 0, 4, 5, 6 };
-                int idx = Math.min(spellLevel - 1, 4);
-                if (idx < 0)
-                    idx = 0;
-                int dmg = Math.round(lightningBase[idx] * powerMultiplier);
-                target.hurt(target.damageSources().lightningBolt(), dmg);
+            target.hurt(target.damageSources().magic(), Math.round((spellLevel * 2) * powerMultiplier));
+            if (spellLevel >= 3 && level.canSeeSky(target.blockPosition())) {
                 net.minecraft.world.entity.LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
                 if (bolt != null) {
                     bolt.moveTo(target.position());
-                    bolt.setVisualOnly(true);
+                    bolt.setVisualOnly(spellLevel < 4);
                     level.addFreshEntity(bolt);
                 }
             }
@@ -112,112 +99,179 @@ public class SpellExecutor {
         return false;
     }
 
-    private static boolean executeMending(ServerPlayer player, ServerLevel level, int spellLevel,
-            float powerMultiplier) {
-        int[] repairs = { 50, 100, 200, 300, 500 };
-        int idx = Math.min(spellLevel - 1, 4);
-        if (idx < 0)
-            idx = 0;
-
-        int repairAmount = Math.round(repairs[idx] * powerMultiplier);
-        boolean repairedAny = false;
-
-        for (ItemStack armor : player.getArmorSlots()) {
-            if (armor.isDamaged()) {
-                armor.setDamageValue(Math.max(0, armor.getDamageValue() - repairAmount));
-                repairedAny = true;
-                break; // only rep one per cast
-            }
-        }
-
-        if (repairedAny) {
-            level.sendParticles(ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1.0, player.getZ(), 10,
-                    0.4, 0.4, 0.4, 0.1);
+    private static boolean executeFrost(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+        HitResult hit = player.pick(12.0, 0.0f, false);
+        if (hit.getType() == HitResult.Type.ENTITY) {
+            Entity target = ((EntityHitResult) hit).getEntity();
+            target.hurt(target.damageSources().freeze(), Math.round(spellLevel * powerMultiplier));
+            target.setTicksFrozen(target.getTicksFrozen() + (spellLevel * 60));
+            if (target instanceof LivingEntity le)
+                le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60 * spellLevel, spellLevel - 1));
             return true;
         }
         return false;
     }
 
-    private static boolean executeRespiration(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeFrostWalker(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
-        int[] baseDur = { 300, 600, 1200, 1800, 2400 };
-        int idx = Math.min(spellLevel - 1, 4);
-        if (idx < 0)
-            idx = 0;
-        long calc = Math.round(baseDur[idx] * powerMultiplier);
-        int dur = (int) Math.min(calc, Math.round(baseDur[idx] * 1.2));
-        player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, dur, 0));
+        // Placeholder for Frost Walker logic
         return true;
     }
 
-    private static boolean executeSilkTouch(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeHeal(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+        player.heal(spellLevel * 2 * powerMultiplier);
+        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1.0, player.getZ(), 10, 0.4,
+                0.4, 0.4, 0.1);
+        return true;
+    }
+
+    private static boolean executeMend(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+        int repairAmount = Math.round((spellLevel * 100) * powerMultiplier);
+        boolean repairedAny = false;
+        for (ItemStack armor : player.getArmorSlots()) {
+            if (armor.isDamaged()) {
+                armor.setDamageValue(Math.max(0, armor.getDamageValue() - repairAmount));
+                repairedAny = true;
+                break;
+            }
+        }
+        return repairedAny;
+    }
+
+    private static boolean executeStabilize(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
+        player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, spellLevel * 200, 0));
+        return true;
+    }
+
+    private static boolean executeCleanse(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
+        player.removeAllEffects();
+        return true;
+    }
+
+    private static boolean executeBreathe(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
+        player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, spellLevel * 600, 0));
+        return true;
+    }
+
+    private static boolean executeFertilize(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
         HitResult hit = player.pick(6.0, 0.0f, false);
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos targetPos = ((BlockHitResult) hit).getBlockPos();
-            BlockState state = level.getBlockState(targetPos);
-            if (state.getDestroySpeed(level, targetPos) >= 0) { // Not bedrock
-                if (consumeItem(player, new ItemStack(Items.EMERALD))) { // Needs an emerald
-                    Block.popResource(level, targetPos, new ItemStack(state.getBlock()));
-                    level.destroyBlock(targetPos, false);
-                    return true;
-                }
+            if (consumeItem(player, new ItemStack(Items.BONE_MEAL))) {
+                BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level, targetPos);
+                level.levelEvent(2005, targetPos, 0);
+                return true;
             }
         }
         return false;
     }
 
-    private static boolean executeEfficiency(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeLight(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+        player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, spellLevel * 600, 0));
+        return true;
+    }
+
+    private static boolean executeBreaker(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
         HitResult hit = player.pick(6.0, 0.0f, false);
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockPos targetPos = ((BlockHitResult) hit).getBlockPos();
-            BlockState state = level.getBlockState(targetPos);
-            if (state.getDestroySpeed(level, targetPos) >= 0) {
-                if (consumeItem(player, new ItemStack(Items.IRON_INGOT))) {
-                    level.destroyBlock(targetPos, true);
-                    return true;
-                }
+            if (level.getBlockState(targetPos).getDestroySpeed(level, targetPos) >= 0) {
+                level.destroyBlock(targetPos, true);
+                return true;
             }
         }
         return false;
     }
 
-    private static boolean executeFortune(ServerPlayer player, ServerLevel level, int spellLevel,
-            float powerMultiplier) {
-        player.addEffect(new MobEffectInstance(MobEffects.LUCK, spellLevel * 600, spellLevel - 1));
+    private static boolean executeWard(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+        player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, spellLevel * 600, spellLevel - 1));
         return true;
     }
 
-    private static boolean executeLoyalty(ServerPlayer player, ServerLevel level, int spellLevel,
+    private static boolean executeStonebind(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
-        int count = 0;
-        for (Entity e : level.getAllEntities()) {
-            if (e instanceof net.minecraft.world.entity.TamableAnimal pet) {
-                if (pet.isOwnedBy(player)) {
-                    pet.teleportTo(player.getX(), player.getY(), player.getZ());
-                    count++;
-                }
+        HitResult hit = player.pick(12.0, 0.0f, false);
+        if (hit.getType() == HitResult.Type.BLOCK) {
+            BlockPos targetPos = ((BlockHitResult) hit).getBlockPos();
+            if (level.getBlockState(targetPos).is(Blocks.LAVA)) {
+                level.setBlockAndUpdate(targetPos, Blocks.OBSIDIAN.defaultBlockState());
+                return true;
             }
         }
-        return count > 0;
+        return false;
+    }
+
+    private static boolean executeReach(ServerPlayer player, ServerLevel level, int spellLevel, float powerMultiplier) {
+        HitResult hit = player.pick(20.0, 0.0f, false);
+        if (hit.getType() != HitResult.Type.MISS) {
+            player.teleportTo(hit.getLocation().x, hit.getLocation().y + 1, hit.getLocation().z);
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean executeSilence(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
+        HitResult hit = player.pick(12.0, 0.0f, false);
+        if (hit.getType() == HitResult.Type.ENTITY) {
+            Entity target = ((EntityHitResult) hit).getEntity();
+            if (target instanceof LivingEntity le) {
+                le.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, spellLevel * 200, spellLevel - 1));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean executeHeartstone(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
+        BlockPos spawn = player.getRespawnPosition();
+        if (spawn != null) {
+            ServerLevel targetLevel = player.server.getLevel(player.getRespawnDimension());
+            if (targetLevel != null) {
+                player.teleportTo(targetLevel, spawn.getX(), spawn.getY(), spawn.getZ(), player.getYRot(),
+                        player.getXRot());
+                return true;
+            }
+        }
+        // Fallback to world spawn
+        BlockPos worldSpawn = level.getSharedSpawnPos();
+        player.teleportTo(level, worldSpawn.getX(), worldSpawn.getY(), worldSpawn.getZ(), player.getYRot(),
+                player.getXRot());
+        return true;
+    }
+
+    private static boolean executeWolves(ServerPlayer player, ServerLevel level, int spellLevel,
+            float powerMultiplier) {
+        int wolvesToSpawn = 3;
+        boolean spawnedAny = false;
+        for (int i = 0; i < wolvesToSpawn; i++) {
+            Wolf wolf = EntityType.WOLF.create(level);
+            if (wolf != null) {
+                wolf.moveTo(player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F);
+                wolf.tame(player);
+                if (player.getLastHurtMob() != null) {
+                    wolf.setTarget(player.getLastHurtMob());
+                }
+                level.addFreshEntity(wolf);
+                spawnedAny = true;
+            }
+        }
+        return spawnedAny;
     }
 
     private static boolean consumeItem(ServerPlayer player, ItemStack stack) {
-        return consumeItem(player, stack, 1);
-    }
-
-    private static int countItem(ServerPlayer player, net.minecraft.world.item.Item item) {
-        int count = 0;
+        int amount = 1;
+        int found = 0;
         for (ItemStack is : player.getInventory().items) {
-            if (is.is(item))
-                count += is.getCount();
+            if (is.is(stack.getItem()))
+                found += is.getCount();
         }
-        return count;
-    }
-
-    private static boolean consumeItem(ServerPlayer player, ItemStack stack, int amount) {
-        int found = countItem(player, stack.getItem());
         if (found >= amount) {
             int remaining = amount;
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {

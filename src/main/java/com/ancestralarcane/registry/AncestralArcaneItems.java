@@ -15,26 +15,46 @@ public class AncestralArcaneItems {
         public static final DeferredItem<Item> ARCANE_RESIDUE = ITEMS.register("arcane_residue",
                         () -> new Item(new Item.Properties()));
 
-        // Intent Inks
-        public static final DeferredItem<Item> INTENT_INK_FLAME = ITEMS.register("intent_ink_flame",
-                        () -> new Item(new Item.Properties()));
-        public static final DeferredItem<Item> INTENT_INK_CHANNELING = ITEMS.register("intent_ink_channeling",
-                        () -> new Item(new Item.Properties()));
-        public static final DeferredItem<Item> INTENT_INK_MENDING = ITEMS.register("intent_ink_mending",
-                        () -> new Item(new Item.Properties()));
-        public static final DeferredItem<Item> INTENT_INK_RESPIRATION = ITEMS.register("intent_ink_respiration",
-                        () -> new Item(new Item.Properties()));
-        public static final DeferredItem<Item> INTENT_INK_SILK_TOUCH = ITEMS.register("intent_ink_silk_touch",
-                        () -> new Item(new Item.Properties()));
-        public static final DeferredItem<Item> INTENT_INK_EFFICIENCY = ITEMS.register("intent_ink_efficiency",
-                        () -> new Item(new Item.Properties()));
-        public static final DeferredItem<Item> INTENT_INK_FORTUNE = ITEMS.register("intent_ink_fortune",
-                        () -> new Item(new Item.Properties()));
-        public static final DeferredItem<Item> INTENT_INK_LOYALTY = ITEMS.register("intent_ink_loyalty",
+        public static final DeferredItem<Item> FRAGMENT_OF_ALL_KNOWLEDGE = ITEMS.register("fragment_of_all_knowledge",
                         () -> new Item(new Item.Properties()));
 
-        public static final DeferredItem<Item> SCROLL = ITEMS.register("scroll", () -> new Item(new Item.Properties()));
+        // 17 Spells Scrolls
+        public static final DeferredItem<Item> SCROLL_FIRE = ITEMS.register("scroll_fire",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_FIRE_FRIEND = ITEMS.register("scroll_fire_friend",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_STORM = ITEMS.register("scroll_storm",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_FROST = ITEMS.register("scroll_frost",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_FROST_WALKER = ITEMS.register("scroll_frost_walker",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_HEAL = ITEMS.register("scroll_heal",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_MEND = ITEMS.register("scroll_mend",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_STABILIZE = ITEMS.register("scroll_stabilize",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_CLEANSE = ITEMS.register("scroll_cleanse",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_BREATHE = ITEMS.register("scroll_breathe",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_FERTILIZE = ITEMS.register("scroll_fertilize",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_LIGHT = ITEMS.register("scroll_light",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_BREAKER = ITEMS.register("scroll_breaker",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_WARD = ITEMS.register("scroll_ward",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_STONEBIND = ITEMS.register("scroll_stonebind",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_REACH = ITEMS.register("scroll_reach",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> SCROLL_SILENCE = ITEMS.register("scroll_silence",
+                        () -> new Item(new Item.Properties()));
 
+        // Grimoires
         public static final DeferredItem<Item> GRIMOIRE_T1 = ITEMS.register("grimoire_t1",
                         () -> new Item(new Item.Properties().stacksTo(1)));
         public static final DeferredItem<Item> GRIMOIRE_T2 = ITEMS.register("grimoire_t2",
@@ -42,6 +62,8 @@ public class AncestralArcaneItems {
         public static final DeferredItem<Item> GRIMOIRE_T3 = ITEMS.register("grimoire_t3",
                         () -> new Item(new Item.Properties().stacksTo(1)));
         public static final DeferredItem<Item> GRIMOIRE_T4 = ITEMS.register("grimoire_t4",
+                        () -> new Item(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<Item> GRIMOIRE_T5 = ITEMS.register("grimoire_t5",
                         () -> new Item(new Item.Properties().stacksTo(1)));
 
         public static final DeferredItem<Item> FORGOTTEN_MAGICBOOK = ITEMS.register("forgotten_magicbook",

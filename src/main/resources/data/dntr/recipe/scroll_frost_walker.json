@@ -1,0 +1,36 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "pattern": [
+        "PIF",
+        "LDE",
+        " X "
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "I": {
+            "item": "minecraft:ink_sac"
+        },
+        "F": {
+            "item": "minecraft:feather"
+        },
+        "L": {
+            "item": "minecraft:lapis_lazuli"
+        },
+        "D": {
+            "item": "minecraft:glowstone_dust"
+        },
+        "E": {
+            "item": "minecraft:packed_ice"
+        },
+        "X": {
+            "item": "minecraft:cyan_dye"
+        }
+    },
+    "result": {
+        "id": "dntr:scroll_frost_walker",
+        "count": 1
+    }
+}

@@ -166,14 +166,25 @@ public class ArcaneSpearFocusItem extends Item {
 
     private int getSpellCooldown(SpellType spell) {
         return switch (spell) {
-            case FLAME -> 20;
-            case CHANNELING -> 100;
-            case MENDING -> 60;
-            case RESPIRATION -> 40;
-            case SILK_TOUCH -> 2400;
-            case EFFICIENCY -> 80;
-            case FORTUNE -> 100;
-            case LOYALTY -> 600;
+            case FIRE -> 20;
+            case FIRE_FRIEND -> 20;
+            case STORM -> 100;
+            case FROST -> 20;
+            case FROST_WALKER -> 40;
+            case HEAL -> 60;
+            case MEND -> 60;
+            case STABILIZE -> 40;
+            case CLEANSE -> 40;
+            case BREATHE -> 40;
+            case FERTILIZE -> 100;
+            case LIGHT -> 20;
+            case BREAKER -> 80;
+            case WARD -> 100;
+            case STONEBIND -> 40;
+            case REACH -> 80;
+            case SILENCE -> 100;
+            case HEARTSTONE -> 2400;
+            case WOLVES -> 600;
         };
     }
 

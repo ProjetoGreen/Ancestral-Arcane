@@ -70,19 +70,32 @@ public class AncestralArcaneCreativeTab {
                         output.accept(uiRune);
 
                         output.accept(AncestralArcaneItems.ARCANE_RESIDUE.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_FLAME.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_CHANNELING.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_MENDING.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_RESPIRATION.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_SILK_TOUCH.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_EFFICIENCY.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_FORTUNE.get());
-                        output.accept(AncestralArcaneItems.INTENT_INK_LOYALTY.get());
-                        output.accept(AncestralArcaneItems.SCROLL.get());
+                        output.accept(AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get());
+
+                        // Spells
+                        output.accept(AncestralArcaneItems.SCROLL_FIRE.get());
+                        output.accept(AncestralArcaneItems.SCROLL_FIRE_FRIEND.get());
+                        output.accept(AncestralArcaneItems.SCROLL_STORM.get());
+                        output.accept(AncestralArcaneItems.SCROLL_FROST.get());
+                        output.accept(AncestralArcaneItems.SCROLL_FROST_WALKER.get());
+                        output.accept(AncestralArcaneItems.SCROLL_HEAL.get());
+                        output.accept(AncestralArcaneItems.SCROLL_MEND.get());
+                        output.accept(AncestralArcaneItems.SCROLL_STABILIZE.get());
+                        output.accept(AncestralArcaneItems.SCROLL_CLEANSE.get());
+                        output.accept(AncestralArcaneItems.SCROLL_BREATHE.get());
+                        output.accept(AncestralArcaneItems.SCROLL_FERTILIZE.get());
+                        output.accept(AncestralArcaneItems.SCROLL_LIGHT.get());
+                        output.accept(AncestralArcaneItems.SCROLL_BREAKER.get());
+                        output.accept(AncestralArcaneItems.SCROLL_WARD.get());
+                        output.accept(AncestralArcaneItems.SCROLL_STONEBIND.get());
+                        output.accept(AncestralArcaneItems.SCROLL_REACH.get());
+                        output.accept(AncestralArcaneItems.SCROLL_SILENCE.get());
+
                         output.accept(AncestralArcaneItems.GRIMOIRE_T1.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T2.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T3.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T4.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_T5.get());
                         output.accept(AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get());
                         output.accept(AncestralArcaneItems.END_SIGIL.get());
                         net.minecraft.world.item.Item[] wands = {

@@ -46,10 +46,10 @@ public class AncestralArcaneGiveTestCommand {
                     CustomDataUtil.setAncestralArcaneData(grim, gd);
                     player.getInventory().add(grim);
 
-                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_FLAME.get(), 10));
-                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_CHANNELING.get(), 10));
-                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_MENDING.get(), 10));
-                    player.getInventory().add(new ItemStack(AncestralArcaneItems.INTENT_INK_RESPIRATION.get(), 10));
+                    player.getInventory().add(new ItemStack(AncestralArcaneItems.SCROLL_FIRE.get(), 10));
+                    player.getInventory().add(new ItemStack(AncestralArcaneItems.SCROLL_MEND.get(), 10));
+                    player.getInventory().add(new ItemStack(AncestralArcaneItems.SCROLL_STORM.get(), 10));
+                    player.getInventory().add(new ItemStack(AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get(), 10));
 
                     ItemStack spear = new ItemStack(AncestralArcaneItems.FLINT_WAND.get());
                     CompoundTag sd = new CompoundTag();

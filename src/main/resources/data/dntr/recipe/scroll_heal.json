@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "pattern": [
+        "PIF",
+        " X "
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "I": {
+            "item": "minecraft:ink_sac"
+        },
+        "F": {
+            "item": "minecraft:feather"
+        },
+        "X": {
+            "item": "minecraft:green_dye"
+        }
+    },
+    "result": {
+        "id": "dntr:scroll_heal",
+        "count": 1
+    }
+}
