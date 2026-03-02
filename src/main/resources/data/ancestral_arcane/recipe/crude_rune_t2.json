@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:amethyst_shard"
+        },
+        {
+            "item": "ancestral_arcane:rune",
+            "components": {
+                "minecraft:custom_data": "{ancestral_arcane:{rune:{tier:1,crude:1,empty:1}}}"
+            }
+        }
+    ],
+    "result": {
+        "id": "ancestral_arcane:rune",
+        "count": 1,
+        "components": {
+            "minecraft:custom_data": "{ancestral_arcane:{rune:{tier:2,crude:1,empty:1}}}"
+        }
+    }
+}

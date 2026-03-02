@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:item/handheld",
+    "textures": {
+        "layer0": "ancestral_arcane:item/diamond_wand_leather_grip_in_hand_cast_a"
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:blasting",
+    "ingredient": {
+        "item": "ancestral_arcane:rune",
+        "components": {
+            "minecraft:custom_data": "{ancestral_arcane:{rune:{tier:1,crude:1,empty:1}}}"
+        }
+    },
+    "result": {
+        "id": "ancestral_arcane:rune",
+        "components": {
+            "minecraft:custom_data": "{ancestral_arcane:{rune:{tier:1,crude:0,empty:1}}}"
+        }
+    },
+    "experience": 0.2,
+    "cookingtime": 100
+}

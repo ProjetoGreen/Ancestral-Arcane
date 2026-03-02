@@ -134,34 +134,26 @@ public class ArcaneSpearFocusItem extends Item {
         boolean noCharges = charges <= 0;
 
         if (maxedDirty || noCharges) {
-            lvl -= 1;
-            rune.putInt("lvl", lvl);
             rune.putInt("dirty", 0);
             rune.putInt("charges", Math.max(0, Math.min(charges, lvl * 10)));
 
-            if (lvl <= 0) {
-                int crafted = rune.getInt("crafted");
-                int residues = (crafted == 1) ? 1 : 2;
-                player.drop(
-                        new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.ARCANE_RESIDUE.get(), residues),
-                        false);
-
-                if (crafted == 1) {
-                    ItemStack emptyRune = new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.RUNE.get());
-                    CompoundTag emptyData = new CompoundTag();
-                    emptyData.putString("kind", "rune");
-                    emptyData.putInt("tier", rune.getInt("tier"));
-                    emptyData.putInt("crude", 0);
-                    emptyData.putInt("empty", 1);
-                    emptyData.putInt("crafted", 1);
-                    emptyData.putString("last_spell", rune.getString("spell"));
-                    CustomDataUtil.setAncestralArcaneData(emptyRune, emptyData);
-                    player.drop(emptyRune, false);
+            if (charges <= 0) {
+                lvl--;
+                if (lvl <= 0) {
+                    data.remove("rune");
+                } else {
+                    rune.putInt("lvl", lvl);
+                    rune.putInt("charges", lvl * 10);
+                    data.put("rune", rune);
                 }
-                data.remove("rune");
+            } else {
+                rune.putInt("dirty", 0);
+                rune.putInt("charges", Math.max(0, Math.min(charges, lvl * 10)));
+                data.put("rune", rune);
             }
-            CustomDataUtil.setAncestralArcaneData(stack, data);
         }
+
+        CustomDataUtil.setAncestralArcaneData(stack, data);
     }
 
     private int getSpellCooldown(SpellType spell) {

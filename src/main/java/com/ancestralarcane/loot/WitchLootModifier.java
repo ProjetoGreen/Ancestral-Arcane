@@ -82,8 +82,6 @@ public class WitchLootModifier extends LootModifier {
             CustomDataUtil.setAncestralArcaneData(rune, rd);
             generatedLoot.add(rune);
 
-        } else if (f <= 0.38f) { // 20% residue
-            generatedLoot.add(new ItemStack(AncestralArcaneItems.ARCANE_RESIDUE.get()));
         }
 
         return generatedLoot;

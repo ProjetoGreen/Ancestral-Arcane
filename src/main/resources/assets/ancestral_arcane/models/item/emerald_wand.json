@@ -1,0 +1,87 @@
+{
+    "parent": "minecraft:item/handheld",
+    "textures": {
+        "layer0": "ancestral_arcane:item/emerald_wand"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "ancestral_arcane:in_hand": 1,
+                "ancestral_arcane:casting": 1,
+                "ancestral_arcane:cast_stage": 4
+            },
+            "model": "ancestral_arcane:item/emerald_wand_in_hand_cast_d"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:in_hand": 1,
+                "ancestral_arcane:casting": 1,
+                "ancestral_arcane:cast_stage": 3
+            },
+            "model": "ancestral_arcane:item/emerald_wand_in_hand_cast_c"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:in_hand": 1,
+                "ancestral_arcane:casting": 1,
+                "ancestral_arcane:cast_stage": 2
+            },
+            "model": "ancestral_arcane:item/emerald_wand_in_hand_cast_b"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:in_hand": 1,
+                "ancestral_arcane:casting": 1,
+                "ancestral_arcane:cast_stage": 1
+            },
+            "model": "ancestral_arcane:item/emerald_wand_in_hand_cast_a"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:in_hand": 1,
+                "ancestral_arcane:casting": 1
+            },
+            "model": "ancestral_arcane:item/emerald_wand_in_hand_cast_a"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:in_hand": 1
+            },
+            "model": "ancestral_arcane:item/emerald_wand_in_hand"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:casting": 1,
+                "ancestral_arcane:cast_stage": 4
+            },
+            "model": "ancestral_arcane:item/emerald_wand_cast_d"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:casting": 1,
+                "ancestral_arcane:cast_stage": 3
+            },
+            "model": "ancestral_arcane:item/emerald_wand_cast_c"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:casting": 1,
+                "ancestral_arcane:cast_stage": 2
+            },
+            "model": "ancestral_arcane:item/emerald_wand_cast_b"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:casting": 1,
+                "ancestral_arcane:cast_stage": 1
+            },
+            "model": "ancestral_arcane:item/emerald_wand_cast_a"
+        },
+        {
+            "predicate": {
+                "ancestral_arcane:casting": 1
+            },
+            "model": "ancestral_arcane:item/emerald_wand_cast_a"
+        }
+    ]
+}

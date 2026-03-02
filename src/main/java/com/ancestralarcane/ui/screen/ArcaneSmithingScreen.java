@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ArcaneSmithingScreen extends AbstractContainerScreen<ArcaneSmithingMenu> {
     private static final ResourceLocation TEXTURE = ResourceLocation
-            .withDefaultNamespace("textures/gui/container/generic_54.png"); // placeholder texture
+            .fromNamespaceAndPath(AncestralArcaneMod.MODID, "textures/gui/arcane_table/arcane_gui.png");
 
     public ArcaneSmithingScreen(ArcaneSmithingMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -25,7 +25,8 @@ public class ArcaneSmithingScreen extends AbstractContainerScreen<ArcaneSmithing
     protected void init() {
         super.init();
 
-        // Add buttons
+        // Add buttons corresponding to slots geometry
+        // Might need a re-adjust depending on exact PNG shape, for now basic overlay
         this.addRenderableWidget(Button.builder(Component.literal("Upg Lvl"), b -> send(0))
                 .bounds(this.leftPos + 80, this.topPos + 18, 50, 20).build());
         this.addRenderableWidget(Button.builder(Component.literal("Inscribe"), b -> send(3))
@@ -50,6 +51,7 @@ public class ArcaneSmithingScreen extends AbstractContainerScreen<ArcaneSmithing
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+
         guiGraphics.drawString(this.font, "Level: " + this.menu.getBlockEntity().getTableLevel(), this.leftPos + 8,
                 this.topPos + 8, 4210752, false);
     }

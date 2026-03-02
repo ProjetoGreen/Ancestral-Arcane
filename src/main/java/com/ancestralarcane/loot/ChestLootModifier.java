@@ -78,14 +78,7 @@ public class ChestLootModifier extends LootModifier {
 
     private void generateEndCity(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         float f = context.getRandom().nextFloat();
-        if (f <= 0.08f) {
-            ItemStack sigil = new ItemStack(AncestralArcaneItems.END_SIGIL.get());
-            CompoundTag sd = new CompoundTag();
-            sd.putString("kind", "end_sigil");
-            sd.putInt("uses", 5);
-            CustomDataUtil.setAncestralArcaneData(sigil, sd);
-            generatedLoot.add(sigil);
-        } else if (f <= 0.13f) {
+        if (f <= 0.05f) {
             generatedLoot.add(createGrim(4));
         } else if (f <= 0.16f) {
             ItemStack rune = new ItemStack(AncestralArcaneItems.RUNE.get());
@@ -111,9 +104,6 @@ public class ChestLootModifier extends LootModifier {
             rd.putInt("dirty", 0);
             CustomDataUtil.setAncestralArcaneData(rune, rd);
             generatedLoot.add(rune);
-        } else if (f <= 0.29f) {
-            int count = 1 + context.getRandom().nextInt(3);
-            generatedLoot.add(new ItemStack(AncestralArcaneItems.ARCANE_RESIDUE.get(), count));
         }
     }
 

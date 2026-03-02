@@ -15,7 +15,7 @@ public class AncestralArcaneCreativeTab {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DNTR_TAB = CREATIVE_MODE_TABS
             .register("ancestral_arcane_tab", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup.dntr"))
+                    .title(Component.translatable("itemGroup.ancestral_arcane"))
                     .icon(() -> new ItemStack(AncestralArcaneItems.RUNE.get()))
                     .displayItems((parameters, output) -> {
                         // 1. Empty Rune
@@ -69,10 +69,31 @@ public class AncestralArcaneCreativeTab {
                         com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(uiRune, uiData);
                         output.accept(uiRune);
 
-                        output.accept(AncestralArcaneItems.ARCANE_RESIDUE.get());
+                        // Spells & Base Items
                         output.accept(AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get());
 
-                        // Spells
+                        // Render Tier 1-5 Runes (Crude and Normal)
+                        for (int t = 1; t <= 5; t++) {
+                            ItemStack crude = new ItemStack(AncestralArcaneItems.RUNE.get());
+                            net.minecraft.nbt.CompoundTag cDt = new net.minecraft.nbt.CompoundTag();
+                            net.minecraft.nbt.CompoundTag cBody = new net.minecraft.nbt.CompoundTag();
+                            cBody.putInt("tier", t);
+                            cBody.putInt("crude", 1);
+                            cBody.putInt("empty", 1);
+                            cDt.put("rune", cBody);
+                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(crude, cDt);
+                            output.accept(crude);
+
+                            ItemStack cons = new ItemStack(AncestralArcaneItems.RUNE.get());
+                            net.minecraft.nbt.CompoundTag rDt = new net.minecraft.nbt.CompoundTag();
+                            net.minecraft.nbt.CompoundTag rBody = new net.minecraft.nbt.CompoundTag();
+                            rBody.putInt("tier", t);
+                            rBody.putInt("crude", 0);
+                            rBody.putInt("empty", 1);
+                            rDt.put("rune", rBody);
+                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(cons, rDt);
+                            output.accept(cons);
+                        }
                         output.accept(AncestralArcaneItems.SCROLL_FIRE.get());
                         output.accept(AncestralArcaneItems.SCROLL_FIRE_FRIEND.get());
                         output.accept(AncestralArcaneItems.SCROLL_STORM.get());
@@ -96,8 +117,8 @@ public class AncestralArcaneCreativeTab {
                         output.accept(AncestralArcaneItems.GRIMOIRE_T3.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T4.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T5.get());
+
                         output.accept(AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get());
-                        output.accept(AncestralArcaneItems.END_SIGIL.get());
                         net.minecraft.world.item.Item[] wands = {
                                 AncestralArcaneItems.FLINT_WAND.get(),
                                 AncestralArcaneItems.COPPER_WAND.get(),
@@ -105,15 +126,17 @@ public class AncestralArcaneCreativeTab {
                                 AncestralArcaneItems.GOLDEN_WAND.get(),
                                 AncestralArcaneItems.DIAMOND_WAND.get(),
                                 AncestralArcaneItems.EMERALD_WAND.get(),
-                                AncestralArcaneItems.NETHERITE_WAND.get()
+                                AncestralArcaneItems.NETHERITE_WAND.get(),
+                                AncestralArcaneItems.FLINT_WAND_LEATHER_GRIP.get(),
+                                AncestralArcaneItems.COPPER_WAND_LEATHER_GRIP.get(),
+                                AncestralArcaneItems.IRON_WAND_LEATHER_GRIP.get(),
+                                AncestralArcaneItems.GOLDEN_WAND_LEATHER_GRIP.get(),
+                                AncestralArcaneItems.DIAMOND_WAND_LEATHER_GRIP.get(),
+                                AncestralArcaneItems.EMERALD_WAND_LEATHER_GRIP.get(),
+                                AncestralArcaneItems.NETHERITE_WAND_LEATHER_GRIP.get()
                         };
                         for (net.minecraft.world.item.Item wand : wands) {
                             output.accept(wand);
-                            ItemStack leatherWand = new ItemStack(wand);
-                            net.minecraft.nbt.CompoundTag lwData = new net.minecraft.nbt.CompoundTag();
-                            lwData.putString("grip", "leather");
-                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(leatherWand, lwData);
-                            output.accept(leatherWand);
                         }
                         output.accept(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get());
                         output.accept(AncestralArcaneItems.HOME_ANCHOR.get());

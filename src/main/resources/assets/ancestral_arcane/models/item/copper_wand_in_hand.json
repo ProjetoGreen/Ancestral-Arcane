@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:item/handheld",
+    "textures": {
+        "layer0": "ancestral_arcane:item/copper_wand_in_hand"
+    }
+}

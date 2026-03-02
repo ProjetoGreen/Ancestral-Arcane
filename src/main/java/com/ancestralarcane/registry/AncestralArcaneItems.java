@@ -11,10 +11,7 @@ public class AncestralArcaneItems {
         public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(AncestralArcaneMod.MODID);
 
         public static final DeferredItem<Item> RUNE = ITEMS.register("rune",
-                        () -> new Item(new Item.Properties().stacksTo(1)));
-        public static final DeferredItem<Item> ARCANE_RESIDUE = ITEMS.register("arcane_residue",
-                        () -> new Item(new Item.Properties()));
-
+                        () -> new com.ancestralarcane.item.RuneItem(new Item.Properties().stacksTo(1)));
         public static final DeferredItem<Item> FRAGMENT_OF_ALL_KNOWLEDGE = ITEMS.register("fragment_of_all_knowledge",
                         () -> new Item(new Item.Properties()));
 
@@ -68,8 +65,6 @@ public class AncestralArcaneItems {
 
         public static final DeferredItem<Item> FORGOTTEN_MAGICBOOK = ITEMS.register("forgotten_magicbook",
                         () -> new Item(new Item.Properties().stacksTo(1)));
-        public static final DeferredItem<Item> END_SIGIL = ITEMS.register("end_sigil",
-                        () -> new Item(new Item.Properties().stacksTo(1)));
 
         public static final DeferredItem<ArcaneSpearFocusItem> COPPER_WAND = ITEMS.register("copper_wand",
                         () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
@@ -84,6 +79,28 @@ public class AncestralArcaneItems {
         public static final DeferredItem<ArcaneSpearFocusItem> IRON_WAND = ITEMS.register("iron_wand",
                         () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
         public static final DeferredItem<ArcaneSpearFocusItem> NETHERITE_WAND = ITEMS.register("netherite_wand",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+
+        public static final DeferredItem<ArcaneSpearFocusItem> COPPER_WAND_LEATHER_GRIP = ITEMS.register(
+                        "copper_wand_leather_grip",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> DIAMOND_WAND_LEATHER_GRIP = ITEMS.register(
+                        "diamond_wand_leather_grip",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> EMERALD_WAND_LEATHER_GRIP = ITEMS.register(
+                        "emerald_wand_leather_grip",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> FLINT_WAND_LEATHER_GRIP = ITEMS.register(
+                        "flint_wand_leather_grip",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> GOLDEN_WAND_LEATHER_GRIP = ITEMS.register(
+                        "golden_wand_leather_grip",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> IRON_WAND_LEATHER_GRIP = ITEMS.register(
+                        "iron_wand_leather_grip",
+                        () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ArcaneSpearFocusItem> NETHERITE_WAND_LEATHER_GRIP = ITEMS.register(
+                        "netherite_wand_leather_grip",
                         () -> new ArcaneSpearFocusItem(new Item.Properties().stacksTo(1)));
 
         // BlockItems

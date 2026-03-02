@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "ancestral_arcane:item/rune_upgraded"
+    }
+}

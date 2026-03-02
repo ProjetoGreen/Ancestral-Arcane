@@ -45,15 +45,54 @@ public class AncestralArcaneMod {
                     AncestralArcaneItems.GOLDEN_WAND.get(),
                     AncestralArcaneItems.DIAMOND_WAND.get(),
                     AncestralArcaneItems.EMERALD_WAND.get(),
-                    AncestralArcaneItems.NETHERITE_WAND.get()
+                    AncestralArcaneItems.NETHERITE_WAND.get(),
+                    AncestralArcaneItems.FLINT_WAND_LEATHER_GRIP.get(),
+                    AncestralArcaneItems.COPPER_WAND_LEATHER_GRIP.get(),
+                    AncestralArcaneItems.IRON_WAND_LEATHER_GRIP.get(),
+                    AncestralArcaneItems.GOLDEN_WAND_LEATHER_GRIP.get(),
+                    AncestralArcaneItems.DIAMOND_WAND_LEATHER_GRIP.get(),
+                    AncestralArcaneItems.EMERALD_WAND_LEATHER_GRIP.get(),
+                    AncestralArcaneItems.NETHERITE_WAND_LEATHER_GRIP.get()
             };
+
             for (net.minecraft.world.item.Item wand : wands) {
+                // Return 1 if using in main or off-hand
                 net.minecraft.client.renderer.item.ItemProperties.register(wand,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "has_leather"),
+                        ResourceLocation.fromNamespaceAndPath(MODID, "in_hand"),
                         (stack, level, entity, seed) -> {
-                            net.minecraft.nbt.CompoundTag data = com.ancestralarcane.data.CustomDataUtil
-                                    .getAncestralArcaneData(stack);
-                            return data.getString("grip").equals("leather") ? 1.0F : 0.0F;
+                            if (entity == null)
+                                return 0.0F;
+                            return (entity.getMainHandItem() == stack || entity.getOffhandItem() == stack) ? 1.0F
+                                    : 0.0F;
+                        });
+
+                // Return 1 if currently casting (using item)
+                net.minecraft.client.renderer.item.ItemProperties.register(wand,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "casting"),
+                        (stack, level, entity, seed) -> {
+                            return (entity != null && entity.isUsingItem() && entity.getUseItem() == stack) ? 1.0F
+                                    : 0.0F;
+                        });
+
+                // Return 1-4 depending on the charge progress
+                net.minecraft.client.renderer.item.ItemProperties.register(wand,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "cast_stage"),
+                        (stack, level, entity, seed) -> {
+                            if (entity == null || !entity.isUsingItem() || entity.getUseItem() != stack)
+                                return 0.0F;
+
+                            int useDuration = stack.getUseDuration(entity) - entity.getUseItemRemainingTicks();
+                            float progress = (float) useDuration / 40.0F; // Approx max charge 40 ticks
+
+                            if (progress >= 1.0F)
+                                return 4.0F; // Fully Charged
+                            if (progress >= 0.75F)
+                                return 3.0F; // 75% Charged
+                            if (progress >= 0.50F)
+                                return 2.0F; // 50% Charged
+                            if (progress >= 0.25F)
+                                return 1.0F; // 25% Charged
+                            return 0.0F; // Just started
                         });
             }
 
