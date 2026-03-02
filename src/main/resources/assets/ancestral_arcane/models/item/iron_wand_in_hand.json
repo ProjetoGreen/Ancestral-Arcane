@@ -1,6 +1,0 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "ancestral_arcane:item/iron_wand_in_hand"
-  }
-}
