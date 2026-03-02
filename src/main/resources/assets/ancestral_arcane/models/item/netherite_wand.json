@@ -1,27 +1,31 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "ancestral_arcane:item/netherite_wand"
+  "loader": "neoforge:separate_transforms",
+  "base": {
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "ancestral_arcane:item/netherite_wand"
+    },
+    "overrides": [
+      {
+        "predicate": {
+          "ancestral_arcane:has_leather": 1.0
+        },
+        "model": "ancestral_arcane:item/netherite_wand_leather_grip"
+      }
+    ]
   },
-  "overrides": [
-    {
-      "predicate": {
-        "ancestral_arcane:casting": 1.0
-      },
-      "model": "ancestral_arcane:item/netherite_wand_in_hand"
+  "perspectives": {
+    "firstperson_righthand": {
+      "parent": "ancestral_arcane:item/netherite_wand_in_hand"
     },
-    {
-      "predicate": {
-        "ancestral_arcane:has_leather": 1.0
-      },
-      "model": "ancestral_arcane:item/netherite_wand_leather_grip"
+    "firstperson_lefthand": {
+      "parent": "ancestral_arcane:item/netherite_wand_in_hand"
     },
-    {
-      "predicate": {
-        "ancestral_arcane:has_leather": 1.0,
-        "ancestral_arcane:casting": 1.0
-      },
-      "model": "ancestral_arcane:item/netherite_wand_leather_grip_in_hand"
+    "thirdperson_righthand": {
+      "parent": "ancestral_arcane:item/netherite_wand_in_hand"
+    },
+    "thirdperson_lefthand": {
+      "parent": "ancestral_arcane:item/netherite_wand_in_hand"
     }
-  ]
+  }
 }

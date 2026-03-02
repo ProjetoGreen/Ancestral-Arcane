@@ -1,6 +1,23 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "ancestral_arcane:item/emerald_wand_leather_grip"
+  "loader": "neoforge:separate_transforms",
+  "base": {
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "ancestral_arcane:item/emerald_wand_leather_grip"
+    }
+  },
+  "perspectives": {
+    "firstperson_righthand": {
+      "parent": "ancestral_arcane:item/emerald_wand_leather_grip_in_hand"
+    },
+    "firstperson_lefthand": {
+      "parent": "ancestral_arcane:item/emerald_wand_leather_grip_in_hand"
+    },
+    "thirdperson_righthand": {
+      "parent": "ancestral_arcane:item/emerald_wand_leather_grip_in_hand"
+    },
+    "thirdperson_lefthand": {
+      "parent": "ancestral_arcane:item/emerald_wand_leather_grip_in_hand"
+    }
   }
 }

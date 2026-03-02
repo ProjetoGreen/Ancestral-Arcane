@@ -49,11 +49,6 @@ public class AncestralArcaneMod {
             };
             for (net.minecraft.world.item.Item wand : wands) {
                 net.minecraft.client.renderer.item.ItemProperties.register(wand,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "casting"),
-                        (stack, level, entity,
-                                seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F
-                                        : 0.0F);
-                net.minecraft.client.renderer.item.ItemProperties.register(wand,
                         ResourceLocation.fromNamespaceAndPath(MODID, "has_leather"),
                         (stack, level, entity, seed) -> {
                             net.minecraft.nbt.CompoundTag data = com.ancestralarcane.data.CustomDataUtil

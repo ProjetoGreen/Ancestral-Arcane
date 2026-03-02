@@ -85,13 +85,23 @@ public class AncestralArcaneCreativeTab {
                         output.accept(AncestralArcaneItems.GRIMOIRE_T4.get());
                         output.accept(AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get());
                         output.accept(AncestralArcaneItems.END_SIGIL.get());
-                        output.accept(AncestralArcaneItems.FLINT_WAND.get());
-                        output.accept(AncestralArcaneItems.COPPER_WAND.get());
-                        output.accept(AncestralArcaneItems.IRON_WAND.get());
-                        output.accept(AncestralArcaneItems.GOLDEN_WAND.get());
-                        output.accept(AncestralArcaneItems.DIAMOND_WAND.get());
-                        output.accept(AncestralArcaneItems.EMERALD_WAND.get());
-                        output.accept(AncestralArcaneItems.NETHERITE_WAND.get());
+                        net.minecraft.world.item.Item[] wands = {
+                                AncestralArcaneItems.FLINT_WAND.get(),
+                                AncestralArcaneItems.COPPER_WAND.get(),
+                                AncestralArcaneItems.IRON_WAND.get(),
+                                AncestralArcaneItems.GOLDEN_WAND.get(),
+                                AncestralArcaneItems.DIAMOND_WAND.get(),
+                                AncestralArcaneItems.EMERALD_WAND.get(),
+                                AncestralArcaneItems.NETHERITE_WAND.get()
+                        };
+                        for (net.minecraft.world.item.Item wand : wands) {
+                            output.accept(wand);
+                            ItemStack leatherWand = new ItemStack(wand);
+                            net.minecraft.nbt.CompoundTag lwData = new net.minecraft.nbt.CompoundTag();
+                            lwData.putString("grip", "leather");
+                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(leatherWand, lwData);
+                            output.accept(leatherWand);
+                        }
                         output.accept(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get());
                         output.accept(AncestralArcaneItems.HOME_ANCHOR.get());
                     }).build());
