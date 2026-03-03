@@ -51,9 +51,9 @@ public class AncestralArcaneGiveTestCommand {
                     player.getInventory().add(new ItemStack(AncestralArcaneItems.SCROLL_STORM.get(), 10));
                     player.getInventory().add(new ItemStack(AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get(), 10));
 
-                    ItemStack spear = new ItemStack(AncestralArcaneItems.FLINT_WAND.get());
+                    ItemStack wand = new ItemStack(AncestralArcaneItems.FLINT_WAND.get());
                     CompoundTag sd = new CompoundTag();
-                    sd.putString("kind", "focus_spear");
+                    sd.putString("kind", "wand");
                     sd.putString("catalyst", "iron");
                     sd.putInt("cast_time_base", 5);
 
@@ -69,8 +69,8 @@ public class AncestralArcaneGiveTestCommand {
                     actRune.putInt("dirty", 0);
 
                     sd.put("rune", actRune);
-                    CustomDataUtil.setAncestralArcaneData(spear, sd);
-                    player.getInventory().add(spear);
+                    CustomDataUtil.setAncestralArcaneData(wand, sd);
+                    player.getInventory().add(wand);
 
                     player.getInventory().add(new ItemStack(Items.GLOWSTONE_DUST, 32));
                     player.getInventory().add(new ItemStack(Items.ECHO_SHARD, 8));

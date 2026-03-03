@@ -1,15 +1,12 @@
 package com.ancestralarcane.ui.screen;
 
 import com.ancestralarcane.AncestralArcaneMod;
-import com.ancestralarcane.network.TableActionC2SPacket;
 import com.ancestralarcane.ui.menu.ArcaneSmithingMenu;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ArcaneSmithingScreen extends AbstractContainerScreen<ArcaneSmithingMenu> {
     private static final ResourceLocation TEXTURE = ResourceLocation
@@ -24,21 +21,6 @@ public class ArcaneSmithingScreen extends AbstractContainerScreen<ArcaneSmithing
     @Override
     protected void init() {
         super.init();
-
-        // Add buttons corresponding to slots geometry
-        // Might need a re-adjust depending on exact PNG shape, for now basic overlay
-        this.addRenderableWidget(Button.builder(Component.literal("Upg Lvl"), b -> send(0))
-                .bounds(this.leftPos + 80, this.topPos + 18, 50, 20).build());
-        this.addRenderableWidget(Button.builder(Component.literal("Inscribe"), b -> send(3))
-                .bounds(this.leftPos + 80, this.topPos + 40, 50, 20).build());
-        this.addRenderableWidget(Button.builder(Component.literal("Bind"), b -> send(5))
-                .bounds(this.leftPos + 80, this.topPos + 62, 40, 20).build());
-        this.addRenderableWidget(Button.builder(Component.literal("Unbind"), b -> send(6))
-                .bounds(this.leftPos + 125, this.topPos + 62, 45, 20).build());
-    }
-
-    private void send(int action) {
-        PacketDistributor.sendToServer(new TableActionC2SPacket(action));
     }
 
     @Override
@@ -52,7 +34,7 @@ public class ArcaneSmithingScreen extends AbstractContainerScreen<ArcaneSmithing
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
-        guiGraphics.drawString(this.font, "Level: " + this.menu.getBlockEntity().getTableLevel(), this.leftPos + 8,
+        guiGraphics.drawString(this.font, "Level: " + this.menu.getBlockEntity().getTableLevel(), this.leftPos + 80,
                 this.topPos + 8, 4210752, false);
     }
 }

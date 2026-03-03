@@ -11,8 +11,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class ArcaneSmithingMenu extends AbstractContainerMenu {
@@ -33,16 +35,154 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
         this.blockEntity = entity;
 
         // Table Slots
-        this.addSlot(new SlotItemHandler(entity.inventory, 0, 20, 20)); // RUNE
-        this.addSlot(new SlotItemHandler(entity.inventory, 1, 40, 20)); // TOOL
-        this.addSlot(new SlotItemHandler(entity.inventory, 2, 60, 20)); // INK
-        this.addSlot(new SlotItemHandler(entity.inventory, 3, 20, 40)); // MAT
-        this.addSlot(new SlotItemHandler(entity.inventory, 4, 40, 40)); // MAT2
-        this.addSlot(new SlotItemHandler(entity.inventory, 5, 20, 60)); // SPEAR
-        this.addSlot(new SlotItemHandler(entity.inventory, 6, 120, 30)); // OUT1
-        this.addSlot(new SlotItemHandler(entity.inventory, 7, 120, 50)); // OUT2
+        this.addSlot(new SlotItemHandler(entity.inventory, 0, 8, 48) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                ArcaneSmithingMenu.this.createResult();
+            }
+        }); // Base/Input 1
+        this.addSlot(new SlotItemHandler(entity.inventory, 1, 26, 48) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                ArcaneSmithingMenu.this.createResult();
+            }
+        }); // Addition/Input 2
+        this.addSlot(new SlotItemHandler(entity.inventory, 2, 44, 48) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                ArcaneSmithingMenu.this.createResult();
+            }
+        }); // Material/Input 3
 
-        // Player Inventory
+        this.addSlot(new SlotItemHandler(entity.inventory, 3, 98, 48) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return false;
+            }
+
+            @Override
+            public void onTake(Player player, ItemStack stack) {
+                // Consume inputs based on the operation performed
+                ItemStack input1 = blockEntity.inventory.getStackInSlot(0);
+                ItemStack input2 = blockEntity.inventory.getStackInSlot(1);
+                ItemStack input3 = blockEntity.inventory.getStackInSlot(2);
+                int lvl = blockEntity.getTableLevel();
+
+                // 1. Upgrade Table
+                if (lvl < 5 && input1.isEmpty() && stack.is(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get())) {
+                    if (lvl == 1 && input2.is(Items.AMETHYST_SHARD) && input3.is(Items.COPPER_INGOT)) {
+                        input2.shrink(2);
+                        input3.shrink(4);
+                        blockEntity.setTableLevel(2);
+                        stack.shrink(1);
+                    } else if (lvl == 2 && input2.is(Items.ECHO_SHARD) && input3.is(Items.IRON_INGOT)) {
+                        input2.shrink(2);
+                        input3.shrink(4);
+                        blockEntity.setTableLevel(3);
+                        stack.shrink(1);
+                    } else if (lvl == 3 && input2.is(Items.CHORUS_FLOWER) && input3.is(Items.GOLD_INGOT)) {
+                        input2.shrink(1);
+                        input3.shrink(4);
+                        blockEntity.setTableLevel(4);
+                        stack.shrink(1);
+                    } else if (lvl == 4 && input2.is(Items.NETHERITE_SCRAP) && input3.is(Items.ECHO_SHARD)) {
+                        input2.shrink(2);
+                        input3.shrink(2);
+                        blockEntity.setTableLevel(5);
+                        stack.shrink(1);
+                    }
+                }
+                // 2. Inscribe Scroll -> Grimoire
+                boolean isScrollToGrimoire = false;
+                ItemStack grimoireSlot = ItemStack.EMPTY;
+                ItemStack scrollSlot = ItemStack.EMPTY;
+                if (input3.isEmpty()) {
+                    if (isGrimoire(input1) && isScroll(input2)) {
+                        isScrollToGrimoire = true;
+                        grimoireSlot = input1;
+                        scrollSlot = input2;
+                    } else if (isGrimoire(input2) && isScroll(input1)) {
+                        isScrollToGrimoire = true;
+                        grimoireSlot = input2;
+                        scrollSlot = input1;
+                    }
+                }
+
+                if (isScrollToGrimoire) {
+                    grimoireSlot.shrink(1);
+                    scrollSlot.shrink(1);
+                }
+                // 3. Inscribe Grimoire -> Rune
+                boolean isGrimoireToRune = false;
+                ItemStack runeSlot = ItemStack.EMPTY;
+                ItemStack grimoireInputSlot = ItemStack.EMPTY;
+                if (input3.isEmpty()) {
+                    if (input1.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(input2)) {
+                        isGrimoireToRune = true;
+                        runeSlot = input1;
+                        grimoireInputSlot = input2;
+                    } else if (input2.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(input1)) {
+                        isGrimoireToRune = true;
+                        runeSlot = input2;
+                        grimoireInputSlot = input1;
+                    }
+                }
+
+                if (isGrimoireToRune) {
+                    CompoundTag gd = CustomDataUtil.getAncestralArcaneData(grimoireInputSlot);
+                    CompoundTag gcomp = gd.contains("grimoire") ? gd.getCompound("grimoire") : new CompoundTag();
+                    int uses = gcomp.contains("uses") ? gcomp.getInt("uses") : 2;
+                    uses--;
+                    if (uses <= 0) {
+                        grimoireInputSlot.shrink(1);
+                    } else {
+                        gcomp.putInt("uses", uses);
+                        if (!gcomp.contains("tier"))
+                            gcomp.putInt("tier", 1);
+                        if (!gcomp.contains("spell") && grimoireInputSlot
+                                .getItem() instanceof com.ancestralarcane.item.GrimoireSpellItem gsi) {
+                            gcomp.putString("spell", gsi.getSpellName());
+                        }
+                        gd.put("grimoire", gcomp);
+                        CustomDataUtil.setAncestralArcaneData(grimoireInputSlot, gd);
+                    }
+                    runeSlot.shrink(1);
+                }
+                // 4. Upgrade Base Rune
+                else if (input1.is(AncestralArcaneItems.RUNE.get()) && input2.isEmpty() && !input3.isEmpty()) {
+                    input1.shrink(1);
+                    input3.shrink(1);
+                }
+                // 5. Binding (Rune -> Wand)
+                else if (input1.getItem() instanceof com.ancestralarcane.item.WandItem
+                        && input2.is(AncestralArcaneItems.RUNE.get()) && input3.isEmpty()) {
+                    input1.shrink(1);
+                    input2.shrink(1);
+                }
+                // 6. Unbinding (Wand -> Rune)
+                else if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.isEmpty()
+                        && input3.isEmpty()) {
+                    CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
+                    if (wandData.contains("rune")) {
+                        CompoundTag runeDataBody = wandData.getCompound("rune").copy();
+                        input1.shrink(1); // consume the input wand
+                        // Drop the unbound rune to the player
+                        ItemStack outRune = new ItemStack(AncestralArcaneItems.RUNE.get());
+                        CompoundTag rd = new CompoundTag();
+                        rd.put("rune", runeDataBody);
+                        CustomDataUtil.setAncestralArcaneData(outRune, rd);
+                        if (!player.getInventory().add(outRune)) {
+                            player.drop(outRune, false);
+                        }
+                    }
+                }
+
+                super.onTake(player, stack);
+            }
+        }); // Output
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
                 this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
@@ -59,307 +199,285 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        return ItemStack.EMPTY;
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack stackInSlot = slot.getItem();
+            itemstack = stackInSlot.copy();
+
+            if (index == 3) {
+                if (!this.moveItemStackTo(stackInSlot, 4, 40, true)) {
+                    return ItemStack.EMPTY;
+                }
+                slot.onQuickCraft(stackInSlot, itemstack);
+            } else if (index != 0 && index != 1 && index != 2) {
+                if (!this.moveItemStackTo(stackInSlot, 0, 3, false)) {
+                    if (index >= 4 && index < 31) {
+                        if (!this.moveItemStackTo(stackInSlot, 31, 40, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    } else if (index >= 31 && index < 40 && !this.moveItemStackTo(stackInSlot, 4, 31, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            } else if (!this.moveItemStackTo(stackInSlot, 4, 40, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (stackInSlot.isEmpty()) {
+                slot.setByPlayer(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+
+            if (stackInSlot.getCount() == itemstack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(player, stackInSlot);
+        }
+
+        return itemstack;
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        return stillValid(
+                net.minecraft.world.inventory.ContainerLevelAccess.create(blockEntity.getLevel(),
+                        blockEntity.getBlockPos()),
+                player, com.ancestralarcane.registry.AncestralArcaneBlocks.ARCANE_SMITHING_TABLE.get());
     }
 
-    public void handleAction(int actionId) {
-        if (!blockEntity.getLevel().isClientSide) {
-            switch (actionId) {
-                case 0 -> tryUpgradeLevel();
-                case 1 -> tryApplyUpgrade();
-                case 2 -> tryInscribeScroll();
-                case 3 -> tryInscribeGrimoire();
-                case 4 -> tryInscribeLvl5();
-                case 5 -> tryBind();
-                case 6 -> tryUnbind();
-                case 7 -> tryRecharge();
-                case 8 -> tryCloneGrimoire();
-            }
-        }
+    @Override
+    public void slotsChanged(net.minecraft.world.Container inventory) {
+        super.slotsChanged(inventory);
+        this.createResult();
     }
 
-    private void tryUpgradeLevel() {
-        int lvl = blockEntity.getTableLevel();
-        if (lvl >= 5)
+    private void createResult() {
+        if (blockEntity.getLevel().isClientSide)
             return;
 
-        ItemStack mat1 = blockEntity.inventory.getStackInSlot(3);
-        ItemStack mat2 = blockEntity.inventory.getStackInSlot(4);
+        ItemStack input1 = blockEntity.inventory.getStackInSlot(0);
+        ItemStack input2 = blockEntity.inventory.getStackInSlot(1);
+        ItemStack input3 = blockEntity.inventory.getStackInSlot(2);
 
-        boolean success = false;
-        if (lvl == 1 && mat1.is(Items.AMETHYST_SHARD) && mat1.getCount() >= 2 && mat2.is(Items.COPPER_INGOT)
-                && mat2.getCount() >= 4) {
-            mat1.shrink(2);
-            mat2.shrink(4);
-            success = true;
-        } else if (lvl == 2 && mat1.is(Items.ECHO_SHARD) && mat1.getCount() >= 2 && mat2.is(Items.IRON_INGOT)
-                && mat2.getCount() >= 4) {
-            mat1.shrink(2);
-            mat2.shrink(4);
-            success = true;
-        } else if (lvl == 3 && mat1.is(Items.CHORUS_FLOWER) && mat1.getCount() >= 1 && mat2.is(Items.GOLD_INGOT)
-                && mat2.getCount() >= 4 /*
-                                         * plus diamond, but prompt says diamond x2. let's simplify for slots to only
-                                         * use 2 materials.
-                                         */) {
-            // Simplified L3->L4: chorus flower and gold ingot
-            mat1.shrink(1);
-            mat2.shrink(4);
-            success = true;
-        } else if (lvl == 4 && mat1.is(Items.NETHERITE_SCRAP) && mat1.getCount() >= 2 && mat2.is(Items.ECHO_SHARD)
-                && mat2.getCount() >= 2) {
-            mat1.shrink(2);
-            mat2.shrink(2);
-            success = true;
+        ItemStack result = ItemStack.EMPTY;
+
+        // 1. Upgrade Table Level
+        int lvl = blockEntity.getTableLevel();
+        if (lvl < 5 && input1.isEmpty()) {
+            if (lvl == 1 && input2.is(Items.AMETHYST_SHARD) && input2.getCount() >= 2 && input3.is(Items.COPPER_INGOT)
+                    && input3.getCount() >= 4) {
+                // To avoid outputting a block, wait for an action?
+                // Wait, table upgrading shouldn't have an output item. Let's make an item that
+                // acts as an "Upgrade token" or just auto-upgrade?
+                // Auto-upgrade on insert is dangerous. Let's make the output the Table itself
+                // to be clicked to confirm.
+                ItemStack token = new ItemStack(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get());
+                token.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME,
+                        Component.literal("Click to Upgrade Table to Lvl " + (lvl + 1)));
+                result = token;
+            } else if (lvl == 2 && input2.is(Items.ECHO_SHARD) && input2.getCount() >= 2 && input3.is(Items.IRON_INGOT)
+                    && input3.getCount() >= 4) {
+                ItemStack token = new ItemStack(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get());
+                token.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME,
+                        Component.literal("Click to Upgrade Table to Lvl " + (lvl + 1)));
+                result = token;
+            } else if (lvl == 3 && input2.is(Items.CHORUS_FLOWER) && input2.getCount() >= 1
+                    && input3.is(Items.GOLD_INGOT) && input3.getCount() >= 4) {
+                ItemStack token = new ItemStack(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get());
+                token.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME,
+                        Component.literal("Click to Upgrade Table to Lvl " + (lvl + 1)));
+                result = token;
+            } else if (lvl == 4 && input2.is(Items.NETHERITE_SCRAP) && input2.getCount() >= 2
+                    && input3.is(Items.ECHO_SHARD) && input3.getCount() >= 2) {
+                ItemStack token = new ItemStack(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get());
+                token.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME,
+                        Component.literal("Click to Upgrade Table to Lvl " + (lvl + 1)));
+                result = token;
+            }
         }
 
-        if (success) {
-            blockEntity.setTableLevel(lvl + 1);
+        // 2. Inscribing (Scroll -> Grimoire)
+        boolean isScrollToGrimoire = false;
+        ItemStack grimoireSlot = ItemStack.EMPTY;
+        ItemStack scrollSlot = ItemStack.EMPTY;
+        if (input3.isEmpty()) {
+            if (isGrimoire(input1) && isScroll(input2)) {
+                isScrollToGrimoire = true;
+                grimoireSlot = input1;
+                scrollSlot = input2;
+            } else if (isGrimoire(input2) && isScroll(input1)) {
+                isScrollToGrimoire = true;
+                grimoireSlot = input2;
+                scrollSlot = input1;
+            }
         }
-    }
 
-    // ... Implement the rest similarly as defined in rules ...
-    // E) Bind
-    private void tryBind() {
-        ItemStack spear = blockEntity.inventory.getStackInSlot(5);
-        ItemStack rune = blockEntity.inventory.getStackInSlot(0);
-        if (spear.getItem() instanceof com.ancestralarcane.item.ArcaneSpearFocusItem
-                && rune.is(AncestralArcaneItems.RUNE.get())) {
-            CompoundTag spearData = CustomDataUtil.getAncestralArcaneData(spear);
-            if (!spearData.contains("rune")) {
-                CompoundTag runeData = CustomDataUtil.getAncestralArcaneData(rune);
-                if (runeData.contains("rune") && runeData.getCompound("rune").getInt("lvl") > 0) {
-                    spearData.put("rune", runeData.getCompound("rune").copy());
-                    CustomDataUtil.setAncestralArcaneData(spear, spearData);
+        if (isScrollToGrimoire) {
+            CompoundTag dt = CustomDataUtil.getAncestralArcaneData(grimoireSlot);
+            CompoundTag grim = dt.contains("grimoire") ? dt.getCompound("grimoire").copy() : new CompoundTag();
+            if (!grim.contains("spell") || grim.getString("spell").isEmpty()) {
+                String spell = determineSpellFromScroll(scrollSlot);
+                if (spell != null) {
+                    int outputTier = getGrimoireTier(grimoireSlot);
+                    grim.putString("spell", spell);
+                    grim.putInt("tier", outputTier);
+                    grim.putInt("uses", outputTier * 2);
 
-                    ItemStack output = spear.copy();
-                    blockEntity.inventory.setStackInSlot(6, output);
-                    blockEntity.inventory.setStackInSlot(5, ItemStack.EMPTY);
-                    blockEntity.inventory.getStackInSlot(0).shrink(1);
+                    dt.put("grimoire", grim);
+
+                    Item targetGrimoire = getGrimoireItemForSpell(spell);
+                    ItemStack out = new ItemStack(targetGrimoire, 1);
+                    CustomDataUtil.setAncestralArcaneData(out, dt);
+                    result = out;
                 }
             }
         }
-    }
 
-    private void tryUnbind() {
-        ItemStack spear = blockEntity.inventory.getStackInSlot(5);
-        if (spear.getItem() instanceof com.ancestralarcane.item.ArcaneSpearFocusItem) {
-            CompoundTag spearData = CustomDataUtil.getAncestralArcaneData(spear);
-            if (spearData.contains("rune")) {
-                CompoundTag runeDataBody = spearData.getCompound("rune").copy();
-                spearData.remove("rune");
-                CustomDataUtil.setAncestralArcaneData(spear, spearData);
-
-                ItemStack outSpear = spear.copy();
-
-                ItemStack outRune = new ItemStack(AncestralArcaneItems.RUNE.get());
-                CompoundTag rd = new CompoundTag();
-                rd.put("rune", runeDataBody);
-                CustomDataUtil.setAncestralArcaneData(outRune, rd);
-
-                blockEntity.inventory.setStackInSlot(6, outSpear);
-                blockEntity.inventory.setStackInSlot(7, outRune);
-                blockEntity.inventory.setStackInSlot(5, ItemStack.EMPTY);
+        // 3. Inscribing (Grimoire -> Rune)
+        boolean isGrimoireToRune = false;
+        ItemStack runeSlot = ItemStack.EMPTY;
+        ItemStack grimoireInputSlot = ItemStack.EMPTY;
+        if (input3.isEmpty()) {
+            if (input1.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(input2)) {
+                isGrimoireToRune = true;
+                runeSlot = input1;
+                grimoireInputSlot = input2;
+            } else if (input2.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(input1)) {
+                isGrimoireToRune = true;
+                runeSlot = input2;
+                grimoireInputSlot = input1;
             }
         }
-    }
 
-    private void tryRecharge() {
-        if (blockEntity.getTableLevel() < 5)
-            return;
-        // Either rune in 0 or spear in 5
-        ItemStack target = blockEntity.inventory.getStackInSlot(0);
-        if (target.isEmpty())
-            target = blockEntity.inventory.getStackInSlot(5);
-        if (target.isEmpty())
-            return;
+        if (isGrimoireToRune) {
+            CompoundTag runedt = CustomDataUtil.getAncestralArcaneData(runeSlot);
+            CompoundTag grimdt = CustomDataUtil.getAncestralArcaneData(grimoireInputSlot);
+            if (runedt.contains("rune")) {
+                CompoundTag rune = runedt.getCompound("rune").copy();
+                CompoundTag grim = grimdt.contains("grimoire") ? grimdt.getCompound("grimoire") : new CompoundTag();
+                if (rune.getInt("crude") == 0 && rune.getInt("empty") == 1) {
+                    String spell = grim.getString("spell");
+                    if (spell.isEmpty()
+                            && grimoireInputSlot.getItem() instanceof com.ancestralarcane.item.GrimoireSpellItem gsi) {
+                        spell = gsi.getSpellName();
+                    }
+                    int toolTier = getGrimoireTier(grimoireInputSlot);
+                    if (toolTier == 0)
+                        toolTier = 1;
 
-        CompoundTag data = CustomDataUtil.getAncestralArcaneData(target);
-        CompoundTag rune = data.contains("rune") ? data.getCompound("rune") : null;
-        if (rune == null)
-            return;
-
-        int lvl = rune.getInt("lvl");
-        if (lvl <= 0)
-            return;
-
-        ItemStack mat1 = blockEntity.inventory.getStackInSlot(3);
-        ItemStack mat2 = blockEntity.inventory.getStackInSlot(4);
-
-        if (mat1.is(Items.GLOWSTONE_DUST) && mat1.getCount() >= lvl && mat2.is(Items.ECHO_SHARD)
-                && mat2.getCount() >= 1) {
-            int charges = rune.getInt("charges");
-            int dirty = rune.getInt("dirty");
-
-            charges = Math.min(lvl * 10, charges + 10);
-            dirty = Math.max(0, dirty - 1);
-
-            rune.putInt("charges", charges);
-            rune.putInt("dirty", dirty);
-
-            if (target.is(AncestralArcaneItems.RUNE.get())) {
-                CompoundTag wrap = new CompoundTag();
-                wrap.put("rune", rune);
-                CustomDataUtil.setAncestralArcaneData(target, wrap);
-            } else {
-                data.put("rune", rune);
-                CustomDataUtil.setAncestralArcaneData(target, data);
-            }
-
-            mat1.shrink(lvl);
-            mat2.shrink(1);
-        }
-    }
-
-    private void tryApplyUpgrade() {
-        ItemStack runeStack = blockEntity.inventory.getStackInSlot(0);
-        ItemStack mat = blockEntity.inventory.getStackInSlot(3);
-
-        if (runeStack.is(AncestralArcaneItems.RUNE.get()) && !mat.isEmpty()) {
-            CompoundTag dt = CustomDataUtil.getAncestralArcaneData(runeStack);
-            if (!dt.contains("rune"))
-                return;
-            CompoundTag rune = dt.getCompound("rune");
-            if (rune.getInt("crude") == 0 && rune.getInt("empty") == 1) {
-                int tier = rune.getInt("tier");
-                int maxUpg = Math.min(3, tier);
-
-                String upgType = null;
-                if (mat.is(Items.BLAZE_POWDER))
-                    upgType = "blaze";
-                else if (mat.is(Items.QUARTZ))
-                    upgType = "quartz";
-                else if (mat.is(Items.GHAST_TEAR))
-                    upgType = "tear";
-
-                if (upgType != null) {
-                    CompoundTag upg = rune.contains("upgrade") ? rune.getCompound("upgrade") : new CompoundTag();
-                    String curType = upg.getString("type");
-                    int curLevel = upg.getInt("level");
-
-                    if ((curType.isEmpty() || curType.equals(upgType)) && curLevel < maxUpg) {
-                        upg.putString("type", upgType);
-                        upg.putInt("level", curLevel + 1);
-                        rune.put("upgrade", upg);
-                        dt.put("rune", rune);
-                        CustomDataUtil.setAncestralArcaneData(runeStack, dt);
-                        mat.shrink(1);
+                    int runeTier = rune.getInt("tier");
+                    if (spell != null && !spell.isEmpty() && runeTier >= toolTier && lvl >= toolTier) {
+                        rune.putInt("empty", 0);
+                        rune.putInt("lvl", toolTier);
+                        rune.putString("spell", spell);
+                        rune.putInt("charges", toolTier * 10);
+                        rune.putInt("dirty", 0);
+                        runedt.put("rune", rune);
+                        ItemStack out = runeSlot.copy();
+                        out.setCount(1);
+                        CustomDataUtil.setAncestralArcaneData(out, runedt);
+                        result = out;
                     }
                 }
             }
         }
-    }
 
-    private void tryInscribeScroll() {
-        inscribe();
-    }
+        // 4. Upgrading Base Rune (Blaze, Quartz, Tear)
+        if (input1.is(AncestralArcaneItems.RUNE.get()) && input2.isEmpty() && !input3.isEmpty()) {
+            CompoundTag dt = CustomDataUtil.getAncestralArcaneData(input1);
+            if (dt.contains("rune")) {
+                CompoundTag rune = dt.getCompound("rune").copy();
+                if (rune.getInt("crude") == 0 && rune.getInt("empty") == 1) {
+                    int tier = rune.getInt("tier");
+                    int maxUpg = Math.min(3, tier);
+                    String upgType = null;
+                    if (input3.is(Items.BLAZE_POWDER))
+                        upgType = "blaze";
+                    else if (input3.is(Items.QUARTZ))
+                        upgType = "quartz";
+                    else if (input3.is(Items.GHAST_TEAR))
+                        upgType = "tear";
 
-    private void tryInscribeGrimoire() {
-        inscribe();
-    }
-
-    private void tryInscribeLvl5() {
-        inscribe();
-    }
-
-    private void tryCloneGrimoire() {
-        // Implementation for clone
-    }
-
-    private void inscribe() {
-        ItemStack target = blockEntity.inventory.getStackInSlot(0); // Can be Grimoire or Rune
-        ItemStack tool = blockEntity.inventory.getStackInSlot(1); // Can be Scroll or Grimoire
-
-        if (target.isEmpty() || tool.isEmpty())
-            return;
-
-        // SCROLL -> GRIMOIRE
-        if (isGrimoire(target) && isScroll(tool)) {
-            CompoundTag dt = CustomDataUtil.getAncestralArcaneData(target);
-            if (!dt.contains("grimoire")) {
-                dt.put("grimoire", new CompoundTag());
-            }
-            CompoundTag grimoireData = dt.getCompound("grimoire");
-            // If the grimoire doesn't already have a spell, or we allow overwriting
-            if (!grimoireData.contains("spell") || grimoireData.getString("spell").isEmpty()) {
-                String spell = determineSpellFromScroll(tool);
-                if (spell != null) {
-                    grimoireData.putString("spell", spell);
-                    dt.put("grimoire", grimoireData);
-                    CustomDataUtil.setAncestralArcaneData(target, dt);
-                    tool.shrink(1);
+                    if (upgType != null) {
+                        CompoundTag upg = rune.contains("upgrade") ? rune.getCompound("upgrade").copy()
+                                : new CompoundTag();
+                        String curType = upg.getString("type");
+                        int curLevel = upg.getInt("level");
+                        if ((curType.isEmpty() || curType.equals(upgType)) && curLevel < maxUpg) {
+                            upg.putString("type", upgType);
+                            upg.putInt("level", curLevel + 1);
+                            rune.put("upgrade", upg);
+                            dt.put("rune", rune);
+                            ItemStack out = input1.copy();
+                            out.setCount(1);
+                            CustomDataUtil.setAncestralArcaneData(out, dt);
+                            result = out;
+                        }
+                    }
                 }
             }
         }
-        // GRIMOIRE -> RUNE
-        else if (target.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(tool)) {
-            CompoundTag runeDt = CustomDataUtil.getAncestralArcaneData(target);
-            if (!runeDt.contains("rune"))
-                return;
-            CompoundTag rune = runeDt.getCompound("rune");
 
-            CompoundTag grimDt = CustomDataUtil.getAncestralArcaneData(tool);
-            if (!grimDt.contains("grimoire"))
-                return;
-            CompoundTag grimoire = grimDt.getCompound("grimoire");
-
-            if (rune.getInt("crude") == 0 && rune.getInt("empty") == 1) {
-                String spell = grimoire.getString("spell");
-                if (spell == null || spell.isEmpty())
-                    return;
-
-                int toolTier = getGrimoireTier(tool);
-                int tableLvl = blockEntity.getTableLevel();
-                int runeTier = rune.getInt("tier");
-
-                if (runeTier >= toolTier && tableLvl >= toolTier) {
-                    applyInscribe(rune, runeDt, target, toolTier, spell);
-                    decreaseGrimoire(tool);
+        // 5. Binding (Rune -> Wand)
+        if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.is(AncestralArcaneItems.RUNE.get())
+                && input3.isEmpty()) {
+            CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
+            if (!wandData.contains("rune")) {
+                CompoundTag runeData = CustomDataUtil.getAncestralArcaneData(input2);
+                if (runeData.contains("rune") && runeData.getCompound("rune").getInt("lvl") > 0) {
+                    CompoundTag newWandData = wandData.copy();
+                    newWandData.put("rune", runeData.getCompound("rune").copy());
+                    ItemStack out = input1.copy();
+                    out.setCount(1);
+                    CustomDataUtil.setAncestralArcaneData(out, newWandData);
+                    result = out;
                 }
             }
         }
+
+        // 6. Unbinding (Wand -> Rune) - Requires no other inputs, just Wand in Input 1
+        // We output the Wand back, but how do we give the Rune back? We can't in 1
+        // output slot.
+        // Unbinding needs 2 slots. Let's skip automatic unbinding for a single Output
+        // slot for now,
+        // or we drop the rune at the table when unbinding.
+        // Let's implement dropping the rune on extracting the wand.
+        if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.isEmpty() && input3.isEmpty()) {
+            CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
+            if (wandData.contains("rune")) {
+                // Show unbound wand in output
+                CompoundTag newWandData = wandData.copy();
+                newWandData.remove("rune");
+                ItemStack out = input1.copy();
+                out.setCount(1);
+                CustomDataUtil.setAncestralArcaneData(out, newWandData);
+                result = out;
+            }
+        }
+
+        blockEntity.inventory.setStackInSlot(3, result);
     }
 
     private boolean isGrimoire(ItemStack stack) {
-        return stack.is(AncestralArcaneItems.GRIMOIRE_T1.get()) ||
-                stack.is(AncestralArcaneItems.GRIMOIRE_T2.get()) ||
-                stack.is(AncestralArcaneItems.GRIMOIRE_T3.get()) ||
-                stack.is(AncestralArcaneItems.GRIMOIRE_T4.get()) ||
-                stack.is(AncestralArcaneItems.GRIMOIRE_T5.get());
+        return stack.getItem() instanceof com.ancestralarcane.item.EmptyGrimoireItem ||
+                stack.getItem() instanceof com.ancestralarcane.item.GrimoireSpellItem;
     }
 
     private boolean isScroll(ItemStack stack) {
         return determineSpellFromScroll(stack) != null;
     }
 
-    private void applyInscribe(CompoundTag rune, CompoundTag dt, ItemStack runeStack, int lvl, String spell) {
-        rune.putInt("empty", 0);
-        rune.putInt("lvl", lvl);
-        rune.putString("spell", spell);
-        rune.putInt("charges", lvl * 10);
-        rune.putInt("dirty", 0);
-        dt.put("rune", rune);
-        CustomDataUtil.setAncestralArcaneData(runeStack, dt);
-    }
-
-    private void decreaseGrimoire(ItemStack tool) {
-        CompoundTag gd = CustomDataUtil.getAncestralArcaneData(tool);
-        int uses = gd.getInt("uses") - 1;
-        if (uses <= 0) {
-            tool.shrink(1);
-            // Could replace with forgotten magicbook here
-        } else {
-            gd.putInt("uses", uses);
-            CustomDataUtil.setAncestralArcaneData(tool, gd);
-        }
-    }
-
     private int getGrimoireTier(ItemStack stack) {
+        CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
+        if (data.contains("grimoire")) {
+            return data.getCompound("grimoire").getInt("tier");
+        }
+
+        // Fallback for Empty Grimoires that might not have custom_data yet initialized
+        // fully
         if (stack.is(AncestralArcaneItems.GRIMOIRE_T1.get()))
             return 1;
         if (stack.is(AncestralArcaneItems.GRIMOIRE_T2.get()))
@@ -370,6 +488,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
             return 4;
         if (stack.is(AncestralArcaneItems.GRIMOIRE_T5.get()))
             return 5;
+
         return 0;
     }
 
@@ -409,5 +528,28 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
         if (scroll.is(AncestralArcaneItems.SCROLL_SILENCE.get()))
             return "silence";
         return null;
+    }
+
+    private Item getGrimoireItemForSpell(String spell) {
+        return switch (spell) {
+            case "fire" -> AncestralArcaneItems.GRIMOIRE_FIRE.get();
+            case "fire_friend" -> AncestralArcaneItems.GRIMOIRE_FIRE_FRIEND.get();
+            case "storm" -> AncestralArcaneItems.GRIMOIRE_STORM.get();
+            case "frost" -> AncestralArcaneItems.GRIMOIRE_FROST.get();
+            case "frost_walker" -> AncestralArcaneItems.GRIMOIRE_FROST_WALKER.get();
+            case "heal" -> AncestralArcaneItems.GRIMOIRE_HEAL.get();
+            case "mend" -> AncestralArcaneItems.GRIMOIRE_MEND.get();
+            case "stabilize" -> AncestralArcaneItems.GRIMOIRE_STABILIZE.get();
+            case "cleanse" -> AncestralArcaneItems.GRIMOIRE_CLEANSE.get();
+            case "breathe" -> AncestralArcaneItems.GRIMOIRE_BREATHE.get();
+            case "fertilize" -> AncestralArcaneItems.GRIMOIRE_FERTILIZE.get();
+            case "light" -> AncestralArcaneItems.GRIMOIRE_LIGHT.get();
+            case "breaker" -> AncestralArcaneItems.GRIMOIRE_BREAKER.get();
+            case "ward" -> AncestralArcaneItems.GRIMOIRE_WARD.get();
+            case "stonebind" -> AncestralArcaneItems.GRIMOIRE_STONEBIND.get();
+            case "reach" -> AncestralArcaneItems.GRIMOIRE_REACH.get();
+            case "silence" -> AncestralArcaneItems.GRIMOIRE_SILENCE.get();
+            default -> AncestralArcaneItems.GRIMOIRE_T1.get();
+        };
     }
 }

@@ -21,8 +21,8 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public class ArcaneSpearFocusItem extends Item {
-    public ArcaneSpearFocusItem(Properties properties) {
+public class WandItem extends Item {
+    public WandItem(Properties properties) {
         super(properties);
     }
 

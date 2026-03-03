@@ -18,30 +18,33 @@ public class AncestralArcaneCreativeTab {
                     .title(Component.translatable("itemGroup.ancestral_arcane"))
                     .icon(() -> new ItemStack(AncestralArcaneItems.RUNE.get()))
                     .displayItems((parameters, output) -> {
-                        // 1. Empty Rune
-                        output.accept(AncestralArcaneItems.RUNE.get());
+                        // 1. Crude Runes (Tiers 1-5)
+                        for (int t = 1; t <= 5; t++) {
+                            ItemStack crude = new ItemStack(AncestralArcaneItems.RUNE.get());
+                            net.minecraft.nbt.CompoundTag cDt = new net.minecraft.nbt.CompoundTag();
+                            net.minecraft.nbt.CompoundTag cBody = new net.minecraft.nbt.CompoundTag();
+                            cBody.putInt("tier", t);
+                            cBody.putInt("crude", 1);
+                            cBody.putInt("empty", 1);
+                            cDt.put("rune", cBody);
+                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(crude, cDt);
+                            output.accept(crude);
+                        }
 
-                        // 2. Crude Rune
-                        ItemStack crudeRune = new ItemStack(AncestralArcaneItems.RUNE.get());
-                        net.minecraft.nbt.CompoundTag cdData = new net.minecraft.nbt.CompoundTag();
-                        net.minecraft.nbt.CompoundTag cdRune = new net.minecraft.nbt.CompoundTag();
-                        cdRune.putInt("crude", 1);
-                        cdData.put("rune", cdRune);
-                        com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(crudeRune, cdData);
-                        output.accept(crudeRune);
+                        // 2. Normal Runes (Tiers 1-5)
+                        for (int t = 1; t <= 5; t++) {
+                            ItemStack cons = new ItemStack(AncestralArcaneItems.RUNE.get());
+                            net.minecraft.nbt.CompoundTag rDt = new net.minecraft.nbt.CompoundTag();
+                            net.minecraft.nbt.CompoundTag rBody = new net.minecraft.nbt.CompoundTag();
+                            rBody.putInt("tier", t);
+                            rBody.putInt("crude", 0);
+                            rBody.putInt("empty", 1);
+                            rDt.put("rune", rBody);
+                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(cons, rDt);
+                            output.accept(cons);
+                        }
 
-                        // 3. Generic Inscribed Rune
-                        ItemStack inscribedRune = new ItemStack(AncestralArcaneItems.RUNE.get());
-                        net.minecraft.nbt.CompoundTag inscData = new net.minecraft.nbt.CompoundTag();
-                        net.minecraft.nbt.CompoundTag inscRune = new net.minecraft.nbt.CompoundTag();
-                        inscRune.putInt("empty", 0);
-                        inscRune.putInt("lvl", 1);
-                        inscRune.putString("spell", "flame");
-                        inscData.put("rune", inscRune);
-                        com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(inscribedRune, inscData);
-                        output.accept(inscribedRune);
-
-                        // 4. Upgraded Rune (empty but upgraded)
+                        // 3. Upgraded Rune (example upgraded)
                         ItemStack upgRune = new ItemStack(AncestralArcaneItems.RUNE.get());
                         net.minecraft.nbt.CompoundTag upgData = new net.minecraft.nbt.CompoundTag();
                         net.minecraft.nbt.CompoundTag uRune = new net.minecraft.nbt.CompoundTag();
@@ -54,7 +57,18 @@ public class AncestralArcaneCreativeTab {
                         com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(upgRune, upgData);
                         output.accept(upgRune);
 
-                        // 5. Upgraded + Inscribed Rune
+                        // 4. Inscribed Rune (example inscribed)
+                        ItemStack inscribedRune = new ItemStack(AncestralArcaneItems.RUNE.get());
+                        net.minecraft.nbt.CompoundTag inscData = new net.minecraft.nbt.CompoundTag();
+                        net.minecraft.nbt.CompoundTag inscRune = new net.minecraft.nbt.CompoundTag();
+                        inscRune.putInt("empty", 0);
+                        inscRune.putInt("lvl", 1);
+                        inscRune.putString("spell", "flame");
+                        inscData.put("rune", inscRune);
+                        com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(inscribedRune, inscData);
+                        output.accept(inscribedRune);
+
+                        // 5. Upgraded + Inscribed Rune (example combined)
                         ItemStack uiRune = new ItemStack(AncestralArcaneItems.RUNE.get());
                         net.minecraft.nbt.CompoundTag uiData = new net.minecraft.nbt.CompoundTag();
                         net.minecraft.nbt.CompoundTag uiR = new net.minecraft.nbt.CompoundTag();
@@ -69,31 +83,8 @@ public class AncestralArcaneCreativeTab {
                         com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(uiRune, uiData);
                         output.accept(uiRune);
 
-                        // Spells & Base Items
+                        // Other Items
                         output.accept(AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get());
-
-                        // Render Tier 1-5 Runes (Crude and Normal)
-                        for (int t = 1; t <= 5; t++) {
-                            ItemStack crude = new ItemStack(AncestralArcaneItems.RUNE.get());
-                            net.minecraft.nbt.CompoundTag cDt = new net.minecraft.nbt.CompoundTag();
-                            net.minecraft.nbt.CompoundTag cBody = new net.minecraft.nbt.CompoundTag();
-                            cBody.putInt("tier", t);
-                            cBody.putInt("crude", 1);
-                            cBody.putInt("empty", 1);
-                            cDt.put("rune", cBody);
-                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(crude, cDt);
-                            output.accept(crude);
-
-                            ItemStack cons = new ItemStack(AncestralArcaneItems.RUNE.get());
-                            net.minecraft.nbt.CompoundTag rDt = new net.minecraft.nbt.CompoundTag();
-                            net.minecraft.nbt.CompoundTag rBody = new net.minecraft.nbt.CompoundTag();
-                            rBody.putInt("tier", t);
-                            rBody.putInt("crude", 0);
-                            rBody.putInt("empty", 1);
-                            rDt.put("rune", rBody);
-                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(cons, rDt);
-                            output.accept(cons);
-                        }
                         output.accept(AncestralArcaneItems.SCROLL_FIRE.get());
                         output.accept(AncestralArcaneItems.SCROLL_FIRE_FRIEND.get());
                         output.accept(AncestralArcaneItems.SCROLL_STORM.get());
@@ -117,6 +108,24 @@ public class AncestralArcaneCreativeTab {
                         output.accept(AncestralArcaneItems.GRIMOIRE_T3.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T4.get());
                         output.accept(AncestralArcaneItems.GRIMOIRE_T5.get());
+
+                        output.accept(AncestralArcaneItems.GRIMOIRE_FIRE.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_FIRE_FRIEND.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_STORM.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_FROST.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_FROST_WALKER.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_HEAL.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_MEND.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_STABILIZE.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_CLEANSE.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_BREATHE.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_FERTILIZE.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_LIGHT.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_BREAKER.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_WARD.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_STONEBIND.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_REACH.get());
+                        output.accept(AncestralArcaneItems.GRIMOIRE_SILENCE.get());
 
                         output.accept(AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get());
                         net.minecraft.world.item.Item[] wands = {

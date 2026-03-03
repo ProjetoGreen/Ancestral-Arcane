@@ -24,11 +24,11 @@ def copy_and_gen():
             shutil.copy(os.path.join(block_src, f), os.path.join(dest_base, "textures/gui/arcane_table", f))
 
     # Gen Arcane Table Blockstate
-    with open(os.path.join(dest_base, "blockstates/arcane_table.json"), "w") as f:
-        json.dump({"variants": {"": {"model": f"{MOD_ID}:block/arcane_table"}}}, f, indent=4)
+    with open(os.path.join(dest_base, "blockstates/arcane_smithing_table.json"), "w") as f:
+        json.dump({"variants": {"": {"model": f"{MOD_ID}:block/arcane_smithing_table"}}}, f, indent=4)
         
     # Gen Arcane Table Block Model
-    with open(os.path.join(dest_base, "models/block/arcane_table.json"), "w") as f:
+    with open(os.path.join(dest_base, "models/block/arcane_smithing_table.json"), "w") as f:
         json.dump({
             "parent": "minecraft:block/cube",
             "textures": {
@@ -43,8 +43,8 @@ def copy_and_gen():
         }, f, indent=4)
         
     # Gen Arcane Table Item Model
-    with open(os.path.join(dest_base, "models/item/arcane_table.json"), "w") as f:
-        json.dump({"parent": f"{MOD_ID}:block/arcane_table"}, f, indent=4)
+    with open(os.path.join(dest_base, "models/item/arcane_smithing_table.json"), "w") as f:
+        json.dump({"parent": f"{MOD_ID}:block/arcane_smithing_table"}, f, indent=4)
 
 
     # 2. Simple Items

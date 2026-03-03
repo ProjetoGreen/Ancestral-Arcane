@@ -12,6 +12,17 @@ public class RuneItem extends Item {
         super(properties);
     }
 
+    private String toRoman(int number) {
+        return switch (number) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            default -> number > 0 ? String.valueOf(number) : "";
+        };
+    }
+
     @Override
     public Component getName(ItemStack stack) {
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
@@ -27,12 +38,14 @@ public class RuneItem extends Item {
         String spell = rune.getString("spell");
 
         if (crude == 1) {
-            return Component.literal("Crude Rune Tier " + tier);
+            String suffix = tier > 0 ? " " + toRoman(tier) : "";
+            return Component.literal("Crude Rune" + suffix);
         }
 
         if (empty == 1) {
-            String prefix = hasUpgrade ? "Upgraded Rune Tier " : "Rune Tier ";
-            return Component.literal(prefix + tier);
+            String prefix = hasUpgrade ? "Upgraded Rune" : "Rune";
+            String suffix = tier > 0 ? " " + toRoman(tier) : "";
+            return Component.literal(prefix + suffix);
         }
 
         if (spell != null && !spell.isEmpty()) {
@@ -41,7 +54,8 @@ public class RuneItem extends Item {
             capitalizedSpell = capitalizedSpell.replace("_", " ");
 
             String prefix = hasUpgrade ? "Upgraded " : "";
-            return Component.literal(prefix + "Level " + lvl + " " + capitalizedSpell + " Rune");
+            String suffix = lvl > 0 ? " " + toRoman(lvl) : "";
+            return Component.literal(prefix + capitalizedSpell + " Rune" + suffix);
         }
 
         return Component.translatable(this.getDescriptionId(stack));

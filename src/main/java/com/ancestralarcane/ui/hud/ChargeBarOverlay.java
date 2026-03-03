@@ -17,10 +17,10 @@ public class ChargeBarOverlay implements LayeredDraw.Layer {
             return;
 
         ItemStack stack = player.getMainHandItem();
-        if (!(stack.getItem() instanceof com.ancestralarcane.item.ArcaneSpearFocusItem)) {
+        if (!(stack.getItem() instanceof com.ancestralarcane.item.WandItem)) {
             stack = player.getOffhandItem();
         }
-        if (!(stack.getItem() instanceof com.ancestralarcane.item.ArcaneSpearFocusItem))
+        if (!(stack.getItem() instanceof com.ancestralarcane.item.WandItem))
             return;
 
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);

@@ -14,7 +14,7 @@ public class CustomDataUtil {
         }
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
         if (customData.contains(AncestralArcaneMod.MODID)) {
-            return customData.getUnsafe().getCompound(AncestralArcaneMod.MODID);
+            return customData.copyTag().getCompound(AncestralArcaneMod.MODID).copy();
         }
         return new CompoundTag();
     }
