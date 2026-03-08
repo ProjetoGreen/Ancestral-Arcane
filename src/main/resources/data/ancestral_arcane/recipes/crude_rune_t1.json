@@ -1,18 +1,20 @@
 {
-    "type": "minecraft:crafting_shapeless",
-    "ingredients": [
-        {
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CGC",
+        "G G",
+        "CGC"
+    ],
+    "key": {
+        "C": {
             "item": "minecraft:clay_ball"
         },
-        {
+        "G": {
             "item": "minecraft:glowstone_dust"
         }
-    ],
+    },
     "result": {
         "id": "ancestral_arcane:rune",
-        "count": 1,
-        "components": {
-            "minecraft:custom_data": "{ancestral_arcane:{rune:{tier:1,crude:1,empty:1}}}"
-        }
+        "count": 1
     }
 }
