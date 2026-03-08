@@ -101,8 +101,9 @@ public class AncestralArcaneItems {
         public static final DeferredItem<GrimoireSpellItem> GRIMOIRE_SILENCE = ITEMS.register("grimoire_silence",
                         () -> new GrimoireSpellItem(new Item.Properties().stacksTo(1), "silence"));
 
-        public static final DeferredItem<Item> FORGOTTEN_MAGICBOOK = ITEMS.register("forgotten_magicbook",
-                        () -> new Item(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<ForgottenMagicBookItem> FORGOTTEN_MAGICBOOK = ITEMS.register(
+                        "forgotten_magicbook",
+                        () -> new ForgottenMagicBookItem(new Item.Properties().stacksTo(1)));
 
         public static final DeferredItem<WandItem> COPPER_WAND = ITEMS.register("copper_wand",
                         () -> new WandItem(new Item.Properties().stacksTo(1)));

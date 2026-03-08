@@ -23,14 +23,14 @@
             "item": "minecraft:glowstone_dust"
         },
         "E": {
-            "item": "minecraft:magma_cream"
+            "item": "minecraft:smooth_stone"
         },
         "X": {
-            "item": "minecraft:orange_dye"
+            "item": "minecraft:brown_dye"
         }
     },
     "result": {
-        "id": "dntr:scroll_fire_friend",
+        "id": "ancestral_arcane:scroll_stonebind",
         "count": 1
     }
 }

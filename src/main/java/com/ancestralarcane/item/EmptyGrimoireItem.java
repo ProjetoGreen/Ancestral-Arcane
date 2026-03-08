@@ -28,8 +28,7 @@ public class EmptyGrimoireItem extends Item {
 
     @Override
     public Component getName(ItemStack stack) {
-        String suffix = tier > 0 ? " " + toRoman(tier) : "";
-        return Component.translatable(this.getDescriptionId(stack)).append(suffix);
+        return Component.translatable(this.getDescriptionId(stack));
     }
 
     @Override

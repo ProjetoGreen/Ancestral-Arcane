@@ -3,6 +3,7 @@
     "category": "misc",
     "pattern": [
         "PIF",
+        "LDE",
         " X "
     ],
     "key": {
@@ -15,12 +16,21 @@
         "F": {
             "item": "minecraft:feather"
         },
+        "L": {
+            "item": "minecraft:lapis_lazuli"
+        },
+        "D": {
+            "item": "minecraft:glowstone_dust"
+        },
+        "E": {
+            "item": "minecraft:iron_nugget"
+        },
         "X": {
             "item": "minecraft:green_dye"
         }
     },
     "result": {
-        "id": "dntr:scroll_heal",
+        "id": "ancestral_arcane:scroll_mend",
         "count": 1
     }
 }

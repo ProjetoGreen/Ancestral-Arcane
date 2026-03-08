@@ -11,7 +11,7 @@
             "item": "minecraft:paper"
         },
         "I": {
-            "item": "minecraft:ink_sac"
+            "item": "minecraft:glow_ink_sac"
         },
         "F": {
             "item": "minecraft:feather"
@@ -23,14 +23,14 @@
             "item": "minecraft:glowstone_dust"
         },
         "E": {
-            "item": "minecraft:ender_pearl"
+            "item": "minecraft:milk_bucket"
         },
         "X": {
-            "item": "minecraft:magenta_dye"
+            "item": "minecraft:white_dye"
         }
     },
     "result": {
-        "id": "dntr:scroll_reach",
+        "id": "ancestral_arcane:scroll_cleanse",
         "count": 1
     }
 }

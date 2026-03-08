@@ -137,7 +137,36 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                     int uses = gcomp.contains("uses") ? gcomp.getInt("uses") : 2;
                     uses--;
                     if (uses <= 0) {
-                        grimoireInputSlot.shrink(1);
+                        int oldTier = gcomp.contains("tier") ? gcomp.getInt("tier") : 1;
+                        String spellStr = gcomp.getString("spell");
+                        if (spellStr.isEmpty() && grimoireInputSlot
+                                .getItem() instanceof com.ancestralarcane.item.GrimoireSpellItem gsi) {
+                            spellStr = gsi.getSpellName();
+                        }
+                        if (oldTier <= 1) {
+                            ItemStack glowstone = new ItemStack(net.minecraft.world.item.Items.GLOWSTONE_DUST, 8);
+                            grimoireInputSlot.shrink(1);
+                            if (!player.getInventory().add(glowstone)) {
+                                player.drop(glowstone, false);
+                            }
+                        } else {
+                            int newTier = oldTier - 1; // Drop by 1 Level
+
+                            ItemStack forgotten = new ItemStack(
+                                    (Item) com.ancestralarcane.registry.AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get());
+                            CompoundTag newGcomp = new CompoundTag();
+                            newGcomp.putInt("tier", newTier);
+                            newGcomp.putString("spell", spellStr);
+
+                            CompoundTag forgetData = new CompoundTag();
+                            forgetData.put("grimoire", newGcomp);
+                            CustomDataUtil.setAncestralArcaneData(forgotten, forgetData);
+
+                            grimoireInputSlot.shrink(1);
+                            if (!player.getInventory().add(forgotten)) {
+                                player.drop(forgotten, false);
+                            }
+                        }
                     } else {
                         gcomp.putInt("uses", uses);
                         if (!gcomp.contains("tier"))
@@ -177,6 +206,17 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                         if (!player.getInventory().add(outRune)) {
                             player.drop(outRune, false);
                         }
+                    }
+                }
+                // 7. Reactivate Forgotten Magic Book
+                else if (input1.is(AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get()) && input2.isEmpty()
+                        && input3.is(net.minecraft.world.item.Items.GLOWSTONE_DUST)) {
+                    CompoundTag dt = CustomDataUtil.getAncestralArcaneData(input1);
+                    if (dt.contains("grimoire")) {
+                        int tier = Math.max(1, dt.getCompound("grimoire").getInt("tier"));
+                        int cost = tier == 1 ? 8 : tier * 16;
+                        input1.shrink(1);
+                        input3.shrink(cost);
                     }
                 }
 
@@ -369,7 +409,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                         toolTier = 1;
 
                     int runeTier = rune.getInt("tier");
-                    if (spell != null && !spell.isEmpty() && runeTier >= toolTier && lvl >= toolTier) {
+                    if (spell != null && !spell.isEmpty() && runeTier >= toolTier) {
                         rune.putInt("empty", 0);
                         rune.putInt("lvl", toolTier);
                         rune.putString("spell", spell);
@@ -422,10 +462,12 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
         }
 
         // 5. Binding (Rune -> Wand)
-        if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.is(AncestralArcaneItems.RUNE.get())
+        if (input1.getItem() instanceof com.ancestralarcane.item.WandItem
+                && input2.is(com.ancestralarcane.registry.AncestralArcaneItems.RUNE.get())
                 && input3.isEmpty()) {
             CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
-            if (!wandData.contains("rune")) {
+            boolean hasRune = wandData.contains("rune") && wandData.getCompound("rune").getInt("lvl") > 0;
+            if (!hasRune) {
                 CompoundTag runeData = CustomDataUtil.getAncestralArcaneData(input2);
                 if (runeData.contains("rune") && runeData.getCompound("rune").getInt("lvl") > 0) {
                     CompoundTag newWandData = wandData.copy();
@@ -458,7 +500,50 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
             }
         }
 
+        // 7. Reactivate Forgotten Magic Book
+        if (input1.is(com.ancestralarcane.registry.AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get()) && input2.isEmpty()
+                && input3.is(net.minecraft.world.item.Items.GLOWSTONE_DUST)) {
+
+            int tier = 1;
+            CompoundTag dt = CustomDataUtil.getAncestralArcaneData(input1);
+            if (dt.contains("grimoire")) {
+                CompoundTag gcomp = dt.getCompound("grimoire");
+                tier = gcomp.getInt("tier");
+            }
+            if (tier <= 0) {
+                tier = 1;
+            }
+
+            int cost = tier == 1 ? 8 : tier * 16;
+            if (input3.getCount() >= cost) {
+                net.minecraft.world.item.Item grimItem = getEmptyGrimoireForTier(tier);
+                if (grimItem != null) {
+                    ItemStack reactivated = new ItemStack(grimItem);
+                    CompoundTag newGcomp = new CompoundTag();
+                    newGcomp.putInt("tier", tier);
+                    newGcomp.putInt("uses", tier * 2);
+
+                    CompoundTag newDt = new CompoundTag();
+                    newDt.put("grimoire", newGcomp);
+                    CustomDataUtil.setAncestralArcaneData(reactivated, newDt);
+
+                    result = reactivated;
+                }
+            }
+        }
+
         blockEntity.inventory.setStackInSlot(3, result);
+    }
+
+    private net.minecraft.world.item.Item getEmptyGrimoireForTier(int tier) {
+        return switch (tier) {
+            case 1 -> com.ancestralarcane.registry.AncestralArcaneItems.GRIMOIRE_T1.get();
+            case 2 -> com.ancestralarcane.registry.AncestralArcaneItems.GRIMOIRE_T2.get();
+            case 3 -> com.ancestralarcane.registry.AncestralArcaneItems.GRIMOIRE_T3.get();
+            case 4 -> com.ancestralarcane.registry.AncestralArcaneItems.GRIMOIRE_T4.get();
+            case 5 -> com.ancestralarcane.registry.AncestralArcaneItems.GRIMOIRE_T5.get();
+            default -> com.ancestralarcane.registry.AncestralArcaneItems.GRIMOIRE_T1.get();
+        };
     }
 
     private boolean isGrimoire(ItemStack stack) {

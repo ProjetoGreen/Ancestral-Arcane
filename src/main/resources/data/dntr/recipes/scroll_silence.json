@@ -11,7 +11,7 @@
             "item": "minecraft:paper"
         },
         "I": {
-            "item": "minecraft:ink_sac"
+            "item": "minecraft:glow_ink_sac"
         },
         "F": {
             "item": "minecraft:feather"
@@ -23,14 +23,14 @@
             "item": "minecraft:glowstone_dust"
         },
         "E": {
-            "item": "minecraft:smooth_stone"
+            "item": "minecraft:amethyst_shard"
         },
         "X": {
-            "item": "minecraft:brown_dye"
+            "item": "minecraft:black_dye"
         }
     },
     "result": {
-        "id": "dntr:scroll_stonebind",
+        "id": "ancestral_arcane:scroll_silence",
         "count": 1
     }
 }

@@ -8,10 +8,12 @@
             "item": "minecraft:echo_shard"
         },
         {
-            "item": "ancestral_arcane:rune",
+            "type": "neoforge:components",
+            "items": "ancestral_arcane:rune",
             "components": {
                 "minecraft:custom_data": "{ancestral_arcane:{rune:{tier:4,crude:1,empty:1}}}"
-            }
+            },
+            "strict": false
         }
     ],
     "result": {

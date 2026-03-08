@@ -3,7 +3,6 @@
     "category": "misc",
     "pattern": [
         "PIF",
-        "LDE",
         " X "
     ],
     "key": {
@@ -11,26 +10,17 @@
             "item": "minecraft:paper"
         },
         "I": {
-            "item": "minecraft:glow_ink_sac"
+            "item": "minecraft:ink_sac"
         },
         "F": {
             "item": "minecraft:feather"
         },
-        "L": {
-            "item": "minecraft:lapis_lazuli"
-        },
-        "D": {
-            "item": "minecraft:glowstone_dust"
-        },
-        "E": {
-            "item": "minecraft:amethyst_shard"
-        },
         "X": {
-            "item": "minecraft:black_dye"
+            "item": "minecraft:lime_dye"
         }
     },
     "result": {
-        "id": "dntr:scroll_silence",
+        "id": "ancestral_arcane:scroll_fertilize",
         "count": 1
     }
 }
