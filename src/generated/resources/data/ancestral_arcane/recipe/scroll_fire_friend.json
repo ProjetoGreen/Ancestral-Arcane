@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "I": {
+      "item": "minecraft:ink_sac"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "X": {
+      "item": "minecraft:orange_dye"
+    }
+  },
+  "pattern": [
+    "PIF",
+    " X "
+  ],
+  "result": {
+    "count": 1,
+    "id": "ancestral_arcane:scroll_fire_friend"
+  }
+}

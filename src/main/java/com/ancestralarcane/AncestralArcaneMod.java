@@ -6,6 +6,8 @@ import com.ancestralarcane.ui.hud.ChargeBarOverlay;
 import com.ancestralarcane.ui.screen.ArcaneSmithingScreen;
 import com.ancestralarcane.commands.AncestralArcaneGiveTestCommand;
 import com.ancestralarcane.loot.AncestralArcaneLootModifiers;
+import com.ancestralarcane.datagen.AncestralArcaneRecipeProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -15,6 +17,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataProvider;
 
 @Mod(AncestralArcaneMod.MODID)
 public class AncestralArcaneMod {
@@ -32,8 +36,14 @@ public class AncestralArcaneMod {
         modEventBus.addListener(this::registerMenus);
         modEventBus.addListener(this::registerGuiLayers);
         modEventBus.addListener(this::registerNetwork);
+        modEventBus.addListener(this::gatherData);
 
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
+    }
+
+    private void gatherData(GatherDataEvent event) {
+        event.getGenerator().addProvider(event.includeServer(),
+                new AncestralArcaneRecipeProvider(event.getGenerator().getPackOutput(), event.getLookupProvider()));
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
