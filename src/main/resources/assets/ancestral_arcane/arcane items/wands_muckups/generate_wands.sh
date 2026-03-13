@@ -3,15 +3,15 @@
 # Diretório de destino para as texturas prontas
 TARGET_DIR="../../textures/item"
 
-# Mapeamento dos nomes de arquivo base para os nomes finais dos itens
-declare -A materials=(
-  ["cooper"]="copper"
-  ["diamond"]="diamond"
-  ["emerold"]="emerald"
-  ["flint"]="flint"
-  ["gold"]="golden"
-  ["iron"]="iron"
-  ["netherite"]="netherite"
+# Mapeamento dos nomes base para os nomes finais (Bash 3.2 compatível)
+MATERIALS=(
+  "cooper:copper"
+  "diamond:diamond"
+  "emerold:emerald"
+  "flint:flint"
+  "gold:golden"
+  "iron:iron"
+  "netherite:netherite"
 )
 
 # Arquivos base
@@ -21,8 +21,9 @@ ACTIVE_RUNE="active_rune_base.png"
 
 echo "Gerando texturas das varinhas (Wands)..."
 
-for mat in "${!materials[@]}"; do
-  out_name="${materials[$mat]}"
+for entry in "${MATERIALS[@]}"; do
+  mat="${entry%%:*}"
+  out_name="${entry##*:}"
   mat_file="${mat}_base.png"
 
   echo "Processando material: $out_name..."

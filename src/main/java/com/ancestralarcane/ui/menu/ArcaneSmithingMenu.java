@@ -120,11 +120,11 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                 ItemStack runeSlot = ItemStack.EMPTY;
                 ItemStack grimoireInputSlot = ItemStack.EMPTY;
                 if (input3.isEmpty()) {
-                    if (input1.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(input2)) {
+                    if (input1.getItem() instanceof com.ancestralarcane.item.RuneItem && isGrimoire(input2)) {
                         isGrimoireToRune = true;
                         runeSlot = input1;
                         grimoireInputSlot = input2;
-                    } else if (input2.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(input1)) {
+                    } else if (input2.getItem() instanceof com.ancestralarcane.item.RuneItem && isGrimoire(input1)) {
                         isGrimoireToRune = true;
                         runeSlot = input2;
                         grimoireInputSlot = input1;
@@ -181,13 +181,13 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                     runeSlot.shrink(1);
                 }
                 // 4. Upgrade Base Rune
-                else if (input1.is(AncestralArcaneItems.RUNE.get()) && input2.isEmpty() && !input3.isEmpty()) {
+                else if (input1.getItem() instanceof com.ancestralarcane.item.RuneItem && input2.isEmpty() && !input3.isEmpty()) {
                     input1.shrink(1);
                     input3.shrink(1);
                 }
                 // 5. Binding (Rune -> Wand)
                 else if (input1.getItem() instanceof com.ancestralarcane.item.WandItem
-                        && input2.is(AncestralArcaneItems.RUNE.get()) && input3.isEmpty()) {
+                        && input2.getItem() instanceof com.ancestralarcane.item.RuneItem && input3.isEmpty()) {
                     input1.shrink(1);
                     input2.shrink(1);
                 }
@@ -381,11 +381,11 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
         ItemStack runeSlot = ItemStack.EMPTY;
         ItemStack grimoireInputSlot = ItemStack.EMPTY;
         if (input3.isEmpty()) {
-            if (input1.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(input2)) {
+            if (input1.getItem() instanceof com.ancestralarcane.item.RuneItem && isGrimoire(input2)) {
                 isGrimoireToRune = true;
                 runeSlot = input1;
                 grimoireInputSlot = input2;
-            } else if (input2.is(AncestralArcaneItems.RUNE.get()) && isGrimoire(input1)) {
+            } else if (input2.getItem() instanceof com.ancestralarcane.item.RuneItem && isGrimoire(input1)) {
                 isGrimoireToRune = true;
                 runeSlot = input2;
                 grimoireInputSlot = input1;
@@ -426,7 +426,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
         }
 
         // 4. Upgrading Base Rune (Blaze, Quartz, Tear)
-        if (input1.is(AncestralArcaneItems.RUNE.get()) && input2.isEmpty() && !input3.isEmpty()) {
+        if (input1.getItem() instanceof com.ancestralarcane.item.RuneItem && input2.isEmpty() && !input3.isEmpty()) {
             CompoundTag dt = CustomDataUtil.getAncestralArcaneData(input1);
             if (dt.contains("rune")) {
                 CompoundTag rune = dt.getCompound("rune").copy();
@@ -463,7 +463,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
 
         // 5. Binding (Rune -> Wand)
         if (input1.getItem() instanceof com.ancestralarcane.item.WandItem
-                && input2.is(com.ancestralarcane.registry.AncestralArcaneItems.RUNE.get())
+                && input2.getItem() instanceof com.ancestralarcane.item.RuneItem
                 && input3.isEmpty()) {
             CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
             boolean hasRune = wandData.contains("rune") && wandData.getCompound("rune").getInt("lvl") > 0;

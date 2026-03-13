@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "ancestral_arcane:rune_crude_t4"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    " N ",
+    "NCN",
+    " N "
+  ],
+  "result": {
+    "count": 1,
+    "id": "ancestral_arcane:rune_crude_t5"
+  }
+}

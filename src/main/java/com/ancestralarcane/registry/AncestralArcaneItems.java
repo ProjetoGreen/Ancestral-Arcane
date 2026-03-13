@@ -12,6 +12,27 @@ public class AncestralArcaneItems {
 
         public static final DeferredItem<Item> RUNE = ITEMS.register("rune",
                         () -> new com.ancestralarcane.item.RuneItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<Item> RUNE_T1 = ITEMS.register("rune_t1",
+                        () -> new com.ancestralarcane.item.RuneItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<Item> RUNE_T2 = ITEMS.register("rune_t2",
+                        () -> new com.ancestralarcane.item.RuneItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<Item> RUNE_T3 = ITEMS.register("rune_t3",
+                        () -> new com.ancestralarcane.item.RuneItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<Item> RUNE_T4 = ITEMS.register("rune_t4",
+                        () -> new com.ancestralarcane.item.RuneItem(new Item.Properties().stacksTo(1)));
+        public static final DeferredItem<Item> RUNE_T5 = ITEMS.register("rune_t5",
+                        () -> new com.ancestralarcane.item.RuneItem(new Item.Properties().stacksTo(1)));
+
+        public static final DeferredItem<Item> RUNE_CRUDE_T1 = ITEMS.register("rune_crude_t1",
+                        () -> new CrudeRuneItem(new Item.Properties()));
+        public static final DeferredItem<Item> RUNE_CRUDE_T2 = ITEMS.register("rune_crude_t2",
+                        () -> new CrudeRuneItem(new Item.Properties()));
+        public static final DeferredItem<Item> RUNE_CRUDE_T3 = ITEMS.register("rune_crude_t3",
+                        () -> new CrudeRuneItem(new Item.Properties()));
+        public static final DeferredItem<Item> RUNE_CRUDE_T4 = ITEMS.register("rune_crude_t4",
+                        () -> new CrudeRuneItem(new Item.Properties()));
+        public static final DeferredItem<Item> RUNE_CRUDE_T5 = ITEMS.register("rune_crude_t5",
+                        () -> new CrudeRuneItem(new Item.Properties()));
         public static final DeferredItem<Item> FRAGMENT_OF_ALL_KNOWLEDGE = ITEMS.register("fragment_of_all_knowledge",
                         () -> new Item(new Item.Properties()));
 

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_emerald_wand": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ancestral_arcane:emerald_wand"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ancestral_arcane:emerald_wand_leather_grip"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_emerald_wand"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ancestral_arcane:emerald_wand_leather_grip"
+    ]
+  }
+}

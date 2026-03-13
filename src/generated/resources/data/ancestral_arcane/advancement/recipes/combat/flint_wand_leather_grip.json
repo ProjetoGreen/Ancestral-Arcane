@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_flint_wand": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ancestral_arcane:flint_wand"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ancestral_arcane:flint_wand_leather_grip"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_flint_wand"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ancestral_arcane:flint_wand_leather_grip"
+    ]
+  }
+}

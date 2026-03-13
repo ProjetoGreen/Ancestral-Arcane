@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "item": "ancestral_arcane:rune"
+    },
+    "W": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "RR ",
+    "WW ",
+    "WW "
+  ],
+  "result": {
+    "count": 1,
+    "id": "ancestral_arcane:arcane_smithing_table"
+  }
+}

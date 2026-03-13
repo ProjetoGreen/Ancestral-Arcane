@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crude_rune_t3": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ancestral_arcane:rune_crude_t3"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ancestral_arcane:crude_rune_t4"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crude_rune_t3"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ancestral_arcane:crude_rune_t4"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "ancestral_arcane:grimoire_t2"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    }
+  },
+  "pattern": [
+    "QQQ",
+    "QBQ",
+    "QQQ"
+  ],
+  "result": {
+    "count": 1,
+    "id": "ancestral_arcane:grimoire_t3"
+  }
+}

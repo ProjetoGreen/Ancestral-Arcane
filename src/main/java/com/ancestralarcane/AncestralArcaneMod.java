@@ -66,15 +66,7 @@ public class AncestralArcaneMod {
             };
 
             for (net.minecraft.world.item.Item wand : wands) {
-                // Return 1 if using in main or off-hand
-                net.minecraft.client.renderer.item.ItemProperties.register(wand,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "in_hand"),
-                        (stack, level, entity, seed) -> {
-                            if (entity == null)
-                                return 0.0F;
-                            return (entity.getMainHandItem() == stack || entity.getOffhandItem() == stack) ? 1.0F
-                                    : 0.0F;
-                        });
+
 
                 // Return 1 if currently casting (using item)
                 net.minecraft.client.renderer.item.ItemProperties.register(wand,

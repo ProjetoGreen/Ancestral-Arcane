@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_grimoire_t4": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ancestral_arcane:grimoire_t4"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ancestral_arcane:grimoire_t5"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_grimoire_t4"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ancestral_arcane:grimoire_t5"
+    ]
+  }
+}

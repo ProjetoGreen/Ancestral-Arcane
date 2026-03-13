@@ -18,30 +18,26 @@ public class AncestralArcaneCreativeTab {
                     .title(Component.translatable("itemGroup.ancestral_arcane"))
                     .icon(() -> new ItemStack(AncestralArcaneItems.RUNE.get()))
                     .displayItems((parameters, output) -> {
-                        // 1. Crude Runes (Tiers 1-5)
-                        for (int t = 1; t <= 5; t++) {
-                            ItemStack crude = new ItemStack(AncestralArcaneItems.RUNE.get());
-                            net.minecraft.nbt.CompoundTag cDt = new net.minecraft.nbt.CompoundTag();
-                            net.minecraft.nbt.CompoundTag cBody = new net.minecraft.nbt.CompoundTag();
-                            cBody.putInt("tier", t);
-                            cBody.putInt("crude", 1);
-                            cBody.putInt("empty", 1);
-                            cDt.put("rune", cBody);
-                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(crude, cDt);
-                            output.accept(crude);
-                        }
 
                         // 2. Normal Runes (Tiers 1-5)
-                        for (int t = 1; t <= 5; t++) {
-                            ItemStack cons = new ItemStack(AncestralArcaneItems.RUNE.get());
-                            net.minecraft.nbt.CompoundTag rDt = new net.minecraft.nbt.CompoundTag();
-                            net.minecraft.nbt.CompoundTag rBody = new net.minecraft.nbt.CompoundTag();
-                            rBody.putInt("tier", t);
-                            rBody.putInt("crude", 0);
-                            rBody.putInt("empty", 1);
-                            rDt.put("rune", rBody);
-                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(cons, rDt);
-                            output.accept(cons);
+                        for (int i = 1; i <= 5; i++) {
+                            net.minecraft.world.item.Item runeItem = switch(i) {
+                                case 1 -> AncestralArcaneItems.RUNE_T1.get();
+                                case 2 -> AncestralArcaneItems.RUNE_T2.get();
+                                case 3 -> AncestralArcaneItems.RUNE_T3.get();
+                                case 4 -> AncestralArcaneItems.RUNE_T4.get();
+                                case 5 -> AncestralArcaneItems.RUNE_T5.get();
+                                default -> AncestralArcaneItems.RUNE_T1.get();
+                            };
+                            ItemStack stack = new ItemStack(runeItem);
+                            net.minecraft.nbt.CompoundTag data = new net.minecraft.nbt.CompoundTag();
+                            net.minecraft.nbt.CompoundTag rData = new net.minecraft.nbt.CompoundTag();
+                            rData.putInt("crude", 0);
+                            rData.putInt("empty", 1);
+                            rData.putInt("tier", i);
+                            data.put("rune", rData);
+                            com.ancestralarcane.data.CustomDataUtil.setAncestralArcaneData(stack, data);
+                            output.accept(stack);
                         }
 
                         // 3. Upgraded Rune (example upgraded)
@@ -84,6 +80,11 @@ public class AncestralArcaneCreativeTab {
                         output.accept(uiRune);
 
                         // Other Items
+                        output.accept(AncestralArcaneItems.RUNE_CRUDE_T1.get());
+                        output.accept(AncestralArcaneItems.RUNE_CRUDE_T2.get());
+                        output.accept(AncestralArcaneItems.RUNE_CRUDE_T3.get());
+                        output.accept(AncestralArcaneItems.RUNE_CRUDE_T4.get());
+                        output.accept(AncestralArcaneItems.RUNE_CRUDE_T5.get());
                         output.accept(AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get());
                         output.accept(AncestralArcaneItems.SCROLL_FIRE.get());
                         output.accept(AncestralArcaneItems.SCROLL_FIRE_FRIEND.get());

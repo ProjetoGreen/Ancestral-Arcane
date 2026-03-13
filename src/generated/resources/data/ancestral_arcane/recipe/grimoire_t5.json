@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "ancestral_arcane:grimoire_t4"
+    },
+    "E": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+  "pattern": [
+    "EEE",
+    "EBE",
+    "EEE"
+  ],
+  "result": {
+    "count": 1,
+    "id": "ancestral_arcane:grimoire_t5"
+  }
+}
