@@ -30,20 +30,20 @@ for entry in "${MATERIALS[@]}"; do
 
   # 1. Vars sem leather grip
   # 1.1 Base silenciosa
-  convert "$WOOD" "$mat_file" -composite "$TARGET_DIR/${out_name}_wand.png"
+  magick "$WOOD" "$mat_file" -composite "$TARGET_DIR/${out_name}_wand.png"
 
   # 1.2 Versões carregando (Cast states)
   for state in a b c d; do
-    convert "$WOOD" "$mat_file" -composite "$ACTIVE_RUNE" -composite "${state}_base.png" -composite "$TARGET_DIR/${out_name}_wand_cast_${state}.png"
+    magick "$WOOD" "$mat_file" -composite "$ACTIVE_RUNE" -composite "${state}_base.png" -composite "$TARGET_DIR/${out_name}_wand_cast_${state}.png"
   done
 
   # 2. Vars com leather grip
   # 2.1 Base silenciosa
-  convert "$WOOD" "$LEATHER" -composite "$mat_file" -composite "$TARGET_DIR/${out_name}_wand_leather_grip.png"
+  magick "$WOOD" "$LEATHER" -composite "$mat_file" -composite "$TARGET_DIR/${out_name}_wand_leather_grip.png"
 
   # 2.2 Versões carregando (Cast states)
   for state in a b c d; do
-    convert "$WOOD" "$LEATHER" -composite "$mat_file" -composite "$ACTIVE_RUNE" -composite "${state}_base.png" -composite "$TARGET_DIR/${out_name}_wand_leather_grip_cast_${state}.png"
+    magick "$WOOD" "$LEATHER" -composite "$mat_file" -composite "$ACTIVE_RUNE" -composite "${state}_base.png" -composite "$TARGET_DIR/${out_name}_wand_leather_grip_cast_${state}.png"
   done
 done
 
