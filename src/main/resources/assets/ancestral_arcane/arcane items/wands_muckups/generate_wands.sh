@@ -5,9 +5,9 @@ TARGET_DIR="../../textures/item"
 
 # Mapeamento dos nomes base para os nomes finais (Bash 3.2 compatível)
 MATERIALS=(
-  "cooper:copper"
+  "copper:copper"
   "diamond:diamond"
-  "emerold:emerald"
+  "emerald:emerald"
   "flint:flint"
   "gold:golden"
   "iron:iron"
