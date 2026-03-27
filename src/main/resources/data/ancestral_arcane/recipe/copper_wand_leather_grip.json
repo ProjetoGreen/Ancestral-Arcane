@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": { "item": "minecraft:string" },
+  "base": { "item": "ancestral_arcane:copper_wand" },
+  "result": { "id": "ancestral_arcane:copper_wand_leather_grip" },
+  "template": { "item": "minecraft:leather" }
+}
