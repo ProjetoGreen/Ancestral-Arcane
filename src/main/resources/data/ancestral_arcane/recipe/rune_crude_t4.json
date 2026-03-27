@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": { "item": "minecraft:emerald" },
+    "E": { "item": "minecraft:ender_pearl" },
+    "R": { "item": "ancestral_arcane:rune_crude_t3" }
+  },
+  "pattern": [
+    "MEM",
+    "ERE",
+    "M M"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:rune_crude_t4"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": { "item": "minecraft:amethyst_shard" },
+    "E": { "item": "minecraft:echo_shard" },
+    "R": { "item": "ancestral_arcane:rune_crude_t2" }
+  },
+  "pattern": [
+    "AEA",
+    "ERE",
+    "A A"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:rune_crude_t3"
+  }
+}

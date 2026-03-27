@@ -163,6 +163,22 @@ public class AncestralArcaneItems {
                         "netherite_wand_leather_grip",
                         () -> new WandItem(new Item.Properties().stacksTo(1)));
 
+        // Catalysts
+        public static final DeferredItem<Item> FLINT_CATALYST = ITEMS.register("flint_catalyst",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> COPPER_CATALYST = ITEMS.register("copper_catalyst",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> IRON_CATALYST = ITEMS.register("iron_catalyst",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> GOLD_CATALYST = ITEMS.register("gold_catalyst",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> DIAMOND_CATALYST = ITEMS.register("diamond_catalyst",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> EMERALD_CATALYST = ITEMS.register("emerald_catalyst",
+                        () -> new Item(new Item.Properties()));
+        public static final DeferredItem<Item> NETHERITE_CATALYST = ITEMS.register("netherite_catalyst",
+                        () -> new Item(new Item.Properties()));
+
         // BlockItems
         public static final DeferredItem<BlockItem> ARCANE_SMITHING_TABLE = ITEMS.register("arcane_smithing_table",
                         () -> new BlockItem(AncestralArcaneBlocks.ARCANE_SMITHING_TABLE.get(), new Item.Properties()));

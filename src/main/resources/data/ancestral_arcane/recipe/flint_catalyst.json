@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": { "item": "minecraft:flint" },
+    "B": { "item": "minecraft:book" },
+    "O": { "item": "minecraft:bone" },
+    "R": { "item": "ancestral_arcane:rune" }
+  },
+  "pattern": [
+    "F F",
+    "BFO",
+    "ORO"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:flint_catalyst"
+  }
+}

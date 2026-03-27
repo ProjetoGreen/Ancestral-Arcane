@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": { "item": "minecraft:paper" },
+    "M": { "item": "minecraft:" },
+    "F": { "item": "minecraft:feather" },
+    "D": { "item": "minecraft:" },
+    "I": { "item": "minecraft:ink_sac" },
+    "X": { "item": "minecraft:" }
+  },
+  "pattern": [
+    "PMF",
+    "DID",
+    " X "
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:scroll_"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": { "item": "minecraft:ender_eye" },
+    "B": { "item": "minecraft:dragon_breath" },
+    "R": { "item": "ancestral_arcane:rune_crude_t4" }
+  },
+  "pattern": [
+    "EBE",
+    "BRB",
+    "E E"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:rune_crude_t5"
+  }
+}

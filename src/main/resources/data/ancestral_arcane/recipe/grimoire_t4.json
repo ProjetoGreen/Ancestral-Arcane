@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": { "item": "minecraft:emerald" },
+    "H": { "item": "minecraft:echo_shard" },
+    "W": { "item": "minecraft:writable_book" },
+    "3": { "item": "ancestral_arcane:grimoire_t3" }
+  },
+  "pattern": [
+    "EHE",
+    "W3W",
+    "EHE"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:grimoire_t4"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "ingredient": { "item": "ancestral_arcane:rune_crude_t1" },
+  "result": { "id": "ancestral_arcane:rune" }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": { "item": "minecraft:netherite_ingot" },
+    "H": { "item": "minecraft:echo_shard" },
+    "E": { "item": "minecraft:ender_eye" },
+    "B": { "item": "minecraft:dragon_breath" },
+    "R": { "item": "ancestral_arcane:rune_t5" },
+    "S": { "item": "minecraft:blaze_rod" }
+  },
+  "pattern": [
+    "N N",
+    "HNE",
+    "BRS"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:netherite_catalyst"
+  }
+}

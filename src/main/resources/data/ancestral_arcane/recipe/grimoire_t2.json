@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": { "item": "minecraft:paper" },
+    "G": { "item": "minecraft:glowstone_dust" },
+    "L": { "item": "minecraft:lapis_lazuli" },
+    "1": { "item": "ancestral_arcane:grimoire_t1" }
+  },
+  "pattern": [
+    "PGP",
+    "L1L",
+    "PGP"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:grimoire_t2"
+  }
+}

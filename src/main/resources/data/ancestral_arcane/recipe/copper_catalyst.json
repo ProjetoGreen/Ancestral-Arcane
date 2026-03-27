@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": { "item": "minecraft:copper_ingot" },
+    "A": { "item": "minecraft:amethyst_shard" },
+    "B": { "item": "minecraft:book" },
+    "O": { "item": "minecraft:bone" },
+    "R": { "item": "ancestral_arcane:rune_t2" }
+  },
+  "pattern": [
+    "C C",
+    "ACB",
+    "ORO"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:copper_catalyst"
+  }
+}

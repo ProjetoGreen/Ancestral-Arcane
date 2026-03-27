@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": { "item": "minecraft:glowstone_dust" },
+    "L": { "item": "minecraft:lapis_lazuli" },
+    "M": { "item": "ancestral_arcane:grimoire_t4" },
+    "A": { "item": "minecraft:amethyst_shard" },
+    "R": { "item": "ancestral_arcane:rune" }
+  },
+  "pattern": [
+    "GLG",
+    "LML",
+    "ARA"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:fragment_of_all_knowledge"
+  }
+}

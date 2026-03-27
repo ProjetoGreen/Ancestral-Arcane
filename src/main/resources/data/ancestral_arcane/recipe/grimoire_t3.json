@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "Q": { "item": "minecraft:quartz" },
+    "A": { "item": "minecraft:amethyst_shard" },
+    "G": { "item": "minecraft:glow_ink_sac" },
+    "2": { "item": "ancestral_arcane:grimoire_t2" }
+  },
+  "pattern": [
+    "QAQ",
+    "G2G",
+    "QAQ"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:grimoire_t3"
+  }
+}

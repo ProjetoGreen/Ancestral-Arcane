@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": { "item": "ancestral_arcane:rune" },
+    "F": { "item": "ancestral_arcane:fragment_of_all_knowledge" },
+    "P": { "tag": "minecraft:planks" },
+    "E": { "item": "minecraft:ender_pearl" }
+  },
+  "pattern": [
+    "RFR",
+    "PPP",
+    "PEP"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:arcane_smithing_table"
+  }
+}

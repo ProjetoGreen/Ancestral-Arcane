@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": { "item": "ancestral_arcane:flint_catalyst" },
+    "S": { "item": "minecraft:stick" }
+  },
+  "pattern": [
+    "  C",
+    " S ",
+    "S  "
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:flint_wand"
+  }
+}

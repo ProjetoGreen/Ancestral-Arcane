@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "M": {
+      "item": "minecraft:glow_ink_sac"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "D": {
+      "item": "minecraft:lime_dye"
+    },
+    "I": {
+      "item": "minecraft:ink_sac"
+    },
+    "X": {
+      "item": "minecraft:ghast_tear"
+    }
+  },
+  "pattern": [
+    "PMF",
+    "DID",
+    " X "
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:scroll_cleanse"
+  }
+}

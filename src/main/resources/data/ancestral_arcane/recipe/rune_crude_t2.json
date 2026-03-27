@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "Q": { "item": "minecraft:quartz" },
+    "G": { "item": "minecraft:glowstone_dust" },
+    "R": { "item": "ancestral_arcane:rune_crude_t1" }
+  },
+  "pattern": [
+    "QGQ",
+    "GRG",
+    "Q Q"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:rune_crude_t2"
+  }
+}

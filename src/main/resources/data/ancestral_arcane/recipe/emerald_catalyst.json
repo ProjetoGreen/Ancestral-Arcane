@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": { "item": "minecraft:emerald" },
+    "G": { "item": "minecraft:ghast_tear" },
+    "E": { "item": "minecraft:ender_eye" },
+    "B": { "item": "minecraft:dragon_breath" },
+    "R": { "item": "ancestral_arcane:rune_t5" },
+    "S": { "item": "minecraft:blaze_rod" }
+  },
+  "pattern": [
+    "M M",
+    "GME",
+    "BRS"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:emerald_catalyst"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": { "item": "minecraft:diamond" },
+    "A": { "item": "minecraft:amethyst_shard" },
+    "E": { "item": "minecraft:ender_eye" },
+    "B": { "item": "minecraft:dragon_breath" },
+    "R": { "item": "ancestral_arcane:rune_t5" },
+    "S": { "item": "minecraft:blaze_rod" }
+  },
+  "pattern": [
+    "D D",
+    "ADE",
+    "BRS"
+  ],
+  "result": {
+    "count": 1,
+    "item": "ancestral_arcane:diamond_catalyst"
+  }
+}
