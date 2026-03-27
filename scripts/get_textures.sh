@@ -108,16 +108,62 @@ copy_wand_assets() {
     "copper_catalyst.png"
 }
 
+copy_items() {
+  local src_dir="${TEXTURES_ROOT}/item"
+  local dye_dest="${WIKI_ROOT}/imgs/dyes"
+  local material_dest="${WIKI_ROOT}/imgs/materials"
+  local wand_dest="${WIKI_ROOT}/imgs/wands"
+  local scroll_dest="${WIKI_ROOT}/imgs/scrolls"
+  local rune_dest="${WIKI_ROOT}/imgs/runes"
+  local grimoire_dest="${WIKI_ROOT}/imgs/grimoires"
+
+  [[ -d "${src_dir}" ]] || return 0
+
+  mkdir -p "${dye_dest}" "${material_dest}" "${wand_dest}" "${scroll_dest}" "${rune_dest}" "${grimoire_dest}"
+
+  while IFS= read -r file; do
+    local base
+    base="$(basename "${file}")"
+
+    case "${base}" in
+      *_dye.png)
+        cp "${file}" "${dye_dest}/${base}"
+        printf 'copied %s -> %s\n' "${file}" "${dye_dest}/${base}"
+        ;;
+      *wand*.png)
+        cp "${file}" "${wand_dest}/${base}"
+        printf 'copied %s -> %s\n' "${file}" "${wand_dest}/${base}"
+        ;;
+      scroll*.png)
+        cp "${file}" "${scroll_dest}/${base}"
+        printf 'copied %s -> %s\n' "${file}" "${scroll_dest}/${base}"
+        ;;
+      rune*.png)
+        cp "${file}" "${rune_dest}/${base}"
+        printf 'copied %s -> %s\n' "${file}" "${rune_dest}/${base}"
+        ;;
+      grimoire*.png|forgotten_magicbook.png)
+        cp "${file}" "${grimoire_dest}/${base}"
+        printf 'copied %s -> %s\n' "${file}" "${grimoire_dest}/${base}"
+        ;;
+      *)
+        cp "${file}" "${material_dest}/${base}"
+        printf 'copied %s -> %s\n' "${file}" "${material_dest}/${base}"
+        ;;
+    esac
+  done < <(find "${src_dir}" -maxdepth 1 -type f -name '*.png' | sort)
+}
+
 if [[ ! -d "${WIKI_ROOT}" ]]; then
   printf 'wiki path not found: %s\n' "${WIKI_ROOT}" >&2
   exit 1
 fi
 
-mkdir -p "${WIKI_ROOT}/imgs"
+mkdir -p "${WIKI_ROOT}/imgs/blocks" "${WIKI_ROOT}/imgs/gui"
 
-copy_flat "${TEXTURES_ROOT}/block" "${WIKI_ROOT}/imgs/block" '*.png'
+copy_flat "${TEXTURES_ROOT}/block" "${WIKI_ROOT}/imgs/blocks" '*.png'
 copy_flat "${TEXTURES_ROOT}/gui/arcane_table" "${WIKI_ROOT}/imgs/gui" '*.png'
-copy_flat "${TEXTURES_ROOT}/item" "${WIKI_ROOT}/imgs/item" '*.png'
+copy_items
 copy_named "${ARCANE_ITEMS_ROOT}/runes" "${WIKI_ROOT}/imgs/runes" \
   "rune.png" \
   "rune_crude.png" \
@@ -126,5 +172,9 @@ copy_named "${ARCANE_ITEMS_ROOT}/runes" "${WIKI_ROOT}/imgs/runes" \
   "rune_upgraded_generic_inscribed.png"
 copy_grimoire_and_scrolls
 copy_wand_assets
+
+# Cleanup legacy folders if they exist and are empty or redundant
+[[ -d "${WIKI_ROOT}/imgs/item" ]] && rm -rf "${WIKI_ROOT}/imgs/item"
+[[ -d "${WIKI_ROOT}/imgs/block" ]] && rm -rf "${WIKI_ROOT}/imgs/block"
 
 printf 'texture sync completed.\n'
