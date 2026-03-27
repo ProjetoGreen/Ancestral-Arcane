@@ -148,6 +148,14 @@ public class AncestralArcaneCreativeTab {
                         for (net.minecraft.world.item.Item wand : wands) {
                             output.accept(wand);
                         }
+                        output.accept(AncestralArcaneItems.FLINT_CATALYST.get());
+                        output.accept(AncestralArcaneItems.COPPER_CATALYST.get());
+                        output.accept(AncestralArcaneItems.IRON_CATALYST.get());
+                        output.accept(AncestralArcaneItems.GOLD_CATALYST.get());
+                        output.accept(AncestralArcaneItems.DIAMOND_CATALYST.get());
+                        output.accept(AncestralArcaneItems.EMERALD_CATALYST.get());
+                        output.accept(AncestralArcaneItems.NETHERITE_CATALYST.get());
+
                         output.accept(AncestralArcaneItems.ARCANE_SMITHING_TABLE.get());
                         output.accept(AncestralArcaneItems.HOME_ANCHOR.get());
                     }).build());

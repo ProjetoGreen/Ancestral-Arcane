@@ -125,32 +125,48 @@ public class WandItem extends Item {
 
     private void degradeRune(ServerPlayer player, ItemStack stack, CompoundTag data, CompoundTag rune,
             String catalyst) {
-        int reuse = CastResolver.getReuse(catalyst);
-        int dirty = rune.getInt("dirty");
-        int charges = rune.getInt("charges");
-        int lvl = rune.getInt("lvl");
+        int runeTier = rune.getInt("tier");
+        int wandTier = CastResolver.getWandTier(catalyst);
+        float wearAmount = 1.0f;
 
-        boolean maxedDirty = dirty >= reuse;
-        boolean noCharges = charges <= 0;
+        // Wiki Wear Rules:
+        // - Wand tier >= Rune tier + 2: 0.5 wear
+        // - Wand tier == Rune tier OR Rune tier + 1: 1 wear
+        // - Wand tier < Rune tier: 2 wear
+        if (wandTier >= runeTier + 2) {
+            wearAmount = 0.5f;
+        } else if (wandTier < runeTier) {
+            wearAmount = 2.0f;
+        }
 
-        if (maxedDirty || noCharges) {
-            rune.putInt("dirty", 0);
-            rune.putInt("charges", Math.max(0, Math.min(charges, lvl * 10)));
+        float currentWear = rune.contains("wear") ? rune.getFloat("wear") : 0f;
+        currentWear += wearAmount;
 
-            if (charges <= 0) {
-                lvl--;
-                if (lvl <= 0) {
-                    data.remove("rune");
-                } else {
-                    rune.putInt("lvl", lvl);
-                    rune.putInt("charges", lvl * 10);
-                    data.put("rune", rune);
-                }
+        // Wiki Durability Targets:
+        // I: 3, II: 6, III: 9, IV: 12, V: 15
+        int maxWear = switch (runeTier) {
+            case 2 -> 6;
+            case 3 -> 9;
+            case 4 -> 12;
+            case 5 -> 15;
+            default -> 3;
+        };
+
+        if (currentWear >= maxWear) {
+            // Decay one tier
+            int nextTier = runeTier - 1;
+            if (nextTier <= 0) {
+                data.remove("rune");
             } else {
-                rune.putInt("dirty", 0);
-                rune.putInt("charges", Math.max(0, Math.min(charges, lvl * 10)));
+                rune.putInt("tier", nextTier);
+                rune.putInt("lvl", nextTier);
+                rune.putInt("charges", nextTier * 10);
+                rune.putFloat("wear", 0f);
                 data.put("rune", rune);
             }
+        } else {
+            rune.putFloat("wear", currentWear);
+            data.put("rune", rune);
         }
 
         CustomDataUtil.setAncestralArcaneData(stack, data);

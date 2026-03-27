@@ -134,7 +134,8 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                 if (isGrimoireToRune) {
                     CompoundTag gd = CustomDataUtil.getAncestralArcaneData(grimoireInputSlot);
                     CompoundTag gcomp = gd.contains("grimoire") ? gd.getCompound("grimoire") : new CompoundTag();
-                    int uses = gcomp.contains("uses") ? gcomp.getInt("uses") : 2;
+                    int tier = gcomp.contains("tier") ? gcomp.getInt("tier") : 1;
+                    int uses = gcomp.contains("uses") ? gcomp.getInt("uses") : (tier == 5 ? 15 : tier == 4 ? 12 : tier == 3 ? 9 : tier == 2 ? 6 : 3);
                     uses--;
                     if (uses <= 0) {
                         int oldTier = gcomp.contains("tier") ? gcomp.getInt("tier") : 1;
@@ -218,6 +219,12 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                         input1.shrink(1);
                         input3.shrink(cost);
                     }
+                }
+                // 8. Leather Grip Upgrade (Wand + Leather + String)
+                else if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.is(Items.LEATHER) && input3.is(Items.STRING)) {
+                    input1.shrink(1);
+                    input2.shrink(1);
+                    input3.shrink(1);
                 }
 
                 super.onTake(player, stack);
@@ -364,7 +371,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                     int outputTier = getGrimoireTier(grimoireSlot);
                     grim.putString("spell", spell);
                     grim.putInt("tier", outputTier);
-                    grim.putInt("uses", outputTier * 2);
+                    grim.putInt("uses", outputTier == 5 ? 15 : outputTier == 4 ? 12 : outputTier == 3 ? 9 : outputTier == 2 ? 6 : 3);
 
                     dt.put("grimoire", grim);
 
@@ -487,19 +494,6 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
         // slot for now,
         // or we drop the rune at the table when unbinding.
         // Let's implement dropping the rune on extracting the wand.
-        if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.isEmpty() && input3.isEmpty()) {
-            CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
-            if (wandData.contains("rune")) {
-                // Show unbound wand in output
-                CompoundTag newWandData = wandData.copy();
-                newWandData.remove("rune");
-                ItemStack out = input1.copy();
-                out.setCount(1);
-                CustomDataUtil.setAncestralArcaneData(out, newWandData);
-                result = out;
-            }
-        }
-
         // 7. Reactivate Forgotten Magic Book
         if (input1.is(com.ancestralarcane.registry.AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get()) && input2.isEmpty()
                 && input3.is(net.minecraft.world.item.Items.GLOWSTONE_DUST)) {
@@ -521,7 +515,7 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                     ItemStack reactivated = new ItemStack(grimItem);
                     CompoundTag newGcomp = new CompoundTag();
                     newGcomp.putInt("tier", tier);
-                    newGcomp.putInt("uses", tier * 2);
+                    newGcomp.putInt("uses", tier == 5 ? 15 : tier == 4 ? 12 : tier == 3 ? 9 : tier == 2 ? 6 : 3);
 
                     CompoundTag newDt = new CompoundTag();
                     newDt.put("grimoire", newGcomp);
@@ -532,7 +526,29 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
             }
         }
 
+        // 8. Leather Grip Upgrade (Wand + Leather + String)
+        if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.is(Items.LEATHER) && input3.is(Items.STRING)) {
+            Item wandItem = input1.getItem();
+            Item gripItem = getLeatherGripWand(wandItem);
+            if (gripItem != null) {
+                ItemStack out = new ItemStack(gripItem);
+                out.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, input1.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA));
+                result = out;
+            }
+        }
+
         blockEntity.inventory.setStackInSlot(3, result);
+    }
+
+    private Item getLeatherGripWand(Item baseWand) {
+        if (baseWand == AncestralArcaneItems.FLINT_WAND.get()) return AncestralArcaneItems.FLINT_WAND_LEATHER_GRIP.get();
+        if (baseWand == AncestralArcaneItems.COPPER_WAND.get()) return AncestralArcaneItems.COPPER_WAND_LEATHER_GRIP.get();
+        if (baseWand == AncestralArcaneItems.IRON_WAND.get()) return AncestralArcaneItems.IRON_WAND_LEATHER_GRIP.get();
+        if (baseWand == AncestralArcaneItems.GOLDEN_WAND.get()) return AncestralArcaneItems.GOLDEN_WAND_LEATHER_GRIP.get();
+        if (baseWand == AncestralArcaneItems.DIAMOND_WAND.get()) return AncestralArcaneItems.DIAMOND_WAND_LEATHER_GRIP.get();
+        if (baseWand == AncestralArcaneItems.EMERALD_WAND.get()) return AncestralArcaneItems.EMERALD_WAND_LEATHER_GRIP.get();
+        if (baseWand == AncestralArcaneItems.NETHERITE_WAND.get()) return AncestralArcaneItems.NETHERITE_WAND_LEATHER_GRIP.get();
+        return null;
     }
 
     private net.minecraft.world.item.Item getEmptyGrimoireForTier(int tier) {

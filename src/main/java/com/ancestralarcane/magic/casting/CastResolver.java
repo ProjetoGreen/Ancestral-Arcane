@@ -15,10 +15,22 @@ public class CastResolver {
             case "copper" -> 80;
             case "iron" -> 85;
             case "gold" -> 95;
-            case "diamond" -> 90;
-            case "emerald" -> 95;
+            case "diamond" -> 100;
+            case "emerald" -> 100;
             case "netherite" -> 100;
             default -> 70;
+        };
+    }
+
+    public static int getWandTier(String catalyst) {
+        if (catalyst == null) return 1;
+        return switch (catalyst) {
+            case "flint" -> 1;
+            case "copper" -> 2;
+            case "iron" -> 3;
+            case "gold" -> 4;
+            case "diamond", "emerald", "netherite" -> 5;
+            default -> 1;
         };
     }
 
@@ -46,7 +58,7 @@ public class CastResolver {
             return true;
         if (catalyst.equals("diamond") && spell == SpellType.BREAKER)
             return true;
-        if (catalyst.equals("emerald") && spell == SpellType.MEND)
+        if (catalyst.equals("emerald") && spell == SpellType.HEAL)
             return true;
         if (catalyst.equals("netherite") && spell == SpellType.STORM)
             return true;

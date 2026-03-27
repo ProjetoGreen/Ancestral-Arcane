@@ -49,11 +49,14 @@ public class GrimoireSpellItem extends Item {
             TooltipFlag tooltipFlag) {
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
         int tier = 1;
-        int uses = 2;
+        int uses = 0;
         if (data.contains("grimoire")) {
             CompoundTag grim = data.getCompound("grimoire");
             tier = grim.getInt("tier");
-            uses = grim.getInt("uses");
+            uses = grim.contains("uses") ? grim.getInt("uses") : (tier == 5 ? 15 : tier == 4 ? 12 : tier == 3 ? 9 : tier == 2 ? 6 : 3);
+        } else {
+            // Fallback for empty grimoires if needed, though they usually aren't GrimoireSpellItems
+            uses = 3;
         }
         tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.tier", toRoman(tier)));
         tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.uses_left", uses));
