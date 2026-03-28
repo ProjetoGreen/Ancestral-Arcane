@@ -39,6 +39,10 @@ public class AncestralArcaneMod {
         modEventBus.addListener(this::gatherData);
 
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
+
+        if (net.neoforged.fml.loading.FMLEnvironment.dist.isClient()) {
+            NeoForge.EVENT_BUS.register(new com.ancestralarcane.client.TetherRenderer());
+        }
     }
 
     private void gatherData(GatherDataEvent event) {
