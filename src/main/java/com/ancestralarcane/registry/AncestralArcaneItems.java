@@ -127,41 +127,41 @@ public class AncestralArcaneItems {
                         () -> new ForgottenMagicBookItem(new Item.Properties().stacksTo(1)));
 
         public static final DeferredItem<WandItem> COPPER_WAND = ITEMS.register("copper_wand",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(128), false));
         public static final DeferredItem<WandItem> DIAMOND_WAND = ITEMS.register("diamond_wand",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(1561), false));
         public static final DeferredItem<WandItem> EMERALD_WAND = ITEMS.register("emerald_wand",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(384), false));
         public static final DeferredItem<WandItem> FLINT_WAND = ITEMS.register("flint_wand",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(64), false));
         public static final DeferredItem<WandItem> GOLDEN_WAND = ITEMS.register("golden_wand",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(96), false));
         public static final DeferredItem<WandItem> IRON_WAND = ITEMS.register("iron_wand",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(250), false));
         public static final DeferredItem<WandItem> NETHERITE_WAND = ITEMS.register("netherite_wand",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(2031), false));
 
         public static final DeferredItem<WandItem> COPPER_WAND_LEATHER_GRIP = ITEMS.register(
                         "copper_wand_leather_grip",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(256), true));
         public static final DeferredItem<WandItem> DIAMOND_WAND_LEATHER_GRIP = ITEMS.register(
                         "diamond_wand_leather_grip",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(3122), true));
         public static final DeferredItem<WandItem> EMERALD_WAND_LEATHER_GRIP = ITEMS.register(
                         "emerald_wand_leather_grip",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(768), true));
         public static final DeferredItem<WandItem> FLINT_WAND_LEATHER_GRIP = ITEMS.register(
                         "flint_wand_leather_grip",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(128), true));
         public static final DeferredItem<WandItem> GOLDEN_WAND_LEATHER_GRIP = ITEMS.register(
                         "golden_wand_leather_grip",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(192), true));
         public static final DeferredItem<WandItem> IRON_WAND_LEATHER_GRIP = ITEMS.register(
                         "iron_wand_leather_grip",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(500), true));
         public static final DeferredItem<WandItem> NETHERITE_WAND_LEATHER_GRIP = ITEMS.register(
                         "netherite_wand_leather_grip",
-                        () -> new WandItem(new Item.Properties().stacksTo(1)));
+                        () -> new WandItem(new Item.Properties().stacksTo(1).durability(4062), true));
 
         // Catalysts
         public static final DeferredItem<Item> FLINT_CATALYST = ITEMS.register("flint_catalyst",

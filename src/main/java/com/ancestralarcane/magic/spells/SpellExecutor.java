@@ -223,25 +223,46 @@ public class SpellExecutor {
 
     private static boolean executeHeartstone(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
+        ItemStack stack = player.getMainHandItem();
+        if (!(stack.getItem() instanceof com.ancestralarcane.item.WandItem)) {
+            stack = player.getOffhandItem();
+        }
+
+        if (stack.getItem() instanceof com.ancestralarcane.item.WandItem) {
+            net.minecraft.nbt.CompoundTag data = com.ancestralarcane.data.CustomDataUtil.getAncestralArcaneData(stack);
+            if (data.contains("linked_pos") && data.contains("linked_dim")) {
+                BlockPos linkedPos = BlockPos.of(data.getLong("linked_pos"));
+                String dimStr = data.getString("linked_dim");
+                net.minecraft.resources.ResourceLocation dimLoc = net.minecraft.resources.ResourceLocation.parse(dimStr);
+                net.minecraft.resources.ResourceKey<Level> dimKey = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, dimLoc);
+                ServerLevel targetLevel = player.server.getLevel(dimKey);
+                
+                if (targetLevel != null) {
+                    player.teleportTo(targetLevel, linkedPos.getX() + 0.5, linkedPos.getY() + 1.0, linkedPos.getZ() + 0.5, player.getYRot(), player.getXRot());
+                    return true;
+                }
+            }
+        }
+
         BlockPos spawn = player.getRespawnPosition();
         if (spawn != null) {
             ServerLevel targetLevel = player.server.getLevel(player.getRespawnDimension());
             if (targetLevel != null) {
-                player.teleportTo(targetLevel, spawn.getX(), spawn.getY(), spawn.getZ(), player.getYRot(),
+                player.teleportTo(targetLevel, spawn.getX() + 0.5, spawn.getY() + 1.0, spawn.getZ() + 0.5, player.getYRot(),
                         player.getXRot());
                 return true;
             }
         }
         // Fallback to world spawn
         BlockPos worldSpawn = level.getSharedSpawnPos();
-        player.teleportTo(level, worldSpawn.getX(), worldSpawn.getY(), worldSpawn.getZ(), player.getYRot(),
+        player.teleportTo(level, worldSpawn.getX() + 0.5, worldSpawn.getY() + 1.0, worldSpawn.getZ() + 0.5, player.getYRot(),
                 player.getXRot());
         return true;
     }
 
     private static boolean executeWolves(ServerPlayer player, ServerLevel level, int spellLevel,
             float powerMultiplier) {
-        int wolvesToSpawn = 3;
+        int wolvesToSpawn = spellLevel; // Tier III = 3, IV = 4, V = 5
         boolean spawnedAny = false;
         for (int i = 0; i < wolvesToSpawn; i++) {
             Wolf wolf = EntityType.WOLF.create(level);

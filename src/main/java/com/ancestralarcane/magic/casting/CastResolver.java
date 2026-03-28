@@ -88,9 +88,15 @@ public class CastResolver {
         return 3;
     }
 
-    public static float getEffectiveCastTimeTicks(int baseTicks, String upgradeType, int upgradeLevel,
+    public static float getEffectiveCastTimeTicks(String catalyst, int baseTicks, String upgradeType, int upgradeLevel,
             SpellType spell) {
         float reduction = 0f;
+        
+        // Affinity Bonus: -15% cast time
+        if (hasAffinity(catalyst, spell)) {
+            reduction += 0.15f;
+        }
+
         if (upgradeType != null && spell != null) {
             boolean matches = false;
             if (upgradeType.equals("blaze") && spell == SpellType.FIRE)
@@ -102,11 +108,11 @@ public class CastResolver {
 
             if (matches) {
                 if (upgradeLevel == 1)
-                    reduction = 0.10f;
+                    reduction += 0.10f;
                 else if (upgradeLevel == 2)
-                    reduction = 0.20f;
+                    reduction += 0.20f;
                 else if (upgradeLevel >= 3)
-                    reduction = 0.30f;
+                    reduction += 0.30f;
             }
         }
         return baseTicks * (1.0f - reduction);
