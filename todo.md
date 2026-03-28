@@ -22,9 +22,13 @@ This document tracks the missing features in the mod code required to achieve fu
 ## 🟡 Priority 2: Exploration & Utility
 *Features that define mid-game progression and field usefulness.*
 
-- [ ] **Home Anchor Synchronization**:
+- [ ] **Home Anchor Synchronization & Heartstone Logic**:
   - Update `executeHeartstone` in `SpellExecutor` to check for a specific `Home Anchor` location stored in the wand's/rune's NBT.
   - Add a "synchronization" interaction between the wand and the `Home Anchor` block.
+  - Implement special costs: `Heartstone` requires a *full charge* but only consumes `0.5` wear (ignoring normal tier wear rules).
+- [ ] **Summon Wolves Expansion**:
+  - Implement Tier-based scaling: Tier III (3 wolves, 3m), Tier IV (4, 4m), Tier V (5, 5m).
+  - Add "Raw Beef" check: if holding beef, consume only `1` total charge; otherwise `1` charge per wolf.
 - [ ] **Fragment of All Knowledge (Rapid Swapping)**:
   - Implement a field-swapping GUI or mechanic when the wand contains the `Fragment of All Knowledge`.
   - This should remove the hard requirement for an Arcane Smithing Table for basic rune swapping.
