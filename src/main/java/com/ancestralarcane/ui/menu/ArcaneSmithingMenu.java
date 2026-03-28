@@ -189,6 +189,8 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                 // 5. Binding (Rune -> Wand)
                 else if (input1.getItem() instanceof com.ancestralarcane.item.WandItem
                         && input2.getItem() instanceof com.ancestralarcane.item.RuneItem && input3.isEmpty()) {
+                    // Update: Binding now goes to active slot.
+                    // We handle the NBT update in createResult, here we just shrink inputs.
                     input1.shrink(1);
                     input2.shrink(1);
                 }
@@ -196,8 +198,24 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                 else if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.isEmpty()
                         && input3.isEmpty()) {
                     CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
-                    if (wandData.contains("rune")) {
-                        CompoundTag runeDataBody = wandData.getCompound("rune").copy();
+                    net.minecraft.nbt.ListTag runes = wandData.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND);
+                    int activeSlot = wandData.getInt("active_slot");
+                    
+                    if (activeSlot < runes.size()) {
+                        CompoundTag runeDataBody = runes.getCompound(activeSlot).copy();
+                        
+                        // Create a NEW list without the extracted rune, or just clear that slot?
+                        // The mod design implies extraction replaces with 'empty' or just removes.
+                        // Let's remove it from the list.
+                        runes.remove(activeSlot);
+                        wandData.put("runes", runes);
+                        // Reset active slot if it's now out of bounds
+                        if (activeSlot >= runes.size() && !runes.isEmpty()) {
+                            wandData.putInt("active_slot", runes.size() - 1);
+                        } else if (runes.isEmpty()) {
+                            wandData.putInt("active_slot", 0);
+                        }
+                        
                         input1.shrink(1); // consume the input wand
                         // Drop the unbound rune to the player
                         ItemStack outRune = new ItemStack(AncestralArcaneItems.RUNE.get());
@@ -225,6 +243,12 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
                     input1.shrink(1);
                     input2.shrink(1);
                     input3.shrink(1);
+                }
+                // 9. Socketed Grimoire (Expanding Slots)
+                else if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input1.getDescriptionId().contains("netherite") 
+                        && input2.is(AncestralArcaneItems.GRIMOIRE_T5.get()) && input3.isEmpty()) {
+                    input1.shrink(1); // consume base wand
+                    input2.shrink(1); // consume T5 grimoire
                 }
 
                 super.onTake(player, stack);
@@ -472,28 +496,46 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
         if (input1.getItem() instanceof com.ancestralarcane.item.WandItem
                 && input2.getItem() instanceof com.ancestralarcane.item.RuneItem
                 && input3.isEmpty()) {
-            CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
-            boolean hasRune = wandData.contains("rune") && wandData.getCompound("rune").getInt("lvl") > 0;
-            if (!hasRune) {
-                CompoundTag runeData = CustomDataUtil.getAncestralArcaneData(input2);
-                if (runeData.contains("rune") && runeData.getCompound("rune").getInt("lvl") > 0) {
-                    CompoundTag newWandData = wandData.copy();
-                    newWandData.put("rune", runeData.getCompound("rune").copy());
-                    ItemStack out = input1.copy();
-                    out.setCount(1);
-                    CustomDataUtil.setAncestralArcaneData(out, newWandData);
+            CompoundTag runeData = CustomDataUtil.getAncestralArcaneData(input2);
+            if (runeData.contains("rune") && runeData.getCompound("rune").getInt("lvl") > 0) {
+                ItemStack out = input1.copy();
+                out.setCount(1);
+                
+                // Use Wand's internal logic for migration if needed
+                if (out.getItem() instanceof com.ancestralarcane.item.WandItem wand) {
+                    CompoundTag runeBody = runeData.getCompound("rune").copy();
+                    wand.setActiveRune(out, runeBody);
                     result = out;
                 }
             }
         }
 
-        // 6. Unbinding (Wand -> Rune) - Requires no other inputs, just Wand in Input 1
-        // We output the Wand back, but how do we give the Rune back? We can't in 1
-        // output slot.
-        // Unbinding needs 2 slots. Let's skip automatic unbinding for a single Output
-        // slot for now,
-        // or we drop the rune at the table when unbinding.
-        // Let's implement dropping the rune on extracting the wand.
+        // 6. Unbinding (Wand -> Rune)
+        if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input2.isEmpty()
+                && input3.isEmpty()) {
+            CompoundTag wandData = CustomDataUtil.getAncestralArcaneData(input1);
+            net.minecraft.nbt.ListTag runes = wandData.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND);
+            int activeSlot = wandData.getInt("active_slot");
+            
+            if (activeSlot < runes.size()) {
+                CompoundTag runeDataBody = runes.getCompound(activeSlot);
+                if (runeDataBody.contains("spell")) {
+                    // Preview the Wand without the rune (or just the wand itself as a token)
+                    ItemStack out = input1.copy();
+                    out.setCount(1);
+                    // We don't want to actually modify the NBT in the preview in a way that is permanent,
+                    // but createResult IS for the visual output.
+                    CompoundTag previewData = wandData.copy();
+                    net.minecraft.nbt.ListTag previewRunes = previewData.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND).copy();
+                    if (activeSlot < previewRunes.size()) {
+                        previewRunes.remove(activeSlot);
+                    }
+                    previewData.put("runes", previewRunes);
+                    CustomDataUtil.setAncestralArcaneData(out, previewData);
+                    result = out;
+                }
+            }
+        }
         // 7. Reactivate Forgotten Magic Book
         if (input1.is(com.ancestralarcane.registry.AncestralArcaneItems.FORGOTTEN_MAGICBOOK.get()) && input2.isEmpty()
                 && input3.is(net.minecraft.world.item.Items.GLOWSTONE_DUST)) {
@@ -533,6 +575,20 @@ public class ArcaneSmithingMenu extends AbstractContainerMenu {
             if (gripItem != null) {
                 ItemStack out = new ItemStack(gripItem);
                 out.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, input1.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA));
+                result = out;
+            }
+        }
+
+        // 9. Socketed Grimoire Upgrade (Netherite Wand + Grimoire T5)
+        if (input1.getItem() instanceof com.ancestralarcane.item.WandItem && input1.getDescriptionId().contains("netherite")
+                && input2.is(AncestralArcaneItems.GRIMOIRE_T5.get()) && input3.isEmpty()) {
+            CompoundTag data = CustomDataUtil.getAncestralArcaneData(input1);
+            if (!data.getBoolean("socketed_grimoire")) {
+                ItemStack out = input1.copy();
+                out.setCount(1);
+                CompoundTag newData = data.copy();
+                newData.putBoolean("socketed_grimoire", true);
+                CustomDataUtil.setAncestralArcaneData(out, newData);
                 result = out;
             }
         }

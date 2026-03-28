@@ -83,19 +83,20 @@ public class WandItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        migrateNBT(stack); // Ensure NBT is up to date
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
         
-        // Rapid Swapping (Fragment of All Knowledge)
+        // Sneak actions
         if (player.isShiftKeyDown()) {
-            boolean hasFragment = player.getInventory().contains(new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get()));
-            if (hasFragment) {
-                ItemStack offhand = player.getOffhandItem();
-                if (offhand.getItem() instanceof com.ancestralarcane.item.RuneItem) {
-                    CompoundTag wandRune = data.getCompound("rune").copy();
+            ItemStack offhand = player.getOffhandItem();
+            // 1. Rapid Swapping (with Fragment of All Knowledge)
+            if (offhand.getItem() instanceof com.ancestralarcane.item.RuneItem) {
+                boolean hasFragment = player.getInventory().contains(new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get()));
+                if (hasFragment) {
+                    CompoundTag wandRune = getActiveRune(stack).copy();
                     CompoundTag offhandRune = CustomDataUtil.getAncestralArcaneData(offhand).getCompound("rune").copy();
                     
-                    data.put("rune", offhandRune);
-                    CustomDataUtil.setAncestralArcaneData(stack, data);
+                    setActiveRune(stack, offhandRune);
                     
                     CompoundTag newOffhandData = CustomDataUtil.getAncestralArcaneData(offhand);
                     newOffhandData.put("rune", wandRune);
@@ -108,13 +109,30 @@ public class WandItem extends Item {
                     }
                     return InteractionResultHolder.success(stack);
                 }
+            } else if (offhand.isEmpty()) {
+                // 2. Cycle Slots (Sneak + Right Click air/no offhand item)
+                int slots = getAvailableSlots(stack);
+                if (slots > 1) {
+                    int currentIdx = data.getInt("active_slot");
+                    int nextIdx = (currentIdx + 1) % slots;
+                    data.putInt("active_slot", nextIdx);
+                    CustomDataUtil.setAncestralArcaneData(stack, data);
+                    
+                    if (level.isClientSide) {
+                        player.displayClientMessage(Component.literal("Active Slot: " + (nextIdx + 1)), true);
+                    } else {
+                        level.playSound(null, player.getX(), player.getY(), player.getZ(), 
+                            SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 1.0f, 1.0f + (nextIdx * 0.2f));
+                    }
+                    return InteractionResultHolder.success(stack);
+                }
             }
         }
 
-        if (!data.contains("rune")) {
+        CompoundTag rune = getActiveRune(stack);
+        if (rune.isEmpty() || !rune.contains("spell")) {
             return InteractionResultHolder.fail(stack);
         }
-        CompoundTag rune = data.getCompound("rune");
         if (rune.getInt("charges") <= 0) {
             return InteractionResultHolder.fail(stack);
         }
@@ -133,9 +151,8 @@ public class WandItem extends Item {
         
         int useDuration = this.getUseDuration(stack, entity) - timeLeft;
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
-        if (!data.contains("rune")) return;
-
-        CompoundTag rune = data.getCompound("rune");
+        CompoundTag rune = getActiveRune(stack);
+        if (rune.isEmpty() || !rune.contains("spell")) return;
         String spellStr = rune.getString("spell");
         SpellType spell = SpellType.fromId(spellStr);
         if (spell == null) return;
@@ -180,8 +197,7 @@ public class WandItem extends Item {
             
             rune.putInt("charges", charges);
             rune.putInt("dirty", dirty);
-            data.put("rune", rune);
-            CustomDataUtil.setAncestralArcaneData(stack, data);
+            setActiveRune(stack, rune);
             
             player.stopUsingItem();
             player.getCooldowns().addCooldown(this, 40);
@@ -189,6 +205,26 @@ public class WandItem extends Item {
             if (!level.isClientSide) {
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 0.5f);
+            }
+        }
+
+        // High Impurity Side-Effects (> 75%)
+        int dirty = rune.getInt("dirty");
+        if (dirty > 75) {
+            if (level.random.nextFloat() < 0.05f) { // 5% chance per tick
+                if (level.isClientSide) {
+                    for (int i = 0; i < 3; i++) {
+                        level.addParticle(net.minecraft.core.particles.ParticleTypes.SMOKE, 
+                            player.getX() + (level.random.nextDouble() - 0.5),
+                            player.getY() + 1.0 + (level.random.nextDouble() - 0.5),
+                            player.getZ() + (level.random.nextDouble() - 0.5),
+                            0, 0, 0);
+                    }
+                } else {
+                    player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 40, 0));
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), 
+                        SoundEvents.CHICKEN_EGG, SoundSource.PLAYERS, 1.0f, 0.5f);
+                }
             }
         }
     }
@@ -201,10 +237,10 @@ public class WandItem extends Item {
         int useDuration = this.getUseDuration(stack, entityLiving) - timeLeft;
 
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
-        if (!data.contains("rune"))
+        CompoundTag rune = getActiveRune(stack);
+        if (rune.isEmpty() || !rune.contains("spell"))
             return;
 
-        CompoundTag rune = data.getCompound("rune");
         String spellStr = rune.getString("spell");
         SpellType spell = SpellType.fromId(spellStr);
         if (spell == null)
@@ -405,14 +441,87 @@ public class WandItem extends Item {
         if (data.contains("catalyst")) {
             tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.catalyst", data.getString("catalyst")));
         }
-        if (data.contains("rune")) {
-            CompoundTag rune = data.getCompound("rune");
-            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.spell", rune.getString("spell")));
-            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.tier", toRoman(rune.getInt("tier"))));
-            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.level", rune.getInt("lvl")));
-            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.charges", rune.getInt("charges"), (rune.getInt("lvl") * 10)));
+
+        int slots = getAvailableSlots(stack);
+        int activeSlot = data.getInt("active_slot");
+        net.minecraft.nbt.ListTag runes = data.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND);
+
+        if (slots > 1) {
+            tooltipComponents.add(Component.literal("Slots:").withStyle(net.minecraft.ChatFormatting.GOLD));
+            for (int i = 0; i < slots; i++) {
+                String prefix = (i == activeSlot) ? "> " : "  ";
+                if (i < runes.size()) {
+                    CompoundTag rune = runes.getCompound(i);
+                    String spell = rune.getString("spell");
+                    int tier = rune.getInt("tier");
+                    tooltipComponents.add(Component.literal(prefix + "Slot " + (i + 1) + ": " + spell + " " + toRoman(tier))
+                        .withStyle((i == activeSlot) ? net.minecraft.ChatFormatting.YELLOW : net.minecraft.ChatFormatting.GRAY));
+                } else {
+                    tooltipComponents.add(Component.literal(prefix + "Slot " + (i + 1) + ": Empty")
+                        .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
+                }
+            }
         } else {
-            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.no_rune"));
+            CompoundTag rune = getActiveRune(stack);
+            if (!rune.isEmpty() && rune.contains("spell")) {
+                tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.spell", rune.getString("spell")));
+                tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.tier", toRoman(rune.getInt("tier"))));
+                tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.level", rune.getInt("lvl")));
+                tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.charges", rune.getInt("charges"), (rune.getInt("lvl") * 10)));
+            } else {
+                tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.no_rune"));
+            }
+        }
+    }
+
+    public int getAvailableSlots(ItemStack stack) {
+        CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
+        // Tier V check (Netherite) + Socketed Grimoire requirement
+        if (stack.getItem() instanceof WandItem wand && wand.getDescriptionId().contains("netherite")) {
+            if (data.getBoolean("socketed_grimoire")) {
+                return 3;
+            }
+        }
+        return 1;
+    }
+
+    public CompoundTag getActiveRune(ItemStack stack) {
+        migrateNBT(stack);
+        CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
+        int activeSlot = data.getInt("active_slot");
+        net.minecraft.nbt.ListTag runes = data.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND);
+        if (activeSlot < runes.size()) {
+            return runes.getCompound(activeSlot);
+        }
+        return new CompoundTag();
+    }
+
+    public void setActiveRune(ItemStack stack, CompoundTag rune) {
+        migrateNBT(stack);
+        CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
+        int activeSlot = data.getInt("active_slot");
+        net.minecraft.nbt.ListTag runes = data.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND);
+        
+        // Ensure index exists
+        while (runes.size() <= activeSlot) {
+            runes.add(new CompoundTag());
+        }
+        
+        runes.set(activeSlot, rune);
+        data.put("runes", runes);
+        CustomDataUtil.setAncestralArcaneData(stack, data);
+    }
+
+    private void migrateNBT(ItemStack stack) {
+        CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
+        if (data.contains("rune") && !data.contains("runes")) {
+            CompoundTag oldRune = data.getCompound("rune");
+            net.minecraft.nbt.ListTag runes = new net.minecraft.nbt.ListTag();
+            runes.add(oldRune.copy());
+            data.put("runes", runes);
+            data.remove("rune");
+            data.putInt("active_slot", 0);
+            CustomDataUtil.setAncestralArcaneData(stack, data);
         }
     }
 }

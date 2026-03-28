@@ -1,6 +1,6 @@
 # Ancestral Arcane Mod - Alignment TODO
 
-This document tracks the status of mod features compared to the project Wiki. Many Core (P1) and Exploration (P2) features are now implemented.
+This document tracks the status of mod features compared to the project Wiki. All Core (P1) and mid-to-late game (P2, P3) mechanical features are now implemented.
 
 ---
 
@@ -14,11 +14,13 @@ This document tracks the status of mod features compared to the project Wiki. Ma
 - [x] **Fragment of All Knowledge**: implemented sneak+right-click rapid rune swapping in the field.
 - [x] **Translatable UX**: all wands/grimoires now use translatable tooltips and Roman numeral tiers.
 - [x] **Impurity Enforcement**: spells now fail if the "Dirty" meter reaches 100%.
-
----
-
-## 🔴 Priority 1: High Impact Mechanics
-- [ ] **Dirty Side-Effects**: Add more dynamic negative effects (e.g., occasional random sparks or weak slowness) when Impurity is > 75%.
+- [x] **Dirty Side-Effects**: implemented Slowness I and smoke particles when > 75% dirty.
+- [x] **Advanced Modular Wand (Multi-Slot)**:
+  - [x] Expanded `WandItem` NBT to support up to 3 `runes` in a ListTag.
+  - [x] Implemented NBT Migration for legacy items.
+  - [x] Implemented Tier V "Socketed Grimoire" expansion logic in Smithing Table.
+  - [x] Implemented Shift + Right-click air selector mechanism to cycle active runes.
+  - [x] Updated Tooltips to display current selection and all equipped slots.
 
 ---
 
@@ -28,16 +30,13 @@ This document tracks the status of mod features compared to the project Wiki. Ma
 ---
 
 ## 🟢 Priority 3: Advanced Progression
-- [ ] **Advanced Modular Wand (Multi-Slot)**:
-  - Expand `WandItem` NBT structure to support up to 3 `equipped_runes`.
-  - Implement Tier V "Socketed Grimoire" expansion logic.
-  - Add a selector mechanism (keybind or scroll) to switch active runes in the field.
+- [ ] **Advanced World Interaction**: (Planned) Additional complex spell interactions.
 
 ---
 
 ## ⚪ Priority 4: UX & Polish
 - [x] **Translatable & Dynamic Tooltips**
-- [ ] **NBT Default Consistency**:
-  - Pre-initialize all Registry/Creative Tab items with correct NBT.
+- [ ] **Nesting/Creative Tab Consistency**:
+  - [ ] Pre-initialize all Registry/Creative Tab items with correct NBT.
 - [ ] **Code Polish (Technical Debt)**:
-  - Resolve remaining 100+ "Null type safety" warnings in registry and UI classes.
+  - [ ] Resolve remaining 100+ "Null type safety" warnings in registry and UI classes.
