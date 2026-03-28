@@ -65,6 +65,13 @@ public class WandItem extends Item {
 
             if (level.isClientSide) {
                 player.displayClientMessage(Component.literal("Wand linked to Home Anchor!"), true);
+                for (int i = 0; i < 20; i++) {
+                    level.addParticle(net.minecraft.core.particles.ParticleTypes.PORTAL, 
+                        pos.getX() + 0.5 + (level.random.nextDouble() - 0.5) * 1.5,
+                        pos.getY() + 1.0 + level.random.nextDouble() * 1.0,
+                        pos.getZ() + 0.5 + (level.random.nextDouble() - 0.5) * 1.5,
+                        0, 0.1, 0);
+                }
             } else {
                 level.playSound(null, pos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
@@ -77,6 +84,33 @@ public class WandItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
+        
+        // Rapid Swapping (Fragment of All Knowledge)
+        if (player.isShiftKeyDown()) {
+            boolean hasFragment = player.getInventory().contains(new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get()));
+            if (hasFragment) {
+                ItemStack offhand = player.getOffhandItem();
+                if (offhand.getItem() instanceof com.ancestralarcane.item.RuneItem) {
+                    CompoundTag wandRune = data.getCompound("rune").copy();
+                    CompoundTag offhandRune = CustomDataUtil.getAncestralArcaneData(offhand).getCompound("rune").copy();
+                    
+                    data.put("rune", offhandRune);
+                    CustomDataUtil.setAncestralArcaneData(stack, data);
+                    
+                    CompoundTag newOffhandData = CustomDataUtil.getAncestralArcaneData(offhand);
+                    newOffhandData.put("rune", wandRune);
+                    CustomDataUtil.setAncestralArcaneData(offhand, newOffhandData);
+                    
+                    if (level.isClientSide) {
+                        player.displayClientMessage(Component.literal("Runes Swapped!"), true);
+                    } else {
+                        level.playSound(null, player.blockPosition(), SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0f, 1.0f);
+                    }
+                    return InteractionResultHolder.success(stack);
+                }
+            }
+        }
+
         if (!data.contains("rune")) {
             return InteractionResultHolder.fail(stack);
         }
@@ -91,6 +125,72 @@ public class WandItem extends Item {
 
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(stack);
+    }
+
+    @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
+        if (!(entity instanceof Player player)) return;
+        
+        int useDuration = this.getUseDuration(stack, entity) - timeLeft;
+        CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
+        if (!data.contains("rune")) return;
+
+        CompoundTag rune = data.getCompound("rune");
+        String spellStr = rune.getString("spell");
+        SpellType spell = SpellType.fromId(spellStr);
+        if (spell == null) return;
+
+        String catalyst = data.getString("catalyst");
+        int baseCastTime = data.contains("cast_time_base") ? data.getInt("cast_time_base") : 20;
+
+        String upgradeType = null;
+        int upgradeLevel = 0;
+        if (rune.contains("upgrade")) {
+            CompoundTag upg = rune.getCompound("upgrade");
+            upgradeType = upg.getString("type");
+            upgradeLevel = upg.getInt("level");
+        }
+
+        float effectiveTicks = CastResolver.getEffectiveCastTimeTicks(catalyst, baseCastTime, upgradeType, upgradeLevel, spell);
+        if (isLeatherGrip) {
+            effectiveTicks *= 0.9f;
+        }
+
+        float progress = Math.min(1.0f, useDuration / effectiveTicks);
+        
+        // Affinity Particles
+        if (progress >= 1.0f && CastResolver.hasAffinity(catalyst, spell)) {
+            if (level.isClientSide && level.random.nextFloat() < 0.2f) {
+                level.addParticle(CastResolver.getSpellParticle(spell), 
+                    player.getX() + (level.random.nextDouble() - 0.5) * 0.5,
+                    player.getY() + 1.2 + (level.random.nextDouble() - 0.5) * 0.5,
+                    player.getZ() + (level.random.nextDouble() - 0.5) * 0.5,
+                    0, 0, 0);
+            }
+        }
+
+        // Auto-Fizzle Logic
+        int gracePeriod = 20; // 1 second
+        if (useDuration > (effectiveTicks + gracePeriod) && spell != SpellType.HEARTSTONE) {
+            int charges = rune.getInt("charges");
+            int dirty = rune.getInt("dirty");
+            
+            charges = Math.max(0, charges - 2);
+            dirty += 2;
+            
+            rune.putInt("charges", charges);
+            rune.putInt("dirty", dirty);
+            data.put("rune", rune);
+            CustomDataUtil.setAncestralArcaneData(stack, data);
+            
+            player.stopUsingItem();
+            player.getCooldowns().addCooldown(this, 40);
+            
+            if (!level.isClientSide) {
+                level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 0.5f);
+            }
+        }
     }
 
     @Override
@@ -287,21 +387,32 @@ public class WandItem extends Item {
         };
     }
 
+    private String toRoman(int number) {
+        return switch (number) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            default -> number > 0 ? String.valueOf(number) : "";
+        };
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
             TooltipFlag tooltipFlag) {
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
         if (data.contains("catalyst")) {
-            tooltipComponents.add(Component.literal("Catalyst: " + data.getString("catalyst")));
+            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.catalyst", data.getString("catalyst")));
         }
         if (data.contains("rune")) {
             CompoundTag rune = data.getCompound("rune");
-            tooltipComponents.add(Component.literal("Spell: " + rune.getString("spell")));
-            tooltipComponents.add(Component.literal("Lv: " + rune.getInt("lvl") + " | Tier: " + rune.getInt("tier")));
-            tooltipComponents
-                    .add(Component.literal("Charges: " + rune.getInt("charges") + "/" + (rune.getInt("lvl") * 10)));
+            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.spell", rune.getString("spell")));
+            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.tier", toRoman(rune.getInt("tier"))));
+            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.level", rune.getInt("lvl")));
+            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.charges", rune.getInt("charges"), (rune.getInt("lvl") * 10)));
         } else {
-            tooltipComponents.add(Component.literal("No Rune Bound"));
+            tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.no_rune"));
         }
     }
 }

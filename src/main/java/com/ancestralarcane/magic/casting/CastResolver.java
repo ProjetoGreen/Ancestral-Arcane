@@ -117,4 +117,21 @@ public class CastResolver {
         }
         return baseTicks * (1.0f - reduction);
     }
+
+    public static net.minecraft.core.particles.ParticleOptions getSpellParticle(SpellType spell) {
+        if (spell == null) return net.minecraft.core.particles.ParticleTypes.SMOKE;
+        return switch (spell) {
+            case FIRE, FIRE_FRIEND -> net.minecraft.core.particles.ParticleTypes.FLAME;
+            case STORM -> net.minecraft.core.particles.ParticleTypes.ELECTRIC_SPARK;
+            case FROST, FROST_WALKER -> net.minecraft.core.particles.ParticleTypes.SNOWFLAKE;
+            case HEAL, MEND -> net.minecraft.core.particles.ParticleTypes.HAPPY_VILLAGER;
+            case BREAKER -> net.minecraft.core.particles.ParticleTypes.CRIT;
+            case STONEBIND -> net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE;
+            case LIGHT -> net.minecraft.core.particles.ParticleTypes.END_ROD;
+            case WARD, SILENCE -> net.minecraft.core.particles.ParticleTypes.WITCH;
+            case BREATHE -> net.minecraft.core.particles.ParticleTypes.BUBBLE;
+            case FERTILIZE -> net.minecraft.core.particles.ParticleTypes.COMPOSTER;
+            default -> net.minecraft.core.particles.ParticleTypes.SMOKE;
+        };
+    }
 }
