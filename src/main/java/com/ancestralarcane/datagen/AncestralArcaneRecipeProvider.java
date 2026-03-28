@@ -30,289 +30,236 @@ public class AncestralArcaneRecipeProvider extends VanillaRecipeProvider {
 
     @Override
     protected void buildRecipes(RecipeOutput output, HolderLookup.Provider holderLookup) {
-        // === CRUDE RUNE T1 ===
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.RUNE_CRUDE_T1.get())
-                .pattern("CGC")
-                .pattern("G G")
-                .pattern("CGC")
-                .define('C', Items.CLAY_BALL)
+
+        // === 1. BLOCKS & FRAGMENTS ===
+
+        // Fragment of All Knowledge
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get())
+                .pattern("GLG")
+                .pattern("LBL")
+                .pattern("ARA")
                 .define('G', Items.GLOWSTONE_DUST)
+                .define('L', Items.LAPIS_LAZULI)
+                .define('B', AncestralArcaneItems.GRIMOIRE_T4.get())
+                .define('A', Items.AMETHYST_SHARD)
+                .define('R', AncestralArcaneItems.RUNE.get())
+                .unlockedBy("has_grimoire_t4", inv(AncestralArcaneItems.GRIMOIRE_T4.get()))
+                .save(output, rl("fragment_of_all_knowledge"));
+
+        // Arcane Smithing Table
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, AncestralArcaneItems.ARCANE_SMITHING_TABLE.get())
+                .pattern("RFR")
+                .pattern("WWW")
+                .pattern("WPW")
+                .define('R', AncestralArcaneItems.RUNE.get())
+                .define('F', AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get())
+                .define('W', net.minecraft.tags.ItemTags.PLANKS)
+                .define('P', Items.ENDER_PEARL)
+                .unlockedBy("has_fragment", inv(AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get()))
+                .save(output, rl("arcane_smithing_table"));
+
+        // Home Anchor
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, AncestralArcaneItems.HOME_ANCHOR.get())
+                .pattern(" R ")
+                .pattern("RER")
+                .pattern(" R ")
+                .define('R', AncestralArcaneItems.RUNE.get())
+                .define('E', Items.ENDER_PEARL)
+                .unlockedBy("has_p_rune", inv(AncestralArcaneItems.RUNE.get()))
+                .save(output, rl("home_anchor"));
+
+
+        // === 2. CRUDE RUNES ===
+
+        // T1: Clay-Amethyst-Clay / Lapis-Empty-Lapis / Clay-Amethyst-Clay
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.RUNE_CRUDE_T1.get())
+                .pattern("CAC")
+                .pattern("L L")
+                .pattern("CAC")
+                .define('C', Items.CLAY_BALL)
+                .define('A', Items.AMETHYST_SHARD)
+                .define('L', Items.LAPIS_LAZULI)
                 .unlockedBy("has_clay", inv(Items.CLAY_BALL))
                 .save(output, rl("crude_rune_t1"));
 
-        // === CRUDE RUNE T2 ===
+        // T2: Q G Q / G C G / Q empty Q (using C = Crude T1 as in Wiki)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.RUNE_CRUDE_T2.get())
-                .pattern(" Q ").pattern("QCQ").pattern(" Q ")
-                .define('Q', Items.QUARTZ).define('C', AncestralArcaneItems.RUNE_CRUDE_T1.get())
-                .unlockedBy("has_crude_rune_t1", inv(AncestralArcaneItems.RUNE_CRUDE_T1.get()))
+                .pattern("QGQ")
+                .pattern("GCG")
+                .pattern("Q Q")
+                .define('Q', Items.QUARTZ)
+                .define('G', Items.GLOWSTONE_DUST)
+                .define('C', AncestralArcaneItems.RUNE_CRUDE_T1.get())
+                .unlockedBy("has_crude_t1", inv(AncestralArcaneItems.RUNE_CRUDE_T1.get()))
                 .save(output, rl("crude_rune_t2"));
 
-        // === CRUDE RUNE T3 ===
+        // T3: A E A / E C E / A empty A (C = T2)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.RUNE_CRUDE_T3.get())
-                .pattern(" A ").pattern("ACA").pattern(" A ")
-                .define('A', Items.AMETHYST_SHARD).define('C', AncestralArcaneItems.RUNE_CRUDE_T2.get())
-                .unlockedBy("has_crude_rune_t2", inv(AncestralArcaneItems.RUNE_CRUDE_T2.get()))
+                .pattern("AEA")
+                .pattern("ECE")
+                .pattern("A A")
+                .define('A', Items.AMETHYST_SHARD)
+                .define('E', Items.ECHO_SHARD)
+                .define('C', AncestralArcaneItems.RUNE_CRUDE_T2.get())
+                .unlockedBy("has_crude_t2", inv(AncestralArcaneItems.RUNE_CRUDE_T2.get()))
                 .save(output, rl("crude_rune_t3"));
 
-        // === CRUDE RUNE T4 ===
+        // T4: M P M / P C P / M empty M (M=Emerald, P=Ender Pearl, C=T3)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.RUNE_CRUDE_T4.get())
-                .pattern(" E ").pattern("ECE").pattern(" E ")
-                .define('E', Items.EMERALD).define('C', AncestralArcaneItems.RUNE_CRUDE_T3.get())
-                .unlockedBy("has_crude_rune_t3", inv(AncestralArcaneItems.RUNE_CRUDE_T3.get()))
+                .pattern("MPM")
+                .pattern("PCP")
+                .pattern("M M")
+                .define('M', Items.EMERALD)
+                .define('P', Items.ENDER_PEARL)
+                .define('C', AncestralArcaneItems.RUNE_CRUDE_T3.get())
+                .unlockedBy("has_crude_t3", inv(AncestralArcaneItems.RUNE_CRUDE_T3.get()))
                 .save(output, rl("crude_rune_t4"));
 
-        // === CRUDE RUNE T5 ===
+        // T5: Y D Y / D C D / Y empty Y (Y=Eye of Ender, D=Dragon Breath, C=T4)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.RUNE_CRUDE_T5.get())
-                .pattern(" N ").pattern("NCN").pattern(" N ")
-                .define('N', Items.NETHER_STAR).define('C', AncestralArcaneItems.RUNE_CRUDE_T4.get())
-                .unlockedBy("has_crude_rune_t4", inv(AncestralArcaneItems.RUNE_CRUDE_T4.get()))
+                .pattern("YDY")
+                .pattern("DCD")
+                .pattern("Y Y")
+                .define('Y', Items.ENDER_EYE)
+                .define('D', Items.DRAGON_BREATH)
+                .define('C', AncestralArcaneItems.RUNE_CRUDE_T4.get())
+                .unlockedBy("has_crude_t4", inv(AncestralArcaneItems.RUNE_CRUDE_T4.get()))
                 .save(output, rl("crude_rune_t5"));
 
-        // === SCROLLS ===
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_FIRE.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.RED_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_fire"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_FIRE_FRIEND.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.ORANGE_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_fire_friend"));
+        // === 3. SCROLLS (Generic Layout) ===
+        // Pattern: P M F / D I D / _ M _ (P=Paper, M=Material, F=Feather, D=Dye, I=Ink Sac)
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_STORM.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.BLUE_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_storm"));
+        registerScroll(output, AncestralArcaneItems.SCROLL_FIRE.get(), Items.BLAZE_POWDER, Items.RED_DYE, "fire");
+        registerScroll(output, AncestralArcaneItems.SCROLL_FIRE_FRIEND.get(), Items.BLAZE_POWDER, Items.ORANGE_DYE, Items.GHAST_TEAR, "fire_friend");
+        registerScroll(output, AncestralArcaneItems.SCROLL_STORM.get(), Items.QUARTZ, Items.BLUE_DYE, "storm");
+        registerScroll(output, AncestralArcaneItems.SCROLL_FROST.get(), Items.AMETHYST_SHARD, Items.LIGHT_BLUE_DYE, Items.PRISMARINE_SHARD, "frost");
+        registerScroll(output, AncestralArcaneItems.SCROLL_FROST_WALKER.get(), Items.PRISMARINE_SHARD, Items.CYAN_DYE, Items.AMETHYST_SHARD, "frost_walker");
+        registerScroll(output, AncestralArcaneItems.SCROLL_HEAL.get(), Items.GHAST_TEAR, Items.PINK_DYE, "heal");
+        registerScroll(output, AncestralArcaneItems.SCROLL_BREAKER.get(), Items.FLINT, Items.GRAY_DYE, Items.QUARTZ, "breaker");
+        registerScroll(output, AncestralArcaneItems.SCROLL_BREATHE.get(), Items.PRISMARINE_SHARD, Items.WHITE_DYE, Items.HEART_OF_THE_SEA, "breathe");
+        registerScroll(output, AncestralArcaneItems.SCROLL_CLEANSE.get(), Items.GLOW_INK_SAC, Items.LIME_DYE, Items.GHAST_TEAR, "cleanse");
+        registerScroll(output, AncestralArcaneItems.SCROLL_FERTILIZE.get(), Items.BONE_MEAL, Items.GREEN_DYE, "fertilize");
+        registerScroll(output, AncestralArcaneItems.SCROLL_LIGHT.get(), Items.GLOWSTONE_DUST, Items.YELLOW_DYE, Items.GLOW_INK_SAC, "light");
+        registerScroll(output, AncestralArcaneItems.SCROLL_MEND.get(), Items.AMETHYST_SHARD, Items.MAGENTA_DYE, Items.IRON_INGOT, "mend");
+        registerScroll(output, AncestralArcaneItems.SCROLL_REACH.get(), Items.ENDER_PEARL, Items.PURPLE_DYE, "reach");
+        registerScroll(output, AncestralArcaneItems.SCROLL_SILENCE.get(), Items.GUNPOWDER, Items.BLACK_DYE, "silence");
+        registerScroll(output, AncestralArcaneItems.SCROLL_STABILIZE.get(), Items.AMETHYST_SHARD, Items.BROWN_DYE, Items.QUARTZ, "stabilize");
+        registerScroll(output, AncestralArcaneItems.SCROLL_STONEBIND.get(), Items.FLINT, Items.LIGHT_GRAY_DYE, Items.QUARTZ, "stonebind");
+        registerScroll(output, AncestralArcaneItems.SCROLL_WARD.get(), Items.AMETHYST_SHARD, Items.CYAN_DYE, Items.QUARTZ, "ward");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_FROST.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.LIGHT_BLUE_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_frost"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_FROST_WALKER.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.CYAN_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_frost_walker"));
+        // === 4. GRIMOIRES ===
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_HEAL.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.PINK_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_heal"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_BREAKER.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.GRAY_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_breaker"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_BREATHE.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.WHITE_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_breathe"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_CLEANSE.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.LIME_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_cleanse"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_FERTILIZE.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.GREEN_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_fertilize"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_LIGHT.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.YELLOW_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_light"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_MEND.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.MAGENTA_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_mend"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_REACH.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.PURPLE_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_reach"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_SILENCE.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.BLACK_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_silence"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_STABILIZE.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.BROWN_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_stabilize"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_STONEBIND.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.LIGHT_GRAY_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_stonebind"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.SCROLL_WARD.get())
-                .pattern("PIF").pattern(" X ")
-                .define('P', Items.PAPER).define('I', Items.INK_SAC).define('F', Items.FEATHER)
-                .define('X', Items.CYAN_DYE)
-                .unlockedBy("has_paper", inv(Items.PAPER))
-                .save(output, rl("scroll_ward"));
-
-        // === GRIMOIRES ===
+        // T1: P F P / L B L / P I P (Paper-Feather-Paper / Leather-Book-Leather / Paper-Ink-Paper)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.GRIMOIRE_T1.get())
-                .pattern("LLL").pattern("LBL").pattern("LLL")
-                .define('L', Items.LEATHER).define('B', Items.BOOK)
+                .pattern("PFP")
+                .pattern("LBL")
+                .pattern("PIP")
+                .define('P', Items.PAPER)
+                .define('F', Items.FEATHER)
+                .define('L', Items.LEATHER)
+                .define('B', Items.BOOK)
+                .define('I', Items.INK_SAC)
                 .unlockedBy("has_book", inv(Items.BOOK))
                 .save(output, rl("grimoire_t1"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.GRIMOIRE_T2.get())
-                .pattern("GGG").pattern("GBG").pattern("GGG")
-                .define('G', Items.GLOWSTONE_DUST).define('B', AncestralArcaneItems.GRIMOIRE_T1.get())
-                .unlockedBy("has_grimoire_t1", inv(AncestralArcaneItems.GRIMOIRE_T1.get()))
-                .save(output, rl("grimoire_t2"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.GRIMOIRE_T3.get())
-                .pattern("QQQ").pattern("QBQ").pattern("QQQ")
-                .define('Q', Items.QUARTZ).define('B', AncestralArcaneItems.GRIMOIRE_T2.get())
-                .unlockedBy("has_grimoire_t2", inv(AncestralArcaneItems.GRIMOIRE_T2.get()))
-                .save(output, rl("grimoire_t3"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.GRIMOIRE_T4.get())
-                .pattern("AAA").pattern("ABA").pattern("AAA")
-                .define('A', Items.AMETHYST_SHARD).define('B', AncestralArcaneItems.GRIMOIRE_T3.get())
-                .unlockedBy("has_grimoire_t3", inv(AncestralArcaneItems.GRIMOIRE_T3.get()))
-                .save(output, rl("grimoire_t4"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AncestralArcaneItems.GRIMOIRE_T5.get())
-                .pattern("EEE").pattern("EBE").pattern("EEE")
-                .define('E', Items.ECHO_SHARD).define('B', AncestralArcaneItems.GRIMOIRE_T4.get())
-                .unlockedBy("has_grimoire_t4", inv(AncestralArcaneItems.GRIMOIRE_T4.get()))
-                .save(output, rl("grimoire_t5"));
-
-        // === WANDS ===
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AncestralArcaneItems.FLINT_WAND.get())
-                .pattern("  F").pattern(" S ").pattern("S  ")
-                .define('F', Items.FLINT).define('S', Items.STICK)
-                .unlockedBy("has_flint", inv(Items.FLINT))
-                .save(output, rl("flint_wand"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AncestralArcaneItems.COPPER_WAND.get())
-                .pattern("  C").pattern(" S ").pattern("S  ")
-                .define('C', Items.COPPER_INGOT).define('S', Items.STICK)
-                .unlockedBy("has_copper", inv(Items.COPPER_INGOT))
-                .save(output, rl("copper_wand"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AncestralArcaneItems.IRON_WAND.get())
-                .pattern("  I").pattern(" S ").pattern("S  ")
-                .define('I', Items.IRON_INGOT).define('S', Items.STICK)
-                .unlockedBy("has_iron", inv(Items.IRON_INGOT))
-                .save(output, rl("iron_wand"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AncestralArcaneItems.GOLDEN_WAND.get())
-                .pattern("  G").pattern(" S ").pattern("S  ")
-                .define('G', Items.GOLD_INGOT).define('S', Items.STICK)
-                .unlockedBy("has_gold", inv(Items.GOLD_INGOT))
-                .save(output, rl("golden_wand"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AncestralArcaneItems.DIAMOND_WAND.get())
-                .pattern("  D").pattern(" S ").pattern("S  ")
-                .define('D', Items.DIAMOND).define('S', Items.STICK)
-                .unlockedBy("has_diamond", inv(Items.DIAMOND))
-                .save(output, rl("diamond_wand"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AncestralArcaneItems.EMERALD_WAND.get())
-                .pattern("  E").pattern(" S ").pattern("S  ")
-                .define('E', Items.EMERALD).define('S', Items.STICK)
-                .unlockedBy("has_emerald", inv(Items.EMERALD))
-                .save(output, rl("emerald_wand"));
-
-        // Netherite Wand requires Smithing Table upgrades natively, but for now we
-        // provide a shaped one:
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, AncestralArcaneItems.NETHERITE_WAND.get())
-                .pattern("  N").pattern(" S ").pattern("S  ")
-                .define('N', Items.NETHERITE_INGOT).define('S', Items.STICK)
-                .unlockedBy("has_netherite", inv(Items.NETHERITE_INGOT))
-                .save(output, rl("netherite_wand"));
-
-        // === LEATHER GRIP WANDS ===
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AncestralArcaneItems.FLINT_WAND_LEATHER_GRIP.get())
-                .requires(AncestralArcaneItems.FLINT_WAND.get()).requires(Items.LEATHER)
-                .unlockedBy("has_flint_wand", inv(AncestralArcaneItems.FLINT_WAND.get()))
-                .save(output, rl("flint_wand_leather_grip"));
+        // Pattern for T2-T5: P M P / X G X / P M P (M = Material, G = Prev Grimoire, X = Side material)
+        // T2: Paper-Glow-Paper / Lapis-T1-Lapis / Paper-Glow-Paper
+        registerGrimoireUpgrade(output, AncestralArcaneItems.GRIMOIRE_T2.get(), AncestralArcaneItems.GRIMOIRE_T1.get(), Items.PAPER, Items.GLOWSTONE_DUST, Items.LAPIS_LAZULI, "t2");
         
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AncestralArcaneItems.COPPER_WAND_LEATHER_GRIP.get())
-                .requires(AncestralArcaneItems.COPPER_WAND.get()).requires(Items.LEATHER)
-                .unlockedBy("has_copper_wand", inv(AncestralArcaneItems.COPPER_WAND.get()))
-                .save(output, rl("copper_wand_leather_grip"));
-                
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AncestralArcaneItems.IRON_WAND_LEATHER_GRIP.get())
-                .requires(AncestralArcaneItems.IRON_WAND.get()).requires(Items.LEATHER)
-                .unlockedBy("has_iron_wand", inv(AncestralArcaneItems.IRON_WAND.get()))
-                .save(output, rl("iron_wand_leather_grip"));
-                
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AncestralArcaneItems.GOLDEN_WAND_LEATHER_GRIP.get())
-                .requires(AncestralArcaneItems.GOLDEN_WAND.get()).requires(Items.LEATHER)
-                .unlockedBy("has_golden_wand", inv(AncestralArcaneItems.GOLDEN_WAND.get()))
-                .save(output, rl("golden_wand_leather_grip"));
-                
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AncestralArcaneItems.DIAMOND_WAND_LEATHER_GRIP.get())
-                .requires(AncestralArcaneItems.DIAMOND_WAND.get()).requires(Items.LEATHER)
-                .unlockedBy("has_diamond_wand", inv(AncestralArcaneItems.DIAMOND_WAND.get()))
-                .save(output, rl("diamond_wand_leather_grip"));
-                
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AncestralArcaneItems.EMERALD_WAND_LEATHER_GRIP.get())
-                .requires(AncestralArcaneItems.EMERALD_WAND.get()).requires(Items.LEATHER)
-                .unlockedBy("has_emerald_wand", inv(AncestralArcaneItems.EMERALD_WAND.get()))
-                .save(output, rl("emerald_wand_leather_grip"));
-                
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, AncestralArcaneItems.NETHERITE_WAND_LEATHER_GRIP.get())
-                .requires(AncestralArcaneItems.NETHERITE_WAND.get()).requires(Items.LEATHER)
-                .unlockedBy("has_netherite_wand", inv(AncestralArcaneItems.NETHERITE_WAND.get()))
-                .save(output, rl("netherite_wand_leather_grip"));
+        // T3: Quartz-Amethyst-Quartz / GlowInk-T2-GlowInk / Quartz-Amethyst-Quartz
+        registerGrimoireUpgrade(output, AncestralArcaneItems.GRIMOIRE_T3.get(), AncestralArcaneItems.GRIMOIRE_T2.get(), Items.QUARTZ, Items.AMETHYST_SHARD, Items.GLOW_INK_SAC, "t3");
 
-        // === BLOCKS ===
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, AncestralArcaneItems.ARCANE_SMITHING_TABLE.get())
-                .pattern("RR ").pattern("WW ").pattern("WW ")
-                .define('R', AncestralArcaneItems.RUNE.get())
-                .define('W', net.minecraft.tags.ItemTags.PLANKS)
-                .unlockedBy("has_rune", inv(AncestralArcaneItems.RUNE.get()))
-                .save(output, rl("arcane_smithing_table"));
+        // T4: Emerald-Echo-Emerald / WritableBook-T3-WritableBook / Emerald-Echo-Emerald
+        registerGrimoireUpgrade(output, AncestralArcaneItems.GRIMOIRE_T4.get(), AncestralArcaneItems.GRIMOIRE_T3.get(), Items.EMERALD, Items.ECHO_SHARD, Items.WRITABLE_BOOK, "t4");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, AncestralArcaneItems.HOME_ANCHOR.get())
-                .pattern(" R ").pattern("RER").pattern(" R ")
-                .define('R', AncestralArcaneItems.RUNE.get())
-                .define('E', Items.ENDER_PEARL)
-                .unlockedBy("has_rune", inv(AncestralArcaneItems.RUNE.get()))
-                .save(output, rl("home_anchor"));
+        // T5: Eye-DragonBreath-Eye / WrittenBook-T4-WrittenBook / Eye-DragonBreath-Eye
+        registerGrimoireUpgrade(output, AncestralArcaneItems.GRIMOIRE_T5.get(), AncestralArcaneItems.GRIMOIRE_T4.get(), Items.ENDER_EYE, Items.DRAGON_BREATH, Items.WRITTEN_BOOK, "t5");
+
+
+        // === 5. CATALYSTS (New System) ===
+        // Pattern: A X A / B A C / K S S (A = Main Material, X = Empty, B = Aux, C = Aux, K = Aux, S = Rune/Aux)
+        // Correcting according to Wiki Pattern: A X A / B A C / K L S (A=Catalyst Material, L=Rune, Others=Aux)
+
+        registerCatalyst(output, AncestralArcaneItems.FLINT_CATALYST.get(), Items.FLINT, Items.BOOK, Items.BONE, Items.BONE, AncestralArcaneItems.RUNE_T1.get(), Items.BONE, "flint");
+        registerCatalyst(output, AncestralArcaneItems.COPPER_CATALYST.get(), Items.COPPER_INGOT, Items.AMETHYST_SHARD, Items.BOOK, Items.BONE, AncestralArcaneItems.RUNE_T2.get(), Items.BONE, "copper");
+        registerCatalyst(output, AncestralArcaneItems.IRON_CATALYST.get(), Items.IRON_INGOT, Items.AMETHYST_SHARD, Items.BOOK, Items.ECHO_SHARD, AncestralArcaneItems.RUNE_T3.get(), Items.BLAZE_ROD, "iron");
+        registerCatalyst(output, AncestralArcaneItems.GOLD_CATALYST.get(), Items.GOLD_INGOT, Items.AMETHYST_SHARD, Items.BOOK, Items.ECHO_SHARD, AncestralArcaneItems.RUNE_T4.get(), Items.BLAZE_ROD, "gold");
+        registerCatalyst(output, AncestralArcaneItems.DIAMOND_CATALYST.get(), Items.DIAMOND, Items.AMETHYST_SHARD, Items.ENDER_EYE, Items.DRAGON_BREATH, AncestralArcaneItems.RUNE_T5.get(), Items.BLAZE_ROD, "diamond");
+        registerCatalyst(output, AncestralArcaneItems.EMERALD_CATALYST.get(), Items.EMERALD, Items.GHAST_TEAR, Items.ENDER_EYE, Items.DRAGON_BREATH, AncestralArcaneItems.RUNE_T5.get(), Items.BLAZE_ROD, "emerald");
+        registerCatalyst(output, AncestralArcaneItems.NETHERITE_CATALYST.get(), Items.NETHERITE_INGOT, Items.ECHO_SHARD, Items.ENDER_EYE, Items.DRAGON_BREATH, AncestralArcaneItems.RUNE_T5.get(), Items.BLAZE_ROD, "netherite");
+
+
+        // === 6. WANDS (Using Catalysts) ===
+        // Pattern: _ _ C / _ S _ / S _ _ (C = Catalyst, S = Stick)
+        
+        registerWand(output, AncestralArcaneItems.FLINT_WAND.get(), AncestralArcaneItems.FLINT_CATALYST.get(), "flint");
+        registerWand(output, AncestralArcaneItems.COPPER_WAND.get(), AncestralArcaneItems.COPPER_CATALYST.get(), "copper");
+        registerWand(output, AncestralArcaneItems.IRON_WAND.get(), AncestralArcaneItems.IRON_CATALYST.get(), "iron");
+        registerWand(output, AncestralArcaneItems.GOLDEN_WAND.get(), AncestralArcaneItems.GOLD_CATALYST.get(), "golden");
+        registerWand(output, AncestralArcaneItems.DIAMOND_WAND.get(), AncestralArcaneItems.DIAMOND_CATALYST.get(), "diamond");
+        registerWand(output, AncestralArcaneItems.EMERALD_WAND.get(), AncestralArcaneItems.EMERALD_CATALYST.get(), "emerald");
+        registerWand(output, AncestralArcaneItems.NETHERITE_WAND.get(), AncestralArcaneItems.NETHERITE_CATALYST.get(), "netherite");
+
+        // Leather Grip wands are now ONLY in Smithing Table. Removing Crafting recipes.
+    }
+
+    private void registerScroll(RecipeOutput output, ItemLike result, ItemLike mat, ItemLike dye, String name) {
+        registerScroll(output, result, mat, dye, mat, name);
+    }
+
+    private void registerScroll(RecipeOutput output, ItemLike result, ItemLike mat1, ItemLike dye, ItemLike mat2, String name) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
+                .pattern("PMF")
+                .pattern("DID")
+                .pattern(" X ")
+                .define('P', Items.PAPER)
+                .define('M', mat1)
+                .define('F', Items.FEATHER)
+                .define('D', dye)
+                .define('I', Items.INK_SAC)
+                .define('X', mat2)
+                .unlockedBy("has_paper", inv(Items.PAPER))
+                .save(output, rl("scroll_" + name));
+    }
+
+    private void registerGrimoireUpgrade(RecipeOutput output, ItemLike result, ItemLike prev, ItemLike matTop, ItemLike matCenterTop, ItemLike side, String tag) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
+                .pattern("MCM")
+                .pattern("SGS")
+                .pattern("MCM")
+                .define('M', matTop)
+                .define('C', matCenterTop)
+                .define('S', side)
+                .define('G', prev)
+                .unlockedBy("has_previous_grimoire", inv(prev))
+                .save(output, rl("grimoire_" + tag));
+    }
+
+    private void registerCatalyst(RecipeOutput output, ItemLike result, ItemLike main, ItemLike auxB, ItemLike auxC, ItemLike auxK, ItemLike rune, ItemLike auxS, String tag) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
+                .pattern("A A")
+                .pattern("BAC")
+                .pattern("KLS")
+                .define('A', main)
+                .define('B', auxB)
+                .define('C', auxC)
+                .define('K', auxK)
+                .define('L', rune)
+                .define('S', auxS)
+                .unlockedBy("has_material", inv(main))
+                .save(output, rl(tag + "_catalyst"));
+    }
+
+    private void registerWand(RecipeOutput output, ItemLike result, ItemLike catalyst, String tag) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+                .pattern("  C")
+                .pattern(" S ")
+                .pattern("S  ")
+                .define('C', catalyst)
+                .define('S', Items.STICK)
+                .unlockedBy("has_catalyst", inv(catalyst))
+                .save(output, rl(tag + "_wand"));
     }
 }

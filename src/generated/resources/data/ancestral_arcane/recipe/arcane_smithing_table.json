@@ -2,6 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "F": {
+      "item": "ancestral_arcane:fragment_of_all_knowledge"
+    },
+    "P": {
+      "item": "minecraft:ender_pearl"
+    },
     "R": {
       "item": "ancestral_arcane:rune"
     },
@@ -10,9 +16,9 @@
     }
   },
   "pattern": [
-    "RR ",
-    "WW ",
-    "WW "
+    "RFR",
+    "WWW",
+    "WPW"
   ],
   "result": {
     "count": 1,

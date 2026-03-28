@@ -15,7 +15,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.minecraft.world.entity.npc.VillagerProfession;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 @EventBusSubscriber(modid = com.ancestralarcane.AncestralArcaneMod.MODID)
 public class VillagerTradeInjector {
@@ -24,13 +27,16 @@ public class VillagerTradeInjector {
     public static void onVillagerTrades(VillagerTradesEvent event) {
         if (event.getType() == VillagerProfession.LIBRARIAN) {
             List<VillagerTrades.ItemListing> masterTrades = event.getTrades().get(5);
-            masterTrades.add(new MagicTradeListing());
+            if (masterTrades != null) {
+                masterTrades.add(new MagicTradeListing());
+            }
         }
     }
 
     private static class MagicTradeListing implements VillagerTrades.ItemListing {
+        @Nullable
         @Override
-        public MerchantOffer getOffer(Entity trader, RandomSource random) {
+        public MerchantOffer getOffer(@Nonnull Entity trader, @Nonnull RandomSource random) {
             float chance = random.nextFloat();
             if (chance < 0.02f) { // 2%
                 ItemStack grim = new ItemStack(AncestralArcaneItems.GRIMOIRE_T4.get());
@@ -43,8 +49,8 @@ public class VillagerTradeInjector {
 
                 return new MerchantOffer(
                         new ItemCost(Items.EMERALD, 64),
-                        java.util.Optional.of(new ItemCost(Items.BOOK, 1)),
-                        grim, 1, 30, 0.05f); // No residue/chorus as itemcost limits to 2 inputs
+                        Optional.of(new ItemCost(Items.BOOK, 1)),
+                        grim, 1, 30, 0.05f);
             } else if (chance < 0.08f) { // 6%
                 ItemStack grim = new ItemStack(AncestralArcaneItems.GRIMOIRE_T3.get());
                 CompoundTag gd = new CompoundTag();
@@ -56,7 +62,7 @@ public class VillagerTradeInjector {
 
                 return new MerchantOffer(
                         new ItemCost(Items.EMERALD, 48),
-                        java.util.Optional.of(new ItemCost(Items.BOOK, 1)),
+                        Optional.of(new ItemCost(Items.BOOK, 1)),
                         grim, 1, 20, 0.05f);
             } else if (chance < 0.20f) { // 12%
                 ItemStack grim = new ItemStack(AncestralArcaneItems.GRIMOIRE_T2.get());
@@ -69,7 +75,7 @@ public class VillagerTradeInjector {
 
                 return new MerchantOffer(
                         new ItemCost(Items.EMERALD, 32),
-                        java.util.Optional.of(new ItemCost(Items.BOOK, 1)),
+                        Optional.of(new ItemCost(Items.BOOK, 1)),
                         grim, 1, 15, 0.05f);
             } else if (chance < 0.40f) { // 20%
                 ItemStack grim = new ItemStack(AncestralArcaneItems.GRIMOIRE_T1.get());
@@ -82,10 +88,10 @@ public class VillagerTradeInjector {
 
                 return new MerchantOffer(
                         new ItemCost(Items.EMERALD, 16),
-                        java.util.Optional.of(new ItemCost(Items.BOOK, 1)),
+                        Optional.of(new ItemCost(Items.BOOK, 1)),
                         grim, 1, 10, 0.05f);
             }
-            return null; // Return null if no trade is randomly picked
+            return null;
         }
     }
 }

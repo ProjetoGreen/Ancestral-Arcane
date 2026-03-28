@@ -2,15 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "item": "minecraft:flint"
+    "C": {
+      "item": "ancestral_arcane:flint_catalyst"
     },
     "S": {
       "item": "minecraft:stick"
     }
   },
   "pattern": [
-    "  F",
+    "  C",
     " S ",
     "S  "
   ],

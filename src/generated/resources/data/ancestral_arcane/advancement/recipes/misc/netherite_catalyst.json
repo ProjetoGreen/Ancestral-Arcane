@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_crude_t2": {
+    "has_material": {
       "conditions": {
         "items": [
           {
-            "items": "ancestral_arcane:rune_crude_t2"
+            "items": "minecraft:netherite_ingot"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ancestral_arcane:crude_rune_t3"
+        "recipe": "ancestral_arcane:netherite_catalyst"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_crude_t2"
+      "has_material"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ancestral_arcane:crude_rune_t3"
+      "ancestral_arcane:netherite_catalyst"
     ]
   }
 }

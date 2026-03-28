@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_flint": {
+    "has_catalyst": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:flint"
+            "items": "ancestral_arcane:flint_catalyst"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_flint"
+      "has_catalyst"
     ]
   ],
   "rewards": {

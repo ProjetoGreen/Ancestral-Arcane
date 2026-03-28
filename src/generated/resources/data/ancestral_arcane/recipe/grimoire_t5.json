@@ -2,17 +2,23 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
+    "C": {
+      "item": "minecraft:dragon_breath"
+    },
+    "G": {
       "item": "ancestral_arcane:grimoire_t4"
     },
-    "E": {
-      "item": "minecraft:echo_shard"
+    "M": {
+      "item": "minecraft:ender_eye"
+    },
+    "S": {
+      "item": "minecraft:written_book"
     }
   },
   "pattern": [
-    "EEE",
-    "EBE",
-    "EEE"
+    "MCM",
+    "SGS",
+    "MCM"
   ],
   "result": {
     "count": 1,

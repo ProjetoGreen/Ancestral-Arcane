@@ -2,17 +2,23 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "ancestral_arcane:grimoire_t1"
+    "C": {
+      "item": "minecraft:glowstone_dust"
     },
     "G": {
-      "item": "minecraft:glowstone_dust"
+      "item": "ancestral_arcane:grimoire_t1"
+    },
+    "M": {
+      "item": "minecraft:paper"
+    },
+    "S": {
+      "item": "minecraft:lapis_lazuli"
     }
   },
   "pattern": [
-    "GGG",
-    "GBG",
-    "GGG"
+    "MCM",
+    "SGS",
+    "MCM"
   ],
   "result": {
     "count": 1,

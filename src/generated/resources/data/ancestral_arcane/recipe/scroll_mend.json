@@ -2,21 +2,28 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "D": {
+      "item": "minecraft:magenta_dye"
+    },
     "F": {
       "item": "minecraft:feather"
     },
     "I": {
       "item": "minecraft:ink_sac"
     },
+    "M": {
+      "item": "minecraft:amethyst_shard"
+    },
     "P": {
       "item": "minecraft:paper"
     },
     "X": {
-      "item": "minecraft:magenta_dye"
+      "item": "minecraft:iron_ingot"
     }
   },
   "pattern": [
-    "PIF",
+    "PMF",
+    "DID",
     " X "
   ],
   "result": {

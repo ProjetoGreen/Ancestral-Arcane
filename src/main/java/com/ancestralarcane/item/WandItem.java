@@ -4,7 +4,14 @@ import com.ancestralarcane.data.CustomDataUtil;
 import com.ancestralarcane.magic.casting.CastResolver;
 import com.ancestralarcane.magic.spells.SpellExecutor;
 import com.ancestralarcane.magic.spells.SpellType;
+import com.ancestralarcane.registry.AncestralArcaneBlocks;
+import com.ancestralarcane.registry.AncestralArcaneItems;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -12,6 +19,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -21,10 +30,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import com.ancestralarcane.registry.AncestralArcaneBlocks;
-import net.minecraft.core.BlockPos;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class WandItem extends Item {
     private final boolean isLeatherGrip;
@@ -39,17 +49,19 @@ public class WandItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) {
+    public int getUseDuration(@Nonnull ItemStack stack, @Nonnull LivingEntity entity) {
         return 72000;
     }
 
+    @Nonnull
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public UseAnim getUseAnimation(@Nonnull ItemStack stack) {
         return UseAnim.BOW;
     }
 
+    @Nonnull
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public InteractionResult useOn(@Nonnull UseOnContext context) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Player player = context.getPlayer();
@@ -66,7 +78,7 @@ public class WandItem extends Item {
             if (level.isClientSide) {
                 player.displayClientMessage(Component.literal("Wand linked to Home Anchor!"), true);
                 for (int i = 0; i < 20; i++) {
-                    level.addParticle(net.minecraft.core.particles.ParticleTypes.PORTAL, 
+                    level.addParticle(ParticleTypes.PORTAL, 
                         pos.getX() + 0.5 + (level.random.nextDouble() - 0.5) * 1.5,
                         pos.getY() + 1.0 + level.random.nextDouble() * 1.0,
                         pos.getZ() + 0.5 + (level.random.nextDouble() - 0.5) * 1.5,
@@ -80,37 +92,37 @@ public class WandItem extends Item {
         return super.useOn(context);
     }
 
+    @Nonnull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        migrateNBT(stack); // Ensure NBT is up to date
+        migrateNBT(stack);
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
         
-        // Sneak actions
         if (player.isShiftKeyDown()) {
             ItemStack offhand = player.getOffhandItem();
-            // 1. Rapid Swapping (with Fragment of All Knowledge)
             if (offhand.getItem() instanceof com.ancestralarcane.item.RuneItem) {
-                boolean hasFragment = player.getInventory().contains(new ItemStack(com.ancestralarcane.registry.AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get()));
+                boolean hasFragment = player.getInventory().contains(new ItemStack(AncestralArcaneItems.FRAGMENT_OF_ALL_KNOWLEDGE.get()));
                 if (hasFragment) {
                     CompoundTag wandRune = getActiveRune(stack).copy();
-                    CompoundTag offhandRune = CustomDataUtil.getAncestralArcaneData(offhand).getCompound("rune").copy();
-                    
-                    setActiveRune(stack, offhandRune);
-                    
-                    CompoundTag newOffhandData = CustomDataUtil.getAncestralArcaneData(offhand);
-                    newOffhandData.put("rune", wandRune);
-                    CustomDataUtil.setAncestralArcaneData(offhand, newOffhandData);
-                    
-                    if (level.isClientSide) {
-                        player.displayClientMessage(Component.literal("Runes Swapped!"), true);
-                    } else {
-                        level.playSound(null, player.blockPosition(), SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0f, 1.0f);
+                    CompoundTag offDataBody = CustomDataUtil.getAncestralArcaneData(offhand);
+                    if (offDataBody.contains("rune")) {
+                        CompoundTag offhandRune = offDataBody.getCompound("rune").copy();
+                        
+                        setActiveRune(stack, offhandRune);
+                        
+                        offDataBody.put("rune", wandRune);
+                        CustomDataUtil.setAncestralArcaneData(offhand, offDataBody);
+                        
+                        if (level.isClientSide) {
+                            player.displayClientMessage(Component.literal("Runes Swapped!"), true);
+                        } else {
+                            level.playSound(null, player.blockPosition(), SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0f, 1.0f);
+                        }
+                        return InteractionResultHolder.success(stack);
                     }
-                    return InteractionResultHolder.success(stack);
                 }
             } else if (offhand.isEmpty()) {
-                // 2. Cycle Slots (Sneak + Right Click air/no offhand item)
                 int slots = getAvailableSlots(stack);
                 if (slots > 1) {
                     int currentIdx = data.getInt("active_slot");
@@ -146,7 +158,7 @@ public class WandItem extends Item {
     }
 
     @Override
-    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int timeLeft) {
+    public void onUseTick(@Nonnull Level level, @Nonnull LivingEntity entity, @Nonnull ItemStack stack, int timeLeft) {
         if (!(entity instanceof Player player)) return;
         
         int useDuration = this.getUseDuration(stack, entity) - timeLeft;
@@ -175,25 +187,24 @@ public class WandItem extends Item {
 
         float progress = Math.min(1.0f, useDuration / effectiveTicks);
         
-        // Affinity Particles
         if (progress >= 1.0f && CastResolver.hasAffinity(catalyst, spell)) {
             if (level.isClientSide && level.random.nextFloat() < 0.2f) {
-                level.addParticle(CastResolver.getSpellParticle(spell), 
-                    player.getX() + (level.random.nextDouble() - 0.5) * 0.5,
-                    player.getY() + 1.2 + (level.random.nextDouble() - 0.5) * 0.5,
-                    player.getZ() + (level.random.nextDouble() - 0.5) * 0.5,
-                    0, 0, 0);
+                var particle = CastResolver.getSpellParticle(spell);
+                if (particle != null) {
+                    level.addParticle(particle, 
+                        player.getX() + (level.random.nextDouble() - 0.5) * 0.5,
+                        player.getY() + 1.2 + (level.random.nextDouble() - 0.5) * 0.5,
+                        player.getZ() + (level.random.nextDouble() - 0.5) * 0.5,
+                        0, 0, 0);
+                }
             }
         }
 
         // Auto-Fizzle Logic
-        int gracePeriod = 20; // 1 second
+        int gracePeriod = 20;
         if (useDuration > (effectiveTicks + gracePeriod) && spell != SpellType.HEARTSTONE) {
-            int charges = rune.getInt("charges");
-            int dirty = rune.getInt("dirty");
-            
-            charges = Math.max(0, charges - 2);
-            dirty += 2;
+            int charges = Math.max(0, rune.getInt("charges") - 2);
+            int dirty = rune.getInt("dirty") + 2;
             
             rune.putInt("charges", charges);
             rune.putInt("dirty", dirty);
@@ -211,17 +222,17 @@ public class WandItem extends Item {
         // High Impurity Side-Effects (> 75%)
         int dirty = rune.getInt("dirty");
         if (dirty > 75) {
-            if (level.random.nextFloat() < 0.05f) { // 5% chance per tick
+            if (level.random.nextFloat() < 0.05f) {
                 if (level.isClientSide) {
                     for (int i = 0; i < 3; i++) {
-                        level.addParticle(net.minecraft.core.particles.ParticleTypes.SMOKE, 
+                        level.addParticle(ParticleTypes.SMOKE, 
                             player.getX() + (level.random.nextDouble() - 0.5),
                             player.getY() + 1.0 + (level.random.nextDouble() - 0.5),
                             player.getZ() + (level.random.nextDouble() - 0.5),
                             0, 0, 0);
                     }
                 } else {
-                    player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 40, 0));
+                    player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0));
                     level.playSound(null, player.getX(), player.getY(), player.getZ(), 
                         SoundEvents.CHICKEN_EGG, SoundSource.PLAYERS, 1.0f, 0.5f);
                 }
@@ -230,7 +241,7 @@ public class WandItem extends Item {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entityLiving, int timeLeft) {
         if (!(entityLiving instanceof Player player))
             return;
 
@@ -259,20 +270,18 @@ public class WandItem extends Item {
 
         float effectiveTicks = CastResolver.getEffectiveCastTimeTicks(catalyst, baseCastTime, upgradeType, upgradeLevel, spell);
         if (isLeatherGrip) {
-            effectiveTicks *= 0.9f; // 10% faster cast
+            effectiveTicks *= 0.9f;
         }
         
         float progress = Math.min(1.0f, useDuration / effectiveTicks);
         int idx = CastResolver.getCastIndex(progress);
 
-        // Stage D (Peak) Hold/Collapse Logic
         boolean collapsed = false;
-        int gracePeriod = 20; // 1 second window at Stage D
+        int gracePeriod = 20;
         if (useDuration > (effectiveTicks + gracePeriod)) {
-            // Heartstone auto-triggers at the end of the window instead of collapsing
             if (spell == SpellType.HEARTSTONE) {
                 progress = 1.0f;
-                idx = 2; // Maximum stage
+                idx = 2;
             } else {
                 collapsed = true;
             }
@@ -281,31 +290,21 @@ public class WandItem extends Item {
         int charges = rune.getInt("charges");
         int dirty = rune.getInt("dirty");
 
-        if (collapsed) {
-            // Fizzle penalty: consume 2 charges and add 2 dirty
-            charges -= 2;
-            dirty += 2;
-        } else if (progress < 0.60f) {
+        if (collapsed || progress < 0.60f) {
             charges -= 2;
             dirty += 2;
         } else {
-            // Affinity Bonus: -20% charge cost and dirty gain
             float costMultiplier = CastResolver.hasAffinity(catalyst, spell) ? 0.8f : 1.0f;
-            
-            // Special case: Summon Wolves with Raw Beef costs only 1 charge total
+            int cost;
             if (spell == SpellType.WOLVES && player.getOffhandItem().is(Items.BEEF)) {
-                charges -= 1;
-                dirty += 1;
+                cost = 1;
             } else if (spell == SpellType.WOLVES) {
-                // Normal wolves cost: 1 per wolf (spellLevel)
-                int cost = Math.max(1, Math.round(rune.getInt("lvl") * costMultiplier));
-                charges -= cost;
-                dirty += cost;
+                cost = Math.max(1, Math.round(rune.getInt("lvl") * costMultiplier));
             } else {
-                int cost = Math.max(1, Math.round(1 * costMultiplier));
-                charges -= cost;
-                dirty += cost;
+                cost = Math.max(1, Math.round(1 * costMultiplier));
             }
+            charges -= cost;
+            dirty += cost;
         }
 
         rune.putInt("charges", charges);
@@ -317,7 +316,6 @@ public class WandItem extends Item {
             if (collapsed) {
                 player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 0.5f);
-                // No spell effect on collapse
             } else {
                 int effectiveChannel = CastResolver.getEffectiveChannel(catalyst, spell);
                 float powerMultiplier = CastResolver
@@ -334,8 +332,6 @@ public class WandItem extends Item {
             }
 
             degradeRune((ServerPlayer) player, stack, data, rune, catalyst);
-            
-            // Consume wand durability
             stack.hurtAndBreak(1, player, player.getUsedItemHand() == InteractionHand.MAIN_HAND ? net.minecraft.world.entity.EquipmentSlot.MAINHAND : net.minecraft.world.entity.EquipmentSlot.OFFHAND);
         }
     }
@@ -346,15 +342,10 @@ public class WandItem extends Item {
         int wandTier = CastResolver.getWandTier(catalyst);
         float wearAmount = 1.0f;
 
-        // Special Rule: Heartstone costs only 0.5 wear
         String spellStr = rune.getString("spell");
         if (SpellType.HEARTSTONE.getId().equals(spellStr)) {
             wearAmount = 0.5f;
         } else {
-            // Wiki Wear Rules:
-            // - Wand tier >= Rune tier + 2: 0.5 wear
-            // - Wand tier == Rune tier OR Rune tier + 1: 1 wear
-            // - Wand tier < Rune tier: 2 wear
             if (wandTier >= runeTier + 2) {
                 wearAmount = 0.5f;
             } else if (wandTier < runeTier) {
@@ -365,8 +356,6 @@ public class WandItem extends Item {
         float currentWear = rune.contains("wear") ? rune.getFloat("wear") : 0f;
         currentWear += wearAmount;
 
-        // Wiki Durability Targets:
-        // I: 3, II: 6, III: 9, IV: 12, V: 15
         int maxWear = switch (runeTier) {
             case 2 -> 6;
             case 3 -> 9;
@@ -376,11 +365,10 @@ public class WandItem extends Item {
         };
         
         if (isLeatherGrip) {
-            maxWear += 1; // +1 reuse bonus
+            maxWear += 1;
         }
 
         if (currentWear >= maxWear) {
-            // Decay one tier
             int nextTier = runeTier - 1;
             if (nextTier <= 0) {
                 data.remove("rune");
@@ -401,23 +389,11 @@ public class WandItem extends Item {
 
     private int getSpellCooldown(SpellType spell) {
         return switch (spell) {
-            case FIRE -> 20;
-            case FIRE_FRIEND -> 20;
-            case STORM -> 100;
-            case FROST -> 20;
-            case FROST_WALKER -> 40;
-            case HEAL -> 60;
-            case MEND -> 60;
-            case STABILIZE -> 40;
-            case CLEANSE -> 40;
-            case BREATHE -> 40;
-            case FERTILIZE -> 100;
-            case LIGHT -> 20;
-            case BREAKER -> 80;
-            case WARD -> 100;
-            case STONEBIND -> 40;
-            case REACH -> 80;
-            case SILENCE -> 100;
+            case FIRE, FIRE_FRIEND, FROST, LIGHT -> 20;
+            case STORM, FERTILIZE, WARD, SILENCE -> 100;
+            case FROST_WALKER, STABILIZE, CLEANSE, BREATHE, STONEBIND -> 40;
+            case HEAL, MEND -> 60;
+            case BREAKER, REACH -> 80;
             case HEARTSTONE -> 2400;
             case WOLVES -> 600;
         };
@@ -435,8 +411,8 @@ public class WandItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
-            TooltipFlag tooltipFlag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nonnull TooltipContext context, @Nonnull List<Component> tooltipComponents,
+            @Nonnull TooltipFlag tooltipFlag) {
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
         if (data.contains("catalyst")) {
             tooltipComponents.add(Component.translatable("tooltip.ancestral_arcane.catalyst", data.getString("catalyst")));
@@ -444,10 +420,10 @@ public class WandItem extends Item {
 
         int slots = getAvailableSlots(stack);
         int activeSlot = data.getInt("active_slot");
-        net.minecraft.nbt.ListTag runes = data.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND);
+        ListTag runes = data.getList("runes", Tag.TAG_COMPOUND);
 
         if (slots > 1) {
-            tooltipComponents.add(Component.literal("Slots:").withStyle(net.minecraft.ChatFormatting.GOLD));
+            tooltipComponents.add(Component.literal("Slots:").withStyle(ChatFormatting.GOLD));
             for (int i = 0; i < slots; i++) {
                 String prefix = (i == activeSlot) ? "> " : "  ";
                 if (i < runes.size()) {
@@ -455,10 +431,10 @@ public class WandItem extends Item {
                     String spell = rune.getString("spell");
                     int tier = rune.getInt("tier");
                     tooltipComponents.add(Component.literal(prefix + "Slot " + (i + 1) + ": " + spell + " " + toRoman(tier))
-                        .withStyle((i == activeSlot) ? net.minecraft.ChatFormatting.YELLOW : net.minecraft.ChatFormatting.GRAY));
+                        .withStyle((i == activeSlot) ? ChatFormatting.YELLOW : ChatFormatting.GRAY));
                 } else {
                     tooltipComponents.add(Component.literal(prefix + "Slot " + (i + 1) + ": Empty")
-                        .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
+                        .withStyle(ChatFormatting.DARK_GRAY));
                 }
             }
         } else {
@@ -474,10 +450,9 @@ public class WandItem extends Item {
         }
     }
 
-    public int getAvailableSlots(ItemStack stack) {
+    public int getAvailableSlots(@Nonnull ItemStack stack) {
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
-        // Tier V check (Netherite) + Socketed Grimoire requirement
-        if (stack.getItem() instanceof WandItem wand && wand.getDescriptionId().contains("netherite")) {
+        if (Objects.requireNonNull(stack.getDescriptionId()).contains("netherite")) {
             if (data.getBoolean("socketed_grimoire")) {
                 return 3;
             }
@@ -485,24 +460,24 @@ public class WandItem extends Item {
         return 1;
     }
 
-    public CompoundTag getActiveRune(ItemStack stack) {
+    @Nonnull
+    public CompoundTag getActiveRune(@Nonnull ItemStack stack) {
         migrateNBT(stack);
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
         int activeSlot = data.getInt("active_slot");
-        net.minecraft.nbt.ListTag runes = data.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND);
+        ListTag runes = data.getList("runes", Tag.TAG_COMPOUND);
         if (activeSlot < runes.size()) {
             return runes.getCompound(activeSlot);
         }
         return new CompoundTag();
     }
 
-    public void setActiveRune(ItemStack stack, CompoundTag rune) {
+    public void setActiveRune(@Nonnull ItemStack stack, @Nonnull CompoundTag rune) {
         migrateNBT(stack);
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
         int activeSlot = data.getInt("active_slot");
-        net.minecraft.nbt.ListTag runes = data.getList("runes", net.minecraft.nbt.Tag.TAG_COMPOUND);
+        ListTag runes = data.getList("runes", Tag.TAG_COMPOUND);
         
-        // Ensure index exists
         while (runes.size() <= activeSlot) {
             runes.add(new CompoundTag());
         }
@@ -512,11 +487,11 @@ public class WandItem extends Item {
         CustomDataUtil.setAncestralArcaneData(stack, data);
     }
 
-    private void migrateNBT(ItemStack stack) {
+    private void migrateNBT(@Nonnull ItemStack stack) {
         CompoundTag data = CustomDataUtil.getAncestralArcaneData(stack);
         if (data.contains("rune") && !data.contains("runes")) {
             CompoundTag oldRune = data.getCompound("rune");
-            net.minecraft.nbt.ListTag runes = new net.minecraft.nbt.ListTag();
+            ListTag runes = new ListTag();
             runes.add(oldRune.copy());
             data.put("runes", runes);
             data.remove("rune");

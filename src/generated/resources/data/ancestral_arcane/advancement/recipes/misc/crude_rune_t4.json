@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_crude_rune_t3": {
+    "has_crude_t3": {
       "conditions": {
         "items": [
           {
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_crude_rune_t3"
+      "has_crude_t3"
     ]
   ],
   "rewards": {

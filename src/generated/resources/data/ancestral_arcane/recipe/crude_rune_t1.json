@@ -2,17 +2,20 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
     "C": {
       "item": "minecraft:clay_ball"
     },
-    "G": {
-      "item": "minecraft:glowstone_dust"
+    "L": {
+      "item": "minecraft:lapis_lazuli"
     }
   },
   "pattern": [
-    "CGC",
-    "G G",
-    "CGC"
+    "CAC",
+    "L L",
+    "CAC"
   ],
   "result": {
     "count": 1,

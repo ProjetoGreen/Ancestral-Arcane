@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:gold_ingot"
+    },
+    "B": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "C": {
+      "item": "minecraft:book"
+    },
+    "K": {
+      "item": "minecraft:echo_shard"
+    },
+    "L": {
+      "item": "ancestral_arcane:rune_t4"
+    },
+    "S": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "pattern": [
+    "A A",
+    "BAC",
+    "KLS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "ancestral_arcane:gold_catalyst"
+  }
+}

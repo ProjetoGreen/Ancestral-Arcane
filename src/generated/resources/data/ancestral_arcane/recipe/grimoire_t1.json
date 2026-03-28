@@ -5,14 +5,23 @@
     "B": {
       "item": "minecraft:book"
     },
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "I": {
+      "item": "minecraft:ink_sac"
+    },
     "L": {
       "item": "minecraft:leather"
+    },
+    "P": {
+      "item": "minecraft:paper"
     }
   },
   "pattern": [
-    "LLL",
+    "PFP",
     "LBL",
-    "LLL"
+    "PIP"
   ],
   "result": {
     "count": 1,

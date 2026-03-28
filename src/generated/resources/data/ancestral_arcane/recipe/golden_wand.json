@@ -2,15 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "item": "minecraft:gold_ingot"
+    "C": {
+      "item": "ancestral_arcane:gold_catalyst"
     },
     "S": {
       "item": "minecraft:stick"
     }
   },
   "pattern": [
-    "  G",
+    "  C",
     " S ",
     "S  "
   ],

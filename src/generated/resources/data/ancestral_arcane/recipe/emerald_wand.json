@@ -2,15 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "E": {
-      "item": "minecraft:emerald"
+    "C": {
+      "item": "ancestral_arcane:emerald_catalyst"
     },
     "S": {
       "item": "minecraft:stick"
     }
   },
   "pattern": [
-    "  E",
+    "  C",
     " S ",
     "S  "
   ],

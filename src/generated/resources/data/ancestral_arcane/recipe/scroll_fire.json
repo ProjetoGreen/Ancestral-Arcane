@@ -2,21 +2,28 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "D": {
+      "item": "minecraft:red_dye"
+    },
     "F": {
       "item": "minecraft:feather"
     },
     "I": {
       "item": "minecraft:ink_sac"
     },
+    "M": {
+      "item": "minecraft:blaze_powder"
+    },
     "P": {
       "item": "minecraft:paper"
     },
     "X": {
-      "item": "minecraft:red_dye"
+      "item": "minecraft:blaze_powder"
     }
   },
   "pattern": [
-    "PIF",
+    "PMF",
+    "DID",
     " X "
   ],
   "result": {

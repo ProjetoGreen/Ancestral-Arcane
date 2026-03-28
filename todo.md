@@ -35,8 +35,8 @@ This document tracks the status of mod features compared to the project Wiki. Al
 ---
 
 ## ⚪ Priority 4: UX & Polish
-- [x] **Translatable & Dynamic Tooltips**
-- [ ] **Nesting/Creative Tab Consistency**:
-  - [ ] Pre-initialize all Registry/Creative Tab items with correct NBT.
-- [ ] **Code Polish (Technical Debt)**:
-  - [ ] Resolve remaining 100+ "Null type safety" warnings in registry and UI classes.
+- [x] **Recipe Alignment**: Synchronized all crafting recipes with the official Wiki, including new Catalysts and Fragments.
+- [x] **Nesting/Creative Tab Consistency**:
+  - [x] Pre-initialized all Registry/Creative Tab items with correct NBT.
+- [x] **Code Polish (Technical Debt)**:
+  - [x] Resolved major "Null type safety" warnings in registry, UI, and spell execution classes.

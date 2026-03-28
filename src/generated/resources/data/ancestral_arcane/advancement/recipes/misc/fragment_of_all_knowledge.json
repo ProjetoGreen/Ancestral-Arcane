@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_copper_wand": {
+    "has_grimoire_t4": {
       "conditions": {
         "items": [
           {
-            "items": "ancestral_arcane:copper_wand"
+            "items": "ancestral_arcane:grimoire_t4"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ancestral_arcane:copper_wand_leather_grip"
+        "recipe": "ancestral_arcane:fragment_of_all_knowledge"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_copper_wand"
+      "has_grimoire_t4"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ancestral_arcane:copper_wand_leather_grip"
+      "ancestral_arcane:fragment_of_all_knowledge"
     ]
   }
 }

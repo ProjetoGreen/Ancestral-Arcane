@@ -2,17 +2,23 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:amethyst_shard"
+    "C": {
+      "item": "minecraft:echo_shard"
     },
-    "B": {
+    "G": {
       "item": "ancestral_arcane:grimoire_t3"
+    },
+    "M": {
+      "item": "minecraft:emerald"
+    },
+    "S": {
+      "item": "minecraft:writable_book"
     }
   },
   "pattern": [
-    "AAA",
-    "ABA",
-    "AAA"
+    "MCM",
+    "SGS",
+    "MCM"
   ],
   "result": {
     "count": 1,

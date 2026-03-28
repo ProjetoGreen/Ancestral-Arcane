@@ -2,15 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "N": {
-      "item": "minecraft:netherite_ingot"
+    "C": {
+      "item": "ancestral_arcane:netherite_catalyst"
     },
     "S": {
       "item": "minecraft:stick"
     }
   },
   "pattern": [
-    "  N",
+    "  C",
     " S ",
     "S  "
   ],

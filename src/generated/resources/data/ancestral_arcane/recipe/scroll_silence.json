@@ -2,21 +2,28 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "D": {
+      "item": "minecraft:black_dye"
+    },
     "F": {
       "item": "minecraft:feather"
     },
     "I": {
       "item": "minecraft:ink_sac"
     },
+    "M": {
+      "item": "minecraft:gunpowder"
+    },
     "P": {
       "item": "minecraft:paper"
     },
     "X": {
-      "item": "minecraft:black_dye"
+      "item": "minecraft:gunpowder"
     }
   },
   "pattern": [
-    "PIF",
+    "PMF",
+    "DID",
     " X "
   ],
   "result": {
